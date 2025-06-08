@@ -5,7 +5,7 @@ import time
 
 # --- Configuration ---
 PASSWORD = "iloveaml2025"
-DATA_FILE = "aml_game_data.json"
+DATA_FILE = "questions_cleaned.json"
 
 # --- Utility Functions ---
 @st.cache_data
