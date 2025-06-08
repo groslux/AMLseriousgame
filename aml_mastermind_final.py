@@ -29,11 +29,14 @@ if "authenticated" not in st.session_state:
 if not st.session_state.authenticated:
     st.title("🔒 AML Mastermind Deluxe")
     password = st.text_input("Enter the password to play:", type="password")
-    if password == PASSWORD:
-        st.session_state.authenticated = True
-        st.experimental_rerun()
-    else:
-        st.stop()
+ if password == PASSWORD:
+    st.session_state.authenticated = True
+elif password != "":
+    st.error("Incorrect password.")
+    st.stop()
+else:
+    st.stop()
+
 
 st.title("🕵️ AML Mastermind Deluxe")
 st.markdown("Prove your anti-money laundering knowledge!")
