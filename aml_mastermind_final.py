@@ -32,12 +32,13 @@ if not st.session_state.authenticated:
     st.title("🔒 AML Mastermind Deluxe")
     password = st.text_input("Enter the password to play:", type="password")
     if password:
-        if password == PASSWORD:
-            st.session_state.authenticated = True
-            st.session_state.just_authenticated = True
-        else:
-            st.error("Incorrect password.")
+    if password == PASSWORD:
+        st.session_state.authenticated = True
+        st.experimental_rerun()  # only used safely here after login
+    else:
+        st.error("Incorrect password.")
     st.stop()
+
 
 if st.session_state.get("just_authenticated"):
     st.session_state.just_authenticated = False
