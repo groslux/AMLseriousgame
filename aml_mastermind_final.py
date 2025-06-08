@@ -19,7 +19,7 @@ def show_question(q, idx):
     random.shuffle(options)
     return st.radio("Choose your answer:", options, key=f"answer_{idx}")
 
-# --- App Start ---
+# --- App Setup ---
 st.set_page_config(page_title="AML Mastermind Deluxe", layout="centered")
 
 if "authenticated" not in st.session_state:
@@ -48,7 +48,7 @@ for q in questions_data:
     cat = q.get("category", "Other")
     grouped.setdefault(cat, []).append(q)
 
-# --- Initialize session state ---
+# --- Session State Init ---
 if "mode" not in st.session_state:
     st.session_state.mode = None
 if "category" not in st.session_state:
@@ -69,7 +69,7 @@ if st.session_state.mode is None:
     if mode == "Classic Quiz":
         num = st.slider("🔢 Number of Questions", 5, 30, 10)
     else:
-        num = 999  # Time attack uses as many as possible
+        num = 999
     if st.button("Start Game"):
         st.session_state.mode = mode
         st.session_state.category = category
@@ -80,13 +80,15 @@ if st.session_state.mode is None:
             st.session_state.start_time = time.time()
         st.experimental_rerun()
 
-# --- Classic Mode ---
+# --- Classic Quiz Mode ---
 elif st.session_state.mode == "Classic Quiz":
     idx = st.session_state.current
     if idx < len(st.session_state.questions):
         q = st.session_state.questions[idx]
-        answer = show_question(q, idx)
-        if st.button("Submit Answer"):
+        with st.form(key=f"form_classic_{idx}"):
+            answer = show_question(q, idx)
+            submitted = st.form_submit_button("Submit Answer")
+        if submitted:
             if answer == q["correct_answer"]:
                 st.success("✅ Correct!")
                 st.session_state.score += 1
@@ -126,8 +128,10 @@ elif st.session_state.mode == "Time Attack":
         st.markdown(f"⏳ Time Left: **{remaining} seconds**")
         idx = st.session_state.current
         q = st.session_state.questions[idx]
-        answer = show_question(q, idx)
-        if st.button("Submit Answer"):
+        with st.form(key=f"form_time_{idx}"):
+            answer = show_question(q, idx)
+            submitted = st.form_submit_button("Submit Answer")
+        if submitted:
             if answer == q["correct_answer"]:
                 st.success("✅ Correct!")
                 st.session_state.score += 1
@@ -137,5 +141,6 @@ elif st.session_state.mode == "Time Attack":
             st.session_state.current += 1
             st.experimental_rerun()
 
+# --- Footer ---
 st.markdown("---")
 st.caption("Built with ❤️ for AML training – FATF, IOSCO, IMF & World Bank inspired.")
