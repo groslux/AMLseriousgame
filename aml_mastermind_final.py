@@ -32,7 +32,6 @@ if not st.session_state.authenticated:
     password = st.text_input("Enter the password to play:", type="password")
     if password == PASSWORD:
         st.session_state.authenticated = True
-        st.experimental_rerun()
     elif password:
         st.error("Incorrect password.")
     st.stop()
