@@ -16,7 +16,7 @@ def load_questions():
 def group_questions_by_category(data):
     grouped = {}
     for q in data:
-        cat = q.get("category", "Other")
+        cat = q.get("category", "Other").strip()  # Strip whitespace
         grouped.setdefault(cat, []).append(q)
     return grouped
 
@@ -33,6 +33,7 @@ if not st.session_state.authenticated:
     if password:
         if password == PASSWORD:
             st.session_state.authenticated = True
+            st.experimental_rerun()
         else:
             st.error("Incorrect password.")
     st.stop()
@@ -47,6 +48,9 @@ if not player_name:
 # --- Load & group questions ---
 questions_data = load_questions()
 grouped = group_questions_by_category(questions_data)
+
+# --- Optional Debug: show categories loaded
+# st.write("✅ Categories found:", list(grouped.keys()))
 
 # --- Session Initialization ---
 for key, default in {
@@ -66,9 +70,14 @@ if st.session_state.mode is None:
         question_count = st.slider("Number of Questions", 5, 30, 10)
 
     if st.button("Start Game"):
+        available_questions = grouped.get(st.session_state.category, [])
+        if not available_questions:
+            st.error("❌ No questions found for this category. Please choose another.")
+            st.stop()
+
         st.session_state.questions = random.sample(
-            grouped[st.session_state.category],
-            min(question_count, len(grouped[st.session_state.category]))
+            available_questions,
+            min(question_count, len(available_questions))
         )
         st.session_state.current = 0
         st.session_state.score = 0
