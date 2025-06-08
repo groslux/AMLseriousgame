@@ -138,16 +138,18 @@ if st.session_state.mode == "Classic Quiz" and st.session_state.current >= len(s
     total = len(st.session_state.questions)
     score = st.session_state.score
     st.markdown(f"### 🎯 Final Score: {score}/{total}")
-    if score / total >= 0.75:
+    if total > 0 and score / total >= 0.75:
         st.success(f"🏆 Congratulations {player_name}, you passed and earned your certificate!")
-    else:
+    elif total > 0:
         st.info("Try again to reach 75% to earn your certificate.")
+    else:
+        st.warning("No questions were loaded. Please restart and select a different category.")
     if st.button("Play Again"):
         for key in ["mode", "category", "questions", "current", "score"]:
             del st.session_state[key]
         st.experimental_rerun()
 
-# --- Controlled rerun (safer than inside form) ---
+# --- Controlled rerun ---
 if st.session_state.get("trigger_next", False):
     st.session_state.trigger_next = False
     st.experimental_rerun()
