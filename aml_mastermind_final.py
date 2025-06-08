@@ -24,17 +24,25 @@ def group_questions_by_category(data):
 st.set_page_config(page_title="AML Mastermind Deluxe", layout="centered")
 
 # --- Auth ---
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+    st.session_state.just_authenticated = False
+
 if not st.session_state.authenticated:
     st.title("🔒 AML Mastermind Deluxe")
     password = st.text_input("Enter the password to play:", type="password")
     if password:
         if password == PASSWORD:
             st.session_state.authenticated = True
-            st.experimental_rerun()
+            st.session_state.just_authenticated = True
         else:
             st.error("Incorrect password.")
     st.stop()
 
+# Avoid double-run after auth
+if st.session_state.get("just_authenticated"):
+    st.session_state.just_authenticated = False
+    st.stop()
 
 # --- Player name ---
 st.title("🕵️ AML Mastermind Deluxe")
@@ -73,7 +81,8 @@ if st.session_state.mode is None:
         st.session_state.score = 0
         if st.session_state.mode == "Time Attack":
             st.session_state.start_time = time.time()
-        st.experimental_rerun()
+        st.session_state.trigger_next = True
+        st.stop()
 
 # --- Classic Quiz Mode ---
 elif st.session_state.mode == "Classic Quiz":
@@ -96,6 +105,7 @@ elif st.session_state.mode == "Classic Quiz":
             st.caption(q["explanation"])
             st.session_state.current += 1
             st.session_state.trigger_next = True
+            st.stop()
 
 # --- Time Attack Mode ---
 elif st.session_state.mode == "Time Attack":
@@ -110,7 +120,7 @@ elif st.session_state.mode == "Time Attack":
         if st.button("Play Again"):
             for key in ["mode", "category", "questions", "current", "score", "start_time"]:
                 del st.session_state[key]
-            st.experimental_rerun()
+        st.stop()
     else:
         i = st.session_state.current
         q = st.session_state.questions[i]
@@ -131,6 +141,7 @@ elif st.session_state.mode == "Time Attack":
             st.caption(q["explanation"])
             st.session_state.current += 1
             st.session_state.trigger_next = True
+            st.stop()
 
 # --- Result Page (Classic Mode End) ---
 if st.session_state.mode == "Classic Quiz" and st.session_state.current >= len(st.session_state.questions):
@@ -146,9 +157,9 @@ if st.session_state.mode == "Classic Quiz" and st.session_state.current >= len(s
     if st.button("Play Again"):
         for key in ["mode", "category", "questions", "current", "score"]:
             del st.session_state[key]
-        st.experimental_rerun()
+    st.stop()
 
-# --- Controlled rerun ---
+# --- Auto refresh when needed ---
 if st.session_state.get("trigger_next", False):
     st.session_state.trigger_next = False
     st.experimental_rerun()
