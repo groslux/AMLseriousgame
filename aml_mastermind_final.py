@@ -29,14 +29,13 @@ if "authenticated" not in st.session_state:
 if not st.session_state.authenticated:
     st.title("🔒 AML Mastermind Deluxe")
     password = st.text_input("Enter the password to play:", type="password")
- if password == PASSWORD:
-    st.session_state.authenticated = True
-elif password != "":
-    st.error("Incorrect password.")
-    st.stop()
-else:
-    st.stop()
-
+    if password == PASSWORD:
+        st.session_state.authenticated = True
+    elif password != "":
+        st.error("Incorrect password.")
+        st.stop()
+    else:
+        st.stop()
 
 st.title("🕵️ AML Mastermind Deluxe")
 st.markdown("Prove your anti-money laundering knowledge!")
@@ -70,7 +69,7 @@ if mode == "Classic Quiz":
         if score / num_questions >= 0.75:
             st.success(f"🏆 Congratulations {player_name}, you passed and earned your certificate!")
         else:
-            st.info("Try again to score at least 75% and earn a certificate.")
+            st.info("Try again to score at least 75% and earn your certificate.")
 
 elif mode == "Time Attack":
     st.markdown("⏱️ You have **120 seconds** to answer as many questions as you can.")
@@ -95,7 +94,7 @@ elif mode == "Time Attack":
                 time.sleep(1)
         st.markdown(f"### ⌛ Time's up! Your score: {score}")
         if score >= 10:
-            st.success(f"🏆 Well done {player_name}! You earned a certificate!")
+            st.success(f"🏆 Well done {player_name}! You earned your certificate!")
         else:
             st.info("Keep practicing to improve your score!")
 
