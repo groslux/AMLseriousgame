@@ -39,7 +39,6 @@ if not st.session_state.authenticated:
             st.error("Incorrect password.")
     st.stop()
 
-# Avoid double-run after auth
 if st.session_state.get("just_authenticated"):
     st.session_state.just_authenticated = False
     st.stop()
@@ -58,7 +57,7 @@ grouped = group_questions_by_category(questions_data)
 # --- Session Initialization ---
 for key, default in {
     "mode": None, "category": None, "questions": [],
-    "current": 0, "score": 0, "start_time": None, "trigger_next": False
+    "current": 0, "score": 0, "start_time": None
 }.items():
     if key not in st.session_state:
         st.session_state[key] = default
@@ -81,7 +80,6 @@ if st.session_state.mode is None:
         st.session_state.score = 0
         if st.session_state.mode == "Time Attack":
             st.session_state.start_time = time.time()
-        st.session_state.trigger_next = True
         st.stop()
 
 # --- Classic Quiz Mode ---
@@ -104,7 +102,6 @@ elif st.session_state.mode == "Classic Quiz":
                 st.error(f"❌ Wrong! Correct answer: {q['correct_answer']}")
             st.caption(q["explanation"])
             st.session_state.current += 1
-            st.session_state.trigger_next = True
             st.stop()
 
 # --- Time Attack Mode ---
@@ -140,7 +137,6 @@ elif st.session_state.mode == "Time Attack":
                 st.error(f"❌ Wrong! Correct answer: {q['correct_answer']}")
             st.caption(q["explanation"])
             st.session_state.current += 1
-            st.session_state.trigger_next = True
             st.stop()
 
 # --- Result Page (Classic Mode End) ---
@@ -158,11 +154,6 @@ if st.session_state.mode == "Classic Quiz" and st.session_state.current >= len(s
         for key in ["mode", "category", "questions", "current", "score"]:
             del st.session_state[key]
     st.stop()
-
-# --- Auto refresh when needed ---
-if st.session_state.get("trigger_next", False):
-    st.session_state.trigger_next = False
-    st.experimental_rerun()
 
 # --- Footer ---
 st.markdown("---")
