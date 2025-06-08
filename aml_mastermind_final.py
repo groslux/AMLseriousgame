@@ -33,7 +33,7 @@ if not st.session_state.authenticated:
     if password:
         if password == PASSWORD:
             st.session_state.authenticated = True
-               else
+        else:
             st.error("Incorrect password.")
     st.stop()
 
