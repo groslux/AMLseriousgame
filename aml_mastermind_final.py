@@ -17,8 +17,7 @@ def show_question(q, idx):
     st.subheader(f"Q{idx+1}: {q['question']}")
     options = q["options"].copy()
     random.shuffle(options)
-    answer = st.radio("Choose your answer:", options, key=f"q_{idx}")
-    return answer
+    return st.radio("Choose your answer:", options, key=f"answer_{idx}")
 
 # --- App Start ---
 st.set_page_config(page_title="AML Mastermind Deluxe", layout="centered")
@@ -31,78 +30,112 @@ if not st.session_state.authenticated:
     password = st.text_input("Enter the password to play:", type="password")
     if password == PASSWORD:
         st.session_state.authenticated = True
+        st.experimental_rerun()
     elif password != "":
         st.error("Incorrect password.")
-        st.stop()
-    else:
-        st.stop()
+    st.stop()
 
+# --- Player Info ---
 st.title("🕵️ AML Mastermind Deluxe")
-st.markdown("Prove your anti-money laundering knowledge!")
-
 player_name = st.text_input("Enter your name:")
 if not player_name:
     st.warning("Please enter your name to start.")
     st.stop()
 
-# Load and group questions by category
 questions_data = load_questions()
 grouped = {}
 for q in questions_data:
     cat = q.get("category", "Other")
     grouped.setdefault(cat, []).append(q)
 
-# UI: Select game mode and category
-mode = st.selectbox("🎮 Select Game Mode", ["Classic Quiz", "Time Attack"])
-category = st.selectbox("📚 Select Category", list(grouped.keys()))
+# --- Initialize session state ---
+if "mode" not in st.session_state:
+    st.session_state.mode = None
+if "category" not in st.session_state:
+    st.session_state.category = None
+if "questions" not in st.session_state:
+    st.session_state.questions = []
+if "current" not in st.session_state:
+    st.session_state.current = 0
+if "score" not in st.session_state:
+    st.session_state.score = 0
+if "start_time" not in st.session_state:
+    st.session_state.start_time = None
 
-if mode == "Classic Quiz":
-    num_questions = st.slider("🔢 Number of Questions", 5, 30, 10)
-    if st.button("Start Classic Quiz"):
-        score = 0
-        questions = random.sample(grouped[category], min(num_questions, len(grouped[category])))
-        for i, q in enumerate(questions):
-            answer = show_question(q, i)
-            if st.button(f"Check Answer {i+1}", key=f"btn_{i}"):
-                if answer == q["correct_answer"]:
-                    st.success("✅ Correct!")
-                    score += 1
-                else:
-                    st.error(f"❌ Wrong! Correct answer: {q['correct_answer']}")
-                st.caption(q["explanation"])
+# --- Game Setup ---
+if st.session_state.mode is None:
+    mode = st.selectbox("🎮 Select Game Mode", ["Classic Quiz", "Time Attack"])
+    category = st.selectbox("📚 Select Category", list(grouped.keys()))
+    if mode == "Classic Quiz":
+        num = st.slider("🔢 Number of Questions", 5, 30, 10)
+    else:
+        num = 999  # Time attack uses as many as possible
+    if st.button("Start Game"):
+        st.session_state.mode = mode
+        st.session_state.category = category
+        st.session_state.questions = random.sample(grouped[category], min(num, len(grouped[category])))
+        st.session_state.current = 0
+        st.session_state.score = 0
+        if mode == "Time Attack":
+            st.session_state.start_time = time.time()
+        st.experimental_rerun()
 
-        st.markdown(f"### 🎯 Final Score: {score}/{num_questions}")
-        if score / num_questions >= 0.75:
-            st.success(f"🏆 Congratulations {player_name}, you passed and earned your certificate!")
+# --- Classic Mode ---
+elif st.session_state.mode == "Classic Quiz":
+    idx = st.session_state.current
+    if idx < len(st.session_state.questions):
+        q = st.session_state.questions[idx]
+        answer = show_question(q, idx)
+        if st.button("Submit Answer"):
+            if answer == q["correct_answer"]:
+                st.success("✅ Correct!")
+                st.session_state.score += 1
+            else:
+                st.error(f"❌ Wrong! Correct: {q['correct_answer']}")
+            st.caption(q["explanation"])
+            st.session_state.current += 1
+            st.experimental_rerun()
+    else:
+        total = len(st.session_state.questions)
+        score = st.session_state.score
+        st.markdown(f"### 🎯 Final Score: {score}/{total}")
+        if score / total >= 0.75:
+            st.success(f"🏆 Congratulations {player_name}! You passed and earned your certificate!")
         else:
-            st.info("Try again to score at least 75% and earn your certificate.")
+            st.info("Try again to reach 75% to earn your certificate.")
+        if st.button("Play Again"):
+            for key in ["mode", "category", "questions", "current", "score"]:
+                del st.session_state[key]
+            st.experimental_rerun()
 
-elif mode == "Time Attack":
-    st.markdown("⏱️ You have **120 seconds** to answer as many questions as you can.")
-    if st.button("Start Time Attack"):
-        score = 0
-        questions = random.sample(grouped[category], len(grouped[category]))
-        start_time = time.time()
-        i = 0
-        while time.time() - start_time < 120 and i < len(questions):
-            remaining = 120 - int(time.time() - start_time)
-            st.markdown(f"⏳ Time Left: **{remaining} seconds**")
-            q = questions[i]
-            answer = show_question(q, i)
-            if st.button(f"Submit Answer {i+1}", key=f"submit_{i}"):
-                if answer == q["correct_answer"]:
-                    st.success("✅ Correct!")
-                    score += 1
-                else:
-                    st.error(f"❌ Wrong! Correct answer: {q['correct_answer']}")
-                st.caption(q["explanation"])
-                i += 1
-                time.sleep(1)
-        st.markdown(f"### ⌛ Time's up! Your score: {score}")
-        if score >= 10:
-            st.success(f"🏆 Well done {player_name}! You earned your certificate!")
+# --- Time Attack Mode ---
+elif st.session_state.mode == "Time Attack":
+    now = time.time()
+    remaining = 120 - int(now - st.session_state.start_time)
+    if remaining <= 0 or st.session_state.current >= len(st.session_state.questions):
+        st.markdown(f"### ⌛ Time's up! Score: {st.session_state.score}")
+        if st.session_state.score >= 10:
+            st.success(f"🏆 Well done {player_name}, you earned your certificate!")
         else:
             st.info("Keep practicing to improve your score!")
+        if st.button("Play Again"):
+            for key in ["mode", "category", "questions", "current", "score", "start_time"]:
+                del st.session_state[key]
+            st.experimental_rerun()
+    else:
+        st.markdown(f"⏳ Time Left: **{remaining} seconds**")
+        idx = st.session_state.current
+        q = st.session_state.questions[idx]
+        answer = show_question(q, idx)
+        if st.button("Submit Answer"):
+            if answer == q["correct_answer"]:
+                st.success("✅ Correct!")
+                st.session_state.score += 1
+            else:
+                st.error(f"❌ Wrong! Correct: {q['correct_answer']}")
+            st.caption(q["explanation"])
+            st.session_state.current += 1
+            st.experimental_rerun()
 
 st.markdown("---")
 st.caption("Built with ❤️ for AML training – FATF, IOSCO, IMF & World Bank inspired.")
