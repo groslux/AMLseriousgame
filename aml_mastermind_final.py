@@ -7,21 +7,23 @@ import time
 PASSWORD = "iloveaml2025"
 DATA_FILE = "questions_cleaned.json"
 
-# --- Utility Functions ---
+# --- Load Questions ---
 @st.cache_data
 def load_questions():
     with open(DATA_FILE, "r", encoding="utf-8") as f:
         return json.load(f)
 
-def show_question(q, idx):
-    st.subheader(f"Q{idx+1}: {q['question']}")
-    options = q["options"].copy()
-    random.shuffle(options)
-    return st.radio("Choose your answer:", options, key=f"answer_{idx}")
+def group_questions_by_category(data):
+    grouped = {}
+    for q in data:
+        cat = q.get("category", "Other")
+        grouped.setdefault(cat, []).append(q)
+    return grouped
 
-# --- App Setup ---
+# --- Streamlit Setup ---
 st.set_page_config(page_title="AML Mastermind Deluxe", layout="centered")
 
+# --- Auth ---
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
@@ -31,84 +33,70 @@ if not st.session_state.authenticated:
     if password == PASSWORD:
         st.session_state.authenticated = True
         st.experimental_rerun()
-    elif password != "":
+    elif password:
         st.error("Incorrect password.")
     st.stop()
 
-# --- Player Info ---
+# --- Player name ---
 st.title("🕵️ AML Mastermind Deluxe")
 player_name = st.text_input("Enter your name:")
 if not player_name:
     st.warning("Please enter your name to start.")
     st.stop()
 
+# --- Load & group questions ---
 questions_data = load_questions()
-grouped = {}
-for q in questions_data:
-    cat = q.get("category", "Other")
-    grouped.setdefault(cat, []).append(q)
+grouped = group_questions_by_category(questions_data)
 
-# --- Session State Init ---
-if "mode" not in st.session_state:
-    st.session_state.mode = None
-if "category" not in st.session_state:
-    st.session_state.category = None
-if "questions" not in st.session_state:
-    st.session_state.questions = []
-if "current" not in st.session_state:
-    st.session_state.current = 0
-if "score" not in st.session_state:
-    st.session_state.score = 0
-if "start_time" not in st.session_state:
-    st.session_state.start_time = None
+# --- Session Initialization ---
+for key, default in {
+    "mode": None, "category": None, "questions": [],
+    "current": 0, "score": 0, "start_time": None, "trigger_next": False
+}.items():
+    if key not in st.session_state:
+        st.session_state[key] = default
 
-# --- Game Setup ---
+# --- Game Selection ---
 if st.session_state.mode is None:
-    mode = st.selectbox("🎮 Select Game Mode", ["Classic Quiz", "Time Attack"])
-    category = st.selectbox("📚 Select Category", list(grouped.keys()))
-    if mode == "Classic Quiz":
-        num = st.slider("🔢 Number of Questions", 5, 30, 10)
-    else:
-        num = 999
+    st.subheader("🎮 Choose your game mode")
+    st.session_state.mode = st.selectbox("Game Mode", ["Classic Quiz", "Time Attack"])
+    st.session_state.category = st.selectbox("Category", list(grouped.keys()))
+    question_count = 30 if st.session_state.mode == "Classic Quiz" else 999
+    if st.session_state.mode == "Classic Quiz":
+        question_count = st.slider("Number of Questions", 5, 30, 10)
+
     if st.button("Start Game"):
-        st.session_state.mode = mode
-        st.session_state.category = category
-        st.session_state.questions = random.sample(grouped[category], min(num, len(grouped[category])))
+        st.session_state.questions = random.sample(
+            grouped[st.session_state.category],
+            min(question_count, len(grouped[st.session_state.category]))
+        )
         st.session_state.current = 0
         st.session_state.score = 0
-        if mode == "Time Attack":
+        if st.session_state.mode == "Time Attack":
             st.session_state.start_time = time.time()
         st.experimental_rerun()
 
 # --- Classic Quiz Mode ---
 elif st.session_state.mode == "Classic Quiz":
-    idx = st.session_state.current
-    if idx < len(st.session_state.questions):
-        q = st.session_state.questions[idx]
-        with st.form(key=f"form_classic_{idx}"):
-            answer = show_question(q, idx)
-            submitted = st.form_submit_button("Submit Answer")
-        if submitted:
-            if answer == q["correct_answer"]:
+    i = st.session_state.current
+    if i < len(st.session_state.questions):
+        q = st.session_state.questions[i]
+        with st.form(key=f"form_classic_{i}"):
+            st.subheader(f"Q{i+1}: {q['question']}")
+            options = q["options"].copy()
+            random.shuffle(options)
+            selected = st.radio("Choose your answer:", options, key=f"answer_{i}")
+            submit = st.form_submit_button("Submit Answer")
+
+        if submit:
+            if selected == q["correct_answer"]:
                 st.success("✅ Correct!")
                 st.session_state.score += 1
             else:
-                st.error(f"❌ Wrong! Correct: {q['correct_answer']}")
+                st.error(f"❌ Wrong! Correct answer: {q['correct_answer']}")
             st.caption(q["explanation"])
             st.session_state.current += 1
-            st.experimental_rerun()
-    else:
-        total = len(st.session_state.questions)
-        score = st.session_state.score
-        st.markdown(f"### 🎯 Final Score: {score}/{total}")
-        if score / total >= 0.75:
-            st.success(f"🏆 Congratulations {player_name}! You passed and earned your certificate!")
-        else:
-            st.info("Try again to reach 75% to earn your certificate.")
-        if st.button("Play Again"):
-            for key in ["mode", "category", "questions", "current", "score"]:
-                del st.session_state[key]
-            st.experimental_rerun()
+            st.session_state.trigger_next = True
 
 # --- Time Attack Mode ---
 elif st.session_state.mode == "Time Attack":
@@ -125,21 +113,44 @@ elif st.session_state.mode == "Time Attack":
                 del st.session_state[key]
             st.experimental_rerun()
     else:
+        i = st.session_state.current
+        q = st.session_state.questions[i]
         st.markdown(f"⏳ Time Left: **{remaining} seconds**")
-        idx = st.session_state.current
-        q = st.session_state.questions[idx]
-        with st.form(key=f"form_time_{idx}"):
-            answer = show_question(q, idx)
-            submitted = st.form_submit_button("Submit Answer")
-        if submitted:
-            if answer == q["correct_answer"]:
+        with st.form(key=f"form_time_{i}"):
+            st.subheader(f"Q{i+1}: {q['question']}")
+            options = q["options"].copy()
+            random.shuffle(options)
+            selected = st.radio("Choose your answer:", options, key=f"answer_{i}")
+            submit = st.form_submit_button("Submit Answer")
+
+        if submit:
+            if selected == q["correct_answer"]:
                 st.success("✅ Correct!")
                 st.session_state.score += 1
             else:
-                st.error(f"❌ Wrong! Correct: {q['correct_answer']}")
+                st.error(f"❌ Wrong! Correct answer: {q['correct_answer']}")
             st.caption(q["explanation"])
             st.session_state.current += 1
-            st.experimental_rerun()
+            st.session_state.trigger_next = True
+
+# --- Result Page (Classic Mode End) ---
+if st.session_state.mode == "Classic Quiz" and st.session_state.current >= len(st.session_state.questions):
+    total = len(st.session_state.questions)
+    score = st.session_state.score
+    st.markdown(f"### 🎯 Final Score: {score}/{total}")
+    if score / total >= 0.75:
+        st.success(f"🏆 Congratulations {player_name}, you passed and earned your certificate!")
+    else:
+        st.info("Try again to reach 75% to earn your certificate.")
+    if st.button("Play Again"):
+        for key in ["mode", "category", "questions", "current", "score"]:
+            del st.session_state[key]
+        st.experimental_rerun()
+
+# --- Controlled rerun (safer than inside form) ---
+if st.session_state.get("trigger_next", False):
+    st.session_state.trigger_next = False
+    st.experimental_rerun()
 
 # --- Footer ---
 st.markdown("---")
