@@ -45,16 +45,22 @@ if not player_name:
     st.warning("Please enter your name to start.")
     st.stop()
 
+# Load and group questions by category
 questions_data = load_questions()
+grouped = {}
+for q in questions_data:
+    cat = q.get("category", "Other")
+    grouped.setdefault(cat, []).append(q)
 
+# UI: Select game mode and category
 mode = st.selectbox("🎮 Select Game Mode", ["Classic Quiz", "Time Attack"])
-category = st.selectbox("📚 Select Category", list(questions_data.keys()))
+category = st.selectbox("📚 Select Category", list(grouped.keys()))
 
 if mode == "Classic Quiz":
     num_questions = st.slider("🔢 Number of Questions", 5, 30, 10)
     if st.button("Start Classic Quiz"):
         score = 0
-        questions = random.sample(questions_data[category], min(num_questions, len(questions_data[category])))
+        questions = random.sample(grouped[category], min(num_questions, len(grouped[category])))
         for i, q in enumerate(questions):
             answer = show_question(q, i)
             if st.button(f"Check Answer {i+1}", key=f"btn_{i}"):
@@ -75,7 +81,7 @@ elif mode == "Time Attack":
     st.markdown("⏱️ You have **120 seconds** to answer as many questions as you can.")
     if st.button("Start Time Attack"):
         score = 0
-        questions = random.sample(questions_data[category], len(questions_data[category]))
+        questions = random.sample(grouped[category], len(grouped[category]))
         start_time = time.time()
         i = 0
         while time.time() - start_time < 120 and i < len(questions):
