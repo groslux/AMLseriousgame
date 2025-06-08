@@ -26,7 +26,7 @@ st.set_page_config(page_title="AML Mastermind Deluxe", layout="centered")
 # --- Auth ---
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
-
+st.rerun
 if not st.session_state.authenticated:
     st.title("🔒 AML Mastermind Deluxe")
     password = st.text_input("Enter the password to play:", type="password")
