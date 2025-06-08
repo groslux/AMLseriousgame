@@ -33,8 +33,7 @@ if not st.session_state.authenticated:
     if password:
         if password == PASSWORD:
             st.session_state.authenticated = True
-               else:
-            st.error("Incorrect password.")
+               else: st.error("Incorrect password.")
     st.stop()
 
 # --- Player name ---
