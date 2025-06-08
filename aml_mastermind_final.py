@@ -89,7 +89,7 @@ elif st.session_state.mode == "Classic Quiz":
             submit = st.form_submit_button("Submit Answer")
 
         if submit:
-            if selected == q["correct_answer"]:
+            if selected.strip().lower() == q["correct_answer"].strip().lower():
                 st.success("✅ Correct!")
                 st.session_state.score += 1
             else:
@@ -124,7 +124,7 @@ elif st.session_state.mode == "Time Attack":
             submit = st.form_submit_button("Submit Answer")
 
         if submit:
-            if selected == q["correct_answer"]:
+            if selected.strip().lower() == q["correct_answer"].strip().lower():
                 st.success("✅ Correct!")
                 st.session_state.score += 1
             else:
