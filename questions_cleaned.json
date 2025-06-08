@@ -1,0 +1,1682 @@
+[
+  {
+    "id": "crypto_21",
+    "category": "Crypto",
+    "question": "Which type of exchange poses the highest AML/CFT risks?",
+    "options": [
+      "Bank-run exchanges",
+      "Decentralized exchanges (DEXs)",
+      "ETF platforms",
+      "Futures-only platforms"
+    ],
+    "correct_answer": "Decentralized exchanges (DEXs)",
+    "explanation": "DEXs are peer-to-peer and often lack KYC.",
+    "source": "IOSCO – DeFi Report (2022)"
+  },
+  {
+    "id": "crypto_22",
+    "category": "Crypto",
+    "question": "What is a 'smurfing' technique in crypto laundering?",
+    "options": [
+      "Mining using old tokens",
+      "Splitting large amounts into smaller ones",
+      "Staking high volumes",
+      "Flash loan arbitrage"
+    ],
+    "correct_answer": "Splitting large amounts into smaller ones",
+    "explanation": "Smurfing helps avoid detection thresholds.",
+    "source": "FATF – Methods and Trends in ML (2020)"
+  },
+  {
+    "id": "crypto_23",
+    "category": "Crypto",
+    "question": "Why is the source of wealth hard to determine in crypto?",
+    "options": [
+      "Blockchain is slow",
+      "Fiat currency isn't traceable",
+      "Identities are often pseudonymous",
+      "Exchanges require passports"
+    ],
+    "correct_answer": "Identities are often pseudonymous",
+    "explanation": "Pseudonymity makes it difficult to link users to assets.",
+    "source": "IMF – Digital Money Report (2021)"
+  },
+  {
+    "id": "crypto_24",
+    "category": "Crypto",
+    "question": "Why are Initial Coin Offerings (ICOs) risky from an AML standpoint?",
+    "options": [
+      "High transaction fees",
+      "Subject to MiFID",
+      "Often lack investor due diligence",
+      "SEC approves all ICOs"
+    ],
+    "correct_answer": "Often lack investor due diligence",
+    "explanation": "ICOs are used to raise funds without screening buyers.",
+    "source": "IOSCO – ICOs and Crypto-Asset Trading Platforms Report (2020)"
+  },
+  {
+    "id": "crypto_25",
+    "category": "Crypto",
+    "question": "What is a 'rug pull' in the context of crypto fraud?",
+    "options": [
+      "Excessive token burning",
+      "Stolen NFTs",
+      "Project owners disappearing with investor funds",
+      "DeFi interest withdrawal"
+    ],
+    "correct_answer": "Project owners disappearing with investor funds",
+    "explanation": "Fake projects disappear after collecting money.",
+    "source": "SEC – Investor Alert: Digital Asset Scams (2021)"
+  },
+  {
+    "id": "crypto_26",
+    "category": "Crypto",
+    "question": "What role does KYT (Know Your Transaction) play in AML?",
+    "options": [
+      "Token generation",
+      "NFT royalties",
+      "Detecting suspicious movement patterns",
+      "Identity theft prevention"
+    ],
+    "correct_answer": "Detecting suspicious movement patterns",
+    "explanation": "KYT uses analytics to spot red flags in real time.",
+    "source": "FATF – Technology-based AML Controls (2022)"
+  },
+  {
+    "id": "crypto_27",
+    "category": "Crypto",
+    "question": "Which token type is most associated with money laundering?",
+    "options": [
+      "Utility tokens",
+      "Stablecoins",
+      "Privacy coins",
+      "Governance tokens"
+    ],
+    "correct_answer": "Privacy coins",
+    "explanation": "Privacy coins are often chosen for anonymity.",
+    "source": "FATF – Red Flag Indicators (2020)"
+  },
+  {
+    "id": "crypto_28",
+    "category": "Crypto",
+    "question": "What are 'dust transactions'?",
+    "options": [
+      "Micro amounts used to obfuscate flows",
+      "Bulk staking events",
+      "Multi-sig activations",
+      "NFT fee burns"
+    ],
+    "correct_answer": "Micro amounts used to obfuscate flows",
+    "explanation": "Dust confuses analysis tools.",
+    "source": "Europol – Crypto Laundering Trends (2021)"
+  },
+  {
+    "id": "crypto_29",
+    "category": "Crypto",
+    "question": "Why are cross-chain bridges flagged by regulators?",
+    "options": [
+      "They require too much power",
+      "They remove the need for smart contracts",
+      "They can help launder assets across blockchains",
+      "They are not EVM-compatible"
+    ],
+    "correct_answer": "They can help launder assets across blockchains",
+    "explanation": "Cross-chain transfers can conceal laundering.",
+    "source": "IMF – Cross-Chain AML Challenges (2022)"
+  },
+  {
+    "id": "crypto_30",
+    "category": "Crypto",
+    "question": "Which crypto-related business must apply full AML programs?",
+    "options": [
+      "Token designers",
+      "VASPs (Virtual Asset Service Providers)",
+      "Influencers",
+      "Cold wallet manufacturers"
+    ],
+    "correct_answer": "VASPs (Virtual Asset Service Providers)",
+    "explanation": "VASPs must meet FATF Recommendation 15 standards.",
+    "source": "FATF – Updated Guidance for VASPs (2021)"
+  },
+  {
+    "id": "crypto_41",
+    "category": "Crypto",
+    "question": "Which organization issues typologies on crypto laundering?",
+    "options": [
+      "ECB",
+      "FATF",
+      "WEF",
+      "Basel III"
+    ],
+    "correct_answer": "FATF",
+    "explanation": "FATF regularly updates laundering methods in VA space.",
+    "source": "FATF – Typologies Report (2022)"
+  },
+  {
+    "id": "crypto_42",
+    "category": "Crypto",
+    "question": "What makes hosted wallets more compliant?",
+    "options": [
+      "Better graphics",
+      "KYC enforcement",
+      "Decentralized nodes",
+      "Smart contract capability"
+    ],
+    "correct_answer": "KYC enforcement",
+    "explanation": "Hosted wallets are tied to identity-verified VASPs.",
+    "source": "FATF – Updated VASP Guidance (2021)"
+  },
+  {
+    "id": "crypto_43",
+    "category": "Crypto",
+    "question": "What is a synthetic asset in crypto?",
+    "options": [
+      "A fake token",
+      "An off-chain clone of a real-world asset",
+      "A smart contract",
+      "A wrapped token"
+    ],
+    "correct_answer": "An off-chain clone of a real-world asset",
+    "explanation": "Synthetic assets simulate stocks or commodities.",
+    "source": "IMF – Crypto-Asset Risks (2022)"
+  },
+  {
+    "id": "crypto_44",
+    "category": "Crypto",
+    "question": "Which role do 'oracles' play in AML concerns?",
+    "options": [
+      "Perform customer onboarding",
+      "Automate KYC",
+      "Bridge real-world data into blockchains",
+      "Transfer fiat to crypto"
+    ],
+    "correct_answer": "Bridge real-world data into blockchains",
+    "explanation": "If corrupted, oracles can falsify contract conditions.",
+    "source": "IOSCO – Decentralized Oracle Risks (2022)"
+  },
+  {
+    "id": "crypto_45",
+    "category": "Crypto",
+    "question": "Why are peer-to-peer DEXs harder to regulate?",
+    "options": [
+      "No fee structure",
+      "No order book",
+      "No legal registration",
+      "No central counterparty"
+    ],
+    "correct_answer": "No central counterparty",
+    "explanation": "No centralized entity = no jurisdiction to target.",
+    "source": "IOSCO – DeFi Oversight Challenges (2022)"
+  },
+  {
+    "id": "crypto_46",
+    "category": "Crypto",
+    "question": "What does FATF say about NFTs and VASPs?",
+    "options": [
+      "NFTs are never VASPs",
+      "All NFTs are art",
+      "NFTs may be VASPs if used for payments",
+      "NFTs are illegal"
+    ],
+    "correct_answer": "NFTs may be VASPs if used for payments",
+    "explanation": "NFTs used for transfer of value can trigger AML laws.",
+    "source": "FATF – Updated VASP Guidance (2021)"
+  },
+  {
+    "id": "crypto_47",
+    "category": "Crypto",
+    "question": "What crypto product raises specific AML risks via leverage?",
+    "options": [
+      "Spot tokens",
+      "Futures and margin trading",
+      "Wrapped BTC",
+      "ICOs"
+    ],
+    "correct_answer": "Futures and margin trading",
+    "explanation": "Leveraged trading may facilitate rapid illicit movements.",
+    "source": "SEC – Crypto Derivatives Risks (2022)"
+  },
+  {
+    "id": "crypto_48",
+    "category": "Crypto",
+    "question": "What is Tornado Cash known for?",
+    "options": [
+      "NFT minting",
+      "High-yield farming",
+      "Smart contract mixer",
+      "Fiat gateway"
+    ],
+    "correct_answer": "Smart contract mixer",
+    "explanation": "Tornado Cash anonymizes ETH transactions.",
+    "source": "OFAC – Sanctions Designation (2022)"
+  },
+  {
+    "id": "crypto_49",
+    "category": "Crypto",
+    "question": "What is a trigger for suspicious activity reporting in crypto?",
+    "options": [
+      "Unusual transaction patterns",
+      "NFT creation",
+      "Token migration",
+      "Wallet import"
+    ],
+    "correct_answer": "Unusual transaction patterns",
+    "explanation": "SARs are required for abnormal behavior.",
+    "source": "FinCEN – SAR Filing Guide (2021)"
+  },
+  {
+    "id": "crypto_50",
+    "category": "Crypto",
+    "question": "Why are 'smart contracts' difficult for AML enforcement?",
+    "options": [
+      "They charge fees",
+      "They are immutable",
+      "They use fiat",
+      "They require email"
+    ],
+    "correct_answer": "They are immutable",
+    "explanation": "Once deployed, they can’t be changed or halted.",
+    "source": "IMF – Smart Contract Risks (2022)"
+  },
+  {
+    "id": "collective_1",
+    "category": "Collective Investment Sector",
+    "question": "What is a primary AML risk associated with open-ended investment funds?",
+    "options": [
+      "They offer fixed returns",
+      "They are only accessible to retail investors",
+      "Frequent subscriptions and redemptions facilitate layering",
+      "They cannot be used for international transfers"
+    ],
+    "correct_answer": "Frequent subscriptions and redemptions facilitate layering",
+    "explanation": "Open-ended funds allow investors to frequently buy or redeem shares, which may be misused to layer illicit funds across multiple transactions.",
+    "source": "FATF – Risk-Based Approach for the Securities Sector (2018)"
+  },
+  {
+    "id": "collective_2",
+    "category": "Collective Investment Sector",
+    "question": "Why are nominee shareholder arrangements considered a red flag in investment fund structures?",
+    "options": [
+      "They simplify tax filings",
+      "They reduce the cost of fund administration",
+      "They can obscure the beneficial owner",
+      "They are always illegal"
+    ],
+    "correct_answer": "They can obscure the beneficial owner",
+    "explanation": "Nominee arrangements may hide the identity of the actual beneficial owner, raising AML concerns.",
+    "source": "FATF – Transparency and Beneficial Ownership (2014)"
+  },
+  {
+    "id": "collective_3",
+    "category": "Collective Investment Sector",
+    "question": "Which AML measure is required by fund managers when onboarding new investors?",
+    "options": [
+      "Providing performance guarantees",
+      "Collecting investment strategy details",
+      "Conducting customer due diligence (CDD)",
+      "Verifying fund NAV calculations"
+    ],
+    "correct_answer": "Conducting customer due diligence (CDD)",
+    "explanation": "Fund managers must perform CDD to verify the identity and risk profile of each investor.",
+    "source": "FATF – Recommendation 10"
+  },
+  {
+    "id": "collective_4",
+    "category": "Collective Investment Sector",
+    "question": "Which of the following factors increases ML/TF risk for investment funds?",
+    "options": [
+      "Low investor turnover",
+      "High transparency of fund holdings",
+      "Use of complex offshore structures",
+      "Retail investor concentration"
+    ],
+    "correct_answer": "Use of complex offshore structures",
+    "explanation": "Complex structures, especially involving offshore jurisdictions, may hinder transparency and facilitate misuse.",
+    "source": "IMF – Selected Issues in AML Regulation of Investment Funds (2021)"
+  },
+  {
+    "id": "collective_5",
+    "category": "Collective Investment Sector",
+    "question": "Why must investment fund administrators monitor transactions after onboarding?",
+    "options": [
+      "To report fund performance",
+      "To detect unusual activity or patterns",
+      "To review tax liabilities",
+      "To validate market timing"
+    ],
+    "correct_answer": "To detect unusual activity or patterns",
+    "explanation": "Ongoing monitoring is a core AML obligation to detect suspicious or atypical transactions.",
+    "source": "CSSF – AML/CTF Guidelines for Investment Fund Professionals (2020)"
+  },
+  {
+    "id": "collective_6",
+    "category": "Collective Investment Sector",
+    "question": "What is a key AML/CFT risk when using feeder-master fund structures?",
+    "options": [
+      "Lower redemption flexibility",
+      "No need for investor disclosures",
+      "Delegation can blur oversight responsibilities",
+      "Higher brokerage fees"
+    ],
+    "correct_answer": "Delegation can blur oversight responsibilities",
+    "explanation": "When functions are delegated, it becomes harder to identify which entity is accountable for AML compliance.",
+    "source": "IOSCO – AML and the Securities Sector (2009)"
+  },
+  {
+    "id": "collective_7",
+    "category": "Collective Investment Sector",
+    "question": "Why is identifying the source of wealth important for high-net-worth fund investors?",
+    "options": [
+      "It helps calculate NAV",
+      "It ensures portfolio diversification",
+      "It mitigates ML/TF risk by understanding the legitimacy of funds",
+      "It is required by investment return forecasts"
+    ],
+    "correct_answer": "It mitigates ML/TF risk by understanding the legitimacy of funds",
+    "explanation": "Understanding the source of wealth helps assess if an investor’s assets are legitimate.",
+    "source": "FATF – Guidance for a Risk-Based Approach for the Securities Sector (2018)"
+  },
+  {
+    "id": "collective_8",
+    "category": "Collective Investment Sector",
+    "question": "Which red flag may indicate fund misuse for terrorist financing?",
+    "options": [
+      "Stable daily NAV",
+      "Frequent fund marketing campaigns",
+      "Transfers to high-risk jurisdictions without clear justification",
+      "Low portfolio turnover"
+    ],
+    "correct_answer": "Transfers to high-risk jurisdictions without clear justification",
+    "explanation": "Unexplained transfers to jurisdictions linked to TF risk should be examined carefully.",
+    "source": "FATF – Terrorist Financing Risk Assessment Guidance (2019)"
+  },
+  {
+    "id": "collective_9",
+    "category": "Collective Investment Sector",
+    "question": "In Luxembourg, which entity ensures AML/CFT supervision of investment fund managers?",
+    "options": [
+      "BCL",
+      "ESMA",
+      "CSSF",
+      "ECB"
+    ],
+    "correct_answer": "CSSF",
+    "explanation": "In Luxembourg, the Commission de Surveillance du Secteur Financier (CSSF) is the AML/CFT supervisory authority for investment funds.",
+    "source": "CSSF – AML/CFT Framework Overview (2021)"
+  },
+  {
+    "id": "collective_10",
+    "category": "Collective Investment Sector",
+    "question": "What should a fund’s AML policy include to mitigate cross-border risks?",
+    "options": [
+      "Daily NAV publication",
+      "Investor tax residency declarations",
+      "Enhanced due diligence for high-risk jurisdictions",
+      "Quarterly ESG disclosures"
+    ],
+    "correct_answer": "Enhanced due diligence for high-risk jurisdictions",
+    "explanation": "EDDs are a key control when investors or transactions involve high-risk countries.",
+    "source": "FATF – Guidance for a Risk-Based Approach for the Securities Sector (2018)"
+  },
+  {
+    "id": "collective_11",
+    "category": "Collective Investment Sector",
+    "question": "Which risk arises when investment funds accept third-party payments?",
+    "options": [
+      "NAV fluctuation",
+      "Misuse of omnibus accounts",
+      "Breakdown in ESG scoring",
+      "Benchmark misalignment"
+    ],
+    "correct_answer": "Misuse of omnibus accounts",
+    "explanation": "Third-party payments may obscure the real source of funds and facilitate layering through pooled accounts.",
+    "source": "FATF – Risk-Based Approach for the Securities Sector (2018)"
+  },
+  {
+    "id": "collective_12",
+    "category": "Collective Investment Sector",
+    "question": "What should a risk-based AML program for fund managers prioritize?",
+    "options": [
+      "Past fund performance",
+      "Investor nationality",
+      "Inherent risk exposure of each investor and product",
+      "Media coverage of the fund"
+    ],
+    "correct_answer": "Inherent risk exposure of each investor and product",
+    "explanation": "Effective AML programs allocate controls based on client and product-specific ML/TF risks.",
+    "source": "FATF – Guidance for a Risk-Based Approach to the Securities Sector (2018)"
+  },
+  {
+    "id": "collective_13",
+    "category": "Collective Investment Sector",
+    "question": "Which function must remain with the fund board despite delegation?",
+    "options": [
+      "Portfolio construction",
+      "Risk scoring",
+      "Ultimate AML/CFT responsibility",
+      "IT system maintenance"
+    ],
+    "correct_answer": "Ultimate AML/CFT responsibility",
+    "explanation": "Responsibility for AML compliance cannot be delegated; it rests with the board or governing body.",
+    "source": "CSSF – Circular 18/698 (2018)"
+  },
+  {
+    "id": "collective_14",
+    "category": "Collective Investment Sector",
+    "question": "Why are umbrella fund structures sometimes used in ML schemes?",
+    "options": [
+      "They are tax-exempt",
+      "They offer better returns",
+      "Multiple sub-funds allow movement of money with minimal visibility",
+      "They prevent NAV fluctuation"
+    ],
+    "correct_answer": "Multiple sub-funds allow movement of money with minimal visibility",
+    "explanation": "Layering may occur between sub-funds, exploiting regulatory or operational blind spots.",
+    "source": "IMF – AML Risks in Investment Vehicles (2021)"
+  },
+  {
+    "id": "collective_15",
+    "category": "Collective Investment Sector",
+    "question": "Which of the following is a key indicator of beneficial ownership risk in fund structures?",
+    "options": [
+      "High TER (Total Expense Ratio)",
+      "Unverifiable controlling interests",
+      "Limited NAV reporting",
+      "High management fees"
+    ],
+    "correct_answer": "Unverifiable controlling interests",
+    "explanation": "Opaque control structures may be used to hide the identity of beneficial owners.",
+    "source": "FATF – Transparency and Beneficial Ownership (2014)"
+  },
+  {
+    "id": "collective_16",
+    "category": "Collective Investment Sector",
+    "question": "Which situation should trigger enhanced due diligence by an investment fund?",
+    "options": [
+      "Investor located in a FATF grey-listed country",
+      "NAV drops by 5%",
+      "Fund receives positive ESG rating",
+      "Investor opts out of performance fees"
+    ],
+    "correct_answer": "Investor located in a FATF grey-listed country",
+    "explanation": "High-risk jurisdictions require enhanced scrutiny, including justification for investment origin.",
+    "source": "FATF – High-Risk Jurisdictions Subject to a Call for Action (2023)"
+  },
+  {
+    "id": "collective_17",
+    "category": "Collective Investment Sector",
+    "question": "What role does the transfer agent play in AML/CFT controls?",
+    "options": [
+      "Asset valuation",
+      "Portfolio hedging",
+      "Investor identity verification",
+      "NAV calculation"
+    ],
+    "correct_answer": "Investor identity verification",
+    "explanation": "The transfer agent often performs KYC and monitors investor activity as part of onboarding.",
+    "source": "CSSF – AML/CTF Obligations in Delegation Models (2020)"
+  },
+  {
+    "id": "collective_18",
+    "category": "Collective Investment Sector",
+    "question": "Why are funds investing in physical assets (e.g. real estate, art, ships) attractive to money launderers?",
+    "options": [
+      "They guarantee high returns",
+      "They are always liquid",
+      "They allow concealment and storage of illicit value",
+      "They are exempt from FATF rules"
+    ],
+    "correct_answer": "They allow concealment and storage of illicit value",
+    "explanation": "Alternative assets are often hard to value and trace, making them attractive for placement and layering.",
+    "source": "World Bank – Assets Under Management and AML Risks (2022)"
+  },
+  {
+    "id": "collective_19",
+    "category": "Collective Investment Sector",
+    "question": "Which type of investment fund presents higher ML/TF risk?",
+    "options": [
+      "UCITS with only retail investors",
+      "Private equity funds with complex offshore SPVs",
+      "Index funds tracking ESG benchmarks",
+      "Money market funds operated by retail banks"
+    ],
+    "correct_answer": "Private equity funds with complex offshore SPVs",
+    "explanation": "PE funds may involve opaque SPV structures, high-value transactions, and limited regulatory transparency.",
+    "source": "FATF – Securities Sector Risk-Based Approach (2018)"
+  },
+  {
+    "id": "collective_20",
+    "category": "Collective Investment Sector",
+    "question": "Which entity must perform AML due diligence when distribution is delegated to third parties?",
+    "options": [
+      "The depository bank",
+      "The investor",
+      "The fund manager remains ultimately responsible",
+      "The registrar"
+    ],
+    "correct_answer": "The fund manager remains ultimately responsible",
+    "explanation": "Even when distributors perform due diligence, the fund manager must ensure effectiveness and oversight.",
+    "source": "CSSF – Circular 18/698 (2018)"
+  },
+  {
+    "id": "collective_21",
+    "category": "Collective Investment Sector",
+    "question": "What should a fund manager do if a distributor refuses to share KYC information?",
+    "options": [
+      "Rely on annual audits",
+      "Suspend onboarding of new investors",
+      "Ignore it if distributor is reputable",
+      "Increase NAV calculation frequency"
+    ],
+    "correct_answer": "Suspend onboarding of new investors",
+    "explanation": "Access to KYC data is essential for AML compliance; refusal requires escalation and possibly termination of onboarding.",
+    "source": "CSSF – AML/CTF Guidelines for the Fund Industry (2021)"
+  },
+  {
+    "id": "collective_22",
+    "category": "Collective Investment Sector",
+    "question": "Which investor behavior may indicate potential money laundering?",
+    "options": [
+      "Consistent monthly contributions",
+      "Frequent redemption of large amounts shortly after subscription",
+      "Use of ESG filters for allocation",
+      "Switching between sub-funds once a year"
+    ],
+    "correct_answer": "Frequent redemption of large amounts shortly after subscription",
+    "explanation": "Rapid in-and-out transactions may be a sign of layering or integration.",
+    "source": "FATF – Risk-Based Approach for the Securities Sector (2018)"
+  },
+  {
+    "id": "collective_23",
+    "category": "Collective Investment Sector",
+    "question": "What is a key AML challenge in master-feeder fund structures?",
+    "options": [
+      "NAV volatility",
+      "Different audit rules",
+      "Tracing beneficial ownership across layers",
+      "MiFID reporting obligations"
+    ],
+    "correct_answer": "Tracing beneficial ownership across layers",
+    "explanation": "Complex structures may obscure the identity of final beneficial owners.",
+    "source": "IMF – AML Risk in Investment Funds (2022)"
+  },
+  {
+    "id": "collective_24",
+    "category": "Collective Investment Sector",
+    "question": "Why are bearer shares in fund structures problematic?",
+    "options": [
+      "They limit tax reporting",
+      "They increase transaction costs",
+      "They obscure ownership, enabling anonymity",
+      "They require blockchain integration"
+    ],
+    "correct_answer": "They obscure ownership, enabling anonymity",
+    "explanation": "Bearer shares allow untraceable ownership transfers, increasing ML risks.",
+    "source": "FATF – Transparency and Beneficial Ownership (2014)"
+  },
+  {
+    "id": "collective_25",
+    "category": "Collective Investment Sector",
+    "question": "What is one reason shell companies are used in fund subscription chains?",
+    "options": [
+      "To ensure ESG certification",
+      "To hide the identity of the beneficial owner",
+      "To gain better access to investment platforms",
+      "To simplify KYC procedures"
+    ],
+    "correct_answer": "To hide the identity of the beneficial owner",
+    "explanation": "Shell entities are often created to add opacity in fund investment chains.",
+    "source": "Europol – Financial and Economic Crime Threat Assessment (2023)"
+  },
+  {
+    "id": "collective_26",
+    "category": "Collective Investment Sector",
+    "question": "Which risk is specific to unregulated funds?",
+    "options": [
+      "Index tracking mismatch",
+      "Higher ESG scrutiny",
+      "Lower supervision of AML processes",
+      "More stringent depositary requirements"
+    ],
+    "correct_answer": "Lower supervision of AML processes",
+    "explanation": "Unregulated funds may lack AML oversight, making them more attractive for illicit activity.",
+    "source": "FATF – Securities Sector Guidance (2018)"
+  },
+  {
+    "id": "collective_27",
+    "category": "Collective Investment Sector",
+    "question": "What is a key reason private funds may facilitate ML?",
+    "options": [
+      "Use of ESG screens",
+      "Long-term illiquidity",
+      "Valuation subjectivity and lack of transparency",
+      "Publicly traded instruments"
+    ],
+    "correct_answer": "Valuation subjectivity and lack of transparency",
+    "explanation": "The absence of market pricing allows over- or under-valuing assets to mask movements.",
+    "source": "IMF – AML/CFT Risk in Alternative Investment Vehicles (2021)"
+  },
+  {
+    "id": "collective_28",
+    "category": "Collective Investment Sector",
+    "question": "Which of the following is an AML red flag during investor onboarding?",
+    "options": [
+      "Investor provides a certified passport",
+      "Investor is a PEP from a high-risk country",
+      "Investor has a LinkedIn profile",
+      "Investor requests ESG scoring"
+    ],
+    "correct_answer": "Investor is a PEP from a high-risk country",
+    "explanation": "Politically exposed persons from high-risk jurisdictions require enhanced due diligence.",
+    "source": "FATF – Politically Exposed Persons Guidance (2013)"
+  },
+  {
+    "id": "collective_29",
+    "category": "Collective Investment Sector",
+    "question": "Why must AML/CFT controls be applied even for institutional investors?",
+    "options": [
+      "Because they usually avoid ESG risks",
+      "Because institutional investors are always listed",
+      "Because they may still be used as conduits for illicit funds",
+      "Because they generate higher fund fees"
+    ],
+    "correct_answer": "Because they may still be used as conduits for illicit funds",
+    "explanation": "Institutions may be misused to layer illicit funds or conceal ownership chains.",
+    "source": "FATF – Risk-Based Approach to the Securities Sector (2018)"
+  },
+  {
+    "id": "collective_30",
+    "category": "Collective Investment Sector",
+    "question": "What tool can fund managers use to assess country risk exposure?",
+    "options": [
+      "Bloomberg terminal",
+      "FATF country lists and EU high-risk third country list",
+      "LinkedIn PEP database",
+      "NAV calculation tools"
+    ],
+    "correct_answer": "FATF country lists and EU high-risk third country list",
+    "explanation": "These lists provide recognized guidance for jurisdictional ML/TF risk classification.",
+    "source": "FATF & EU – High-Risk Jurisdiction Listings (2023)"
+  },
+  {
+    "id": "funds_21",
+    "category": "Collective Investment Sector",
+    "question": "What AML concern is raised when investment funds offer easy redemption with minimal documentation?",
+    "options": [
+      "Redemption delays",
+      "Market manipulation",
+      "Ease of layering illicit funds",
+      "Currency exchange risk"
+    ],
+    "correct_answer": "Ease of layering illicit funds",
+    "explanation": "Quick redemption without proper controls can enable criminals to obscure illicit proceeds.",
+    "source": "FATF – Money Laundering and Terrorist Financing in the Securities Sector (2009)"
+  },
+  {
+    "id": "funds_22",
+    "category": "Collective Investment Sector",
+    "question": "Which international body emphasizes the risk-based approach for collective investment schemes?",
+    "options": [
+      "WTO",
+      "IOSCO",
+      "BIS",
+      "UNODC"
+    ],
+    "correct_answer": "IOSCO",
+    "explanation": "IOSCO recommends a risk-based approach to AML/CFT in securities and fund sectors.",
+    "source": "IOSCO – Principles on Client Identification and Beneficial Ownership (2004)"
+  },
+  {
+    "id": "funds_23",
+    "category": "Collective Investment Sector",
+    "question": "What does FATF identify as a red flag for fund subscriptions?",
+    "options": [
+      "Subscription made through regulated banks",
+      "Payment from unrelated third parties",
+      "Subscription from the fund manager",
+      "Investment in low-risk countries"
+    ],
+    "correct_answer": "Payment from unrelated third parties",
+    "explanation": "Third-party payments may indicate attempts to hide beneficial ownership.",
+    "source": "FATF – Guidance for a Risk-Based Approach for the Securities Sector (2009)"
+  },
+  {
+    "id": "funds_24",
+    "category": "Collective Investment Sector",
+    "question": "Why is frequent switching between sub-funds considered a risk indicator?",
+    "options": [
+      "It improves portfolio diversification",
+      "It enhances investor transparency",
+      "It may indicate attempts to confuse audit trails",
+      "It reduces compliance costs"
+    ],
+    "correct_answer": "It may indicate attempts to confuse audit trails",
+    "explanation": "Frequent switching may be a layering technique used in money laundering schemes.",
+    "source": "IMF – Anti-Money Laundering and Combating the Financing of Terrorism (2012)"
+  },
+  {
+    "id": "funds_25",
+    "category": "Collective Investment Sector",
+    "question": "What is a known vulnerability of fund of funds structures?",
+    "options": [
+      "They are limited to retail investors",
+      "They require no disclosures",
+      "They may obscure the identity of ultimate investors",
+      "They always operate cross-border"
+    ],
+    "correct_answer": "They may obscure the identity of ultimate investors",
+    "explanation": "Fund of funds can complicate transparency and make CDD more difficult.",
+    "source": "World Bank – The Puppet Masters (2011)"
+  },
+  {
+    "id": "funds_26",
+    "category": "Collective Investment Sector",
+    "question": "What does the FATF recommend regarding omnibus accounts in collective investment funds?",
+    "options": [
+      "They should be banned",
+      "They require enhanced monitoring and due diligence",
+      "They must only be used for private equity",
+      "They are not subject to AML rules"
+    ],
+    "correct_answer": "They require enhanced monitoring and due diligence",
+    "explanation": "Omnibus accounts, especially from intermediaries, may conceal beneficial ownership.",
+    "source": "FATF – Risk-Based Approach for Securities Sector (2009)"
+  },
+  {
+    "id": "funds_27",
+    "category": "Collective Investment Sector",
+    "question": "Why are private placements a challenge from an AML perspective?",
+    "options": [
+      "They are never audited",
+      "They typically involve PEPs",
+      "They may allow selective disclosure and limited investor screening",
+      "They offer high returns"
+    ],
+    "correct_answer": "They may allow selective disclosure and limited investor screening",
+    "explanation": "Private placements may not be subject to the same level of CDD as public offerings.",
+    "source": "IMF – Financial Sector Assessment Program (FSAP) – AML Module"
+  },
+  {
+    "id": "funds_28",
+    "category": "Collective Investment Sector",
+    "question": "What kind of investor profile increases AML risk in collective investment schemes?",
+    "options": [
+      "Government pension funds",
+      "Investors from low-risk jurisdictions",
+      "High-net-worth individuals with complex structures",
+      "Retail investors with single nationality"
+    ],
+    "correct_answer": "High-net-worth individuals with complex structures",
+    "explanation": "HNWI investing through offshore vehicles can be used to obscure identity and source of wealth.",
+    "source": "FATF – Risk-Based Approach for the Securities Sector (2009)"
+  },
+  {
+    "id": "funds_29",
+    "category": "Collective Investment Sector",
+    "question": "Why is source of funds verification particularly critical in real estate investment funds?",
+    "options": [
+      "Because real estate funds are illiquid",
+      "To prevent sanction evasion",
+      "To detect possible integration of illicit wealth",
+      "Because they’re regulated by banks"
+    ],
+    "correct_answer": "To detect possible integration of illicit wealth",
+    "explanation": "Real estate is commonly used to integrate criminal proceeds into the financial system.",
+    "source": "World Bank – Stolen Asset Recovery (StAR) Initiative (2011)"
+  },
+  {
+    "id": "funds_30",
+    "category": "Collective Investment Sector",
+    "question": "What action should fund administrators take when faced with incomplete CDD files from intermediaries?",
+    "options": [
+      "Proceed with transactions anyway",
+      "Request CDD only for retail clients",
+      "Delay or reject subscription until CDD is complete",
+      "Transfer funds to a custodian"
+    ],
+    "correct_answer": "Delay or reject subscription until CDD is complete",
+    "explanation": "FATF standards require verification before establishing a business relationship.",
+    "source": "FATF – Recommendations 10 and 17"
+  },
+  {
+    "id": "funds_31",
+    "category": "Collective Investment Sector",
+    "question": "How can fund administrators mitigate AML risks linked to nominee shareholders?",
+    "options": [
+      "Allow anonymous subscriptions",
+      "Rely on the nominee’s declaration",
+      "Identify and verify the ultimate beneficial owners",
+      "Ignore CDD if nominee is licensed"
+    ],
+    "correct_answer": "Identify and verify the ultimate beneficial owners",
+    "explanation": "Nominee structures are often used to obscure beneficial ownership and require enhanced CDD.",
+    "source": "FATF – Guidance on Transparency and Beneficial Ownership (2014)"
+  },
+  {
+    "id": "funds_32",
+    "category": "Collective Investment Sector",
+    "question": "What is a red flag in subscriptions from offshore centers?",
+    "options": [
+      "Investments in domestic currency",
+      "Funds routed through high-risk jurisdictions",
+      "Use of commercial banks",
+      "Use of online platforms"
+    ],
+    "correct_answer": "Funds routed through high-risk jurisdictions",
+    "explanation": "Routing through high-risk jurisdictions may indicate attempts to conceal the origin of funds.",
+    "source": "FATF – High-Risk Jurisdictions Subject to a Call for Action"
+  },
+  {
+    "id": "funds_33",
+    "category": "Collective Investment Sector",
+    "question": "Why are bearer shares considered high risk in fund investments?",
+    "options": [
+      "They are linked to mutual funds",
+      "They pay no dividends",
+      "They hinder identification of shareholders",
+      "They are only available in Asia"
+    ],
+    "correct_answer": "They hinder identification of shareholders",
+    "explanation": "Bearer shares allow ownership without traceability, increasing AML/CFT risks.",
+    "source": "OECD – Behind the Corporate Veil (2001)"
+  },
+  {
+    "id": "funds_34",
+    "category": "Collective Investment Sector",
+    "question": "What is a best practice when onboarding fund distributors in high-risk regions?",
+    "options": [
+      "Apply simplified due diligence",
+      "Rely on distributor's internal policies",
+      "Conduct enhanced due diligence and regular audits",
+      "Allow self-certification only"
+    ],
+    "correct_answer": "Conduct enhanced due diligence and regular audits",
+    "explanation": "FATF recommends EDD measures when dealing with high-risk third parties.",
+    "source": "FATF – Recommendation 17"
+  },
+  {
+    "id": "funds_35",
+    "category": "Collective Investment Sector",
+    "question": "Which type of fund investor is most vulnerable to coercion for TF purposes?",
+    "options": [
+      "Pension funds",
+      "Institutional clients",
+      "Politically Exposed Persons (PEPs)",
+      "Refugee-linked NGOs"
+    ],
+    "correct_answer": "Politically Exposed Persons (PEPs)",
+    "explanation": "PEPs may be targeted for corruption or coercion, increasing TF exposure.",
+    "source": "FATF – Guidance for a Risk-Based Approach (PEPs) (2013)"
+  },
+  {
+    "id": "funds_36",
+    "category": "Collective Investment Sector",
+    "question": "Which AML control is most effective in outsourced fund administration?",
+    "options": [
+      "Annual outsourcing reports",
+      "Daily subscription reconciliation",
+      "Robust contractual AML clauses and oversight",
+      "Quarterly client presentations"
+    ],
+    "correct_answer": "Robust contractual AML clauses and oversight",
+    "explanation": "Fund managers must retain responsibility and supervise outsourced service providers.",
+    "source": "IMF – Risk-Based Supervision Guidance (2021)"
+  },
+  {
+    "id": "funds_37",
+    "category": "Collective Investment Sector",
+    "question": "Which unusual activity may suggest fund use for terrorist financing?",
+    "options": [
+      "High returns",
+      "High transaction volumes",
+      "Small, regular investments from multiple jurisdictions",
+      "Investments in ESG funds"
+    ],
+    "correct_answer": "Small, regular investments from multiple jurisdictions",
+    "explanation": "This pattern may indicate structuring of TF through international low-profile inflows.",
+    "source": "World Bank – Deterring Terrorist Financing (2009)"
+  },
+  {
+    "id": "funds_38",
+    "category": "Collective Investment Sector",
+    "question": "Why must fund managers understand the purpose of the investment?",
+    "options": [
+      "To provide better financial advice",
+      "To reduce tax obligations",
+      "To detect anomalies inconsistent with expected behavior",
+      "To improve marketing campaigns"
+    ],
+    "correct_answer": "To detect anomalies inconsistent with expected behavior",
+    "explanation": "Understanding purpose helps detect unusual investor profiles or misuses of the fund.",
+    "source": "FATF – Recommendation 10"
+  },
+  {
+    "id": "funds_39",
+    "category": "Collective Investment Sector",
+    "question": "What increases AML risk in real estate SICAV structures?",
+    "options": [
+      "Use of listed shares",
+      "Cross-border shareholding chains",
+      "Low management fees",
+      "Exclusively commercial property"
+    ],
+    "correct_answer": "Cross-border shareholding chains",
+    "explanation": "Complex ownership structures across borders hinder transparency and CDD.",
+    "source": "FATF – Risk-Based Approach: Securities Sector (2009)"
+  },
+  {
+    "id": "funds_40",
+    "category": "Collective Investment Sector",
+    "question": "What role does a fund’s risk profile play in AML obligations?",
+    "options": [
+      "It determines expected investment performance",
+      "It defines FATF compliance levels",
+      "It guides the depth of due diligence applied",
+      "It adjusts tax rates automatically"
+    ],
+    "correct_answer": "It guides the depth of due diligence applied",
+    "explanation": "Higher-risk fund profiles require stronger AML controls under the risk-based approach.",
+    "source": "FATF – Guidance for a Risk-Based Approach for the Securities Sector (2009)"
+  },
+  {
+    "id": "funds_41",
+    "category": "Collective Investment Sector",
+    "question": "What is the primary AML concern with fund subscriptions via crypto payments?",
+    "options": [
+      "They are irreversible",
+      "They are volatile",
+      "They may obscure the identity of the investor",
+      "They have high transaction fees"
+    ],
+    "correct_answer": "They may obscure the identity of the investor",
+    "explanation": "Crypto payments can bypass traditional KYC controls and require enhanced due diligence.",
+    "source": "FATF – Updated Guidance for a Risk-Based Approach to Virtual Assets and VASPs (2021)"
+  },
+  {
+    "id": "funds_42",
+    "category": "Collective Investment Sector",
+    "question": "Which scenario raises a red flag in fund redemption requests?",
+    "options": [
+      "Request for reinvestment",
+      "Transfer to a third-party account unrelated to the investor",
+      "Redemption after a price drop",
+      "Switching to another sub-fund"
+    ],
+    "correct_answer": "Transfer to a third-party account unrelated to the investor",
+    "explanation": "Transferring proceeds to unrelated third parties may indicate layering of illicit funds.",
+    "source": "IMF – Financial Integrity Guidelines for Fund Managers (2021)"
+  },
+  {
+    "id": "funds_43",
+    "category": "Collective Investment Sector",
+    "question": "What is the AML implication of high-risk jurisdictions investing in low-risk ESG funds?",
+    "options": [
+      "Lower risk due to ESG framework",
+      "Compliance is not required",
+      "Potential misuse of low-risk classification to disguise origin of funds",
+      "ESG funds are exempt from AML"
+    ],
+    "correct_answer": "Potential misuse of low-risk classification to disguise origin of funds",
+    "explanation": "Illicit actors may use clean-label funds to launder money under a low-risk disguise.",
+    "source": "World Bank – Use of Collective Investment Schemes for Money Laundering (2020)"
+  },
+  {
+    "id": "funds_44",
+    "category": "Collective Investment Sector",
+    "question": "Which investor behavior in alternative investment funds should trigger a review?",
+    "options": [
+      "Standard lock-up period",
+      "Frequent switching between high-risk and low-risk sub-funds",
+      "Annual capital call fulfillment",
+      "Use of wealth managers"
+    ],
+    "correct_answer": "Frequent switching between high-risk and low-risk sub-funds",
+    "explanation": "This may indicate attempts to manipulate exposure or disguise fund flows.",
+    "source": "FATF – Risk-Based Approach for the Securities Sector (2009)"
+  },
+  {
+    "id": "funds_45",
+    "category": "Collective Investment Sector",
+    "question": "What should trigger a Suspicious Transaction Report (STR) in fund management?",
+    "options": [
+      "Redemption below threshold",
+      "Investor updates contact details",
+      "Inconsistent client profile vs investment behavior",
+      "Client invests in ETFs"
+    ],
+    "correct_answer": "Inconsistent client profile vs investment behavior",
+    "explanation": "A mismatch may indicate misuse of the fund for laundering or concealment.",
+    "source": "FATF – Recommendation 20"
+  },
+  {
+    "id": "funds_46",
+    "category": "Collective Investment Sector",
+    "question": "Which fund structure is particularly vulnerable to concealment of ownership?",
+    "options": [
+      "Exchange-traded funds (ETFs)",
+      "Umbrella funds with nominee layers",
+      "Capital guaranteed funds",
+      "Passive index funds"
+    ],
+    "correct_answer": "Umbrella funds with nominee layers",
+    "explanation": "Multiple layers, especially through nominee accounts, can obscure beneficial owners.",
+    "source": "OECD – Transparency and Beneficial Ownership (2019)"
+  },
+  {
+    "id": "funds_47",
+    "category": "Collective Investment Sector",
+    "question": "What is a key AML risk when onboarding high-net-worth individuals (HNWIs)?",
+    "options": [
+      "They often invest in money market funds",
+      "They are always resident in low-risk countries",
+      "Their wealth source may be complex or politically exposed",
+      "They use only one custodian"
+    ],
+    "correct_answer": "Their wealth source may be complex or politically exposed",
+    "explanation": "HNWIs often present complex profiles requiring enhanced due diligence.",
+    "source": "FATF – Guidance for Private Sector – PEPs (2013)"
+  },
+  {
+    "id": "funds_48",
+    "category": "Collective Investment Sector",
+    "question": "Why is it important for AML programs to include training for fund sales agents?",
+    "options": [
+      "They must increase subscriptions",
+      "They manage operational risk",
+      "They are the first line to detect suspicious behavior",
+      "They are in charge of asset valuation"
+    ],
+    "correct_answer": "They are the first line to detect suspicious behavior",
+    "explanation": "Sales agents interact directly with investors and can detect red flags early.",
+    "source": "FATF – Recommendation 18"
+  },
+  {
+    "id": "funds_49",
+    "category": "Collective Investment Sector",
+    "question": "How can AML controls address 'fund layering'?",
+    "options": [
+      "Prevent dividend payments",
+      "Set minimum redemption amounts",
+      "Monitor unusual investment and redemption cycles",
+      "Freeze all high-risk clients"
+    ],
+    "correct_answer": "Monitor unusual investment and redemption cycles",
+    "explanation": "Frequent in-and-out transactions may point to layering activities.",
+    "source": "IMF – Anti-Money Laundering and Financial Integrity (2021)"
+  },
+  {
+    "id": "funds_50",
+    "category": "Collective Investment Sector",
+    "question": "What is an emerging AML risk in tokenized investment funds?",
+    "options": [
+      "Instant trading fees",
+      "Reduced ESG transparency",
+      "Traceability of transactions",
+      "Anonymity through unhosted wallets"
+    ],
+    "correct_answer": "Anonymity through unhosted wallets",
+    "explanation": "Tokenized funds may enable unregulated access via anonymous wallets.",
+    "source": "FATF – Updated Guidance on Virtual Assets and VASPs (2021)"
+  },
+  {
+    "id": "banking_1",
+    "category": "Banking",
+    "question": "What is a key AML risk associated with private banking services?",
+    "options": [
+      "Low transaction volume",
+      "High transparency of ownership",
+      "High-value transactions with complex ownership structures",
+      "Frequent retail deposits"
+    ],
+    "correct_answer": "High-value transactions with complex ownership structures",
+    "explanation": "Private banking often involves high-net-worth clients using trusts or shell companies, increasing opacity and AML risk.",
+    "source": "FATF – Guidance on the Risk-Based Approach for the Banking Sector (2014)"
+  },
+  {
+    "id": "banking_2",
+    "category": "Banking",
+    "question": "Which behavior in retail banking is considered a red flag under AML guidelines?",
+    "options": [
+      "Weekly salary deposits",
+      "Cash deposits just under reporting thresholds",
+      "Use of mobile banking apps",
+      "Opening a joint account with a spouse"
+    ],
+    "correct_answer": "Cash deposits just under reporting thresholds",
+    "explanation": "Structuring transactions to avoid reporting requirements (smurfing) is a known money laundering technique.",
+    "source": "FATF – Money Laundering and Terrorist Financing Red Flag Indicators (2020)"
+  },
+  {
+    "id": "banking_3",
+    "category": "Banking",
+    "question": "What is a typical AML concern in correspondent banking relationships?",
+    "options": [
+      "Slow cross-border settlement",
+      "Lack of direct customer relationship",
+      "Language barriers",
+      "Use of blockchain"
+    ],
+    "correct_answer": "Lack of direct customer relationship",
+    "explanation": "Correspondent banks may not know the underlying customers, increasing risk of handling illicit funds.",
+    "source": "FATF – Correspondent Banking Services (2016)"
+  },
+  {
+    "id": "banking_4",
+    "category": "Banking",
+    "question": "In investment banking, which activity may present AML risk if not properly monitored?",
+    "options": [
+      "IPO underwriting",
+      "M&A advisory services",
+      "Day trading",
+      "Trade finance processing"
+    ],
+    "correct_answer": "M&A advisory services",
+    "explanation": "Complex ownership and transfers in M&A deals can be used to obscure illicit source of funds.",
+    "source": "IMF – Financial Integrity and AML Risk in Capital Markets (2021)"
+  },
+  {
+    "id": "banking_5",
+    "category": "Banking",
+    "question": "Why is beneficial ownership identification critical in corporate banking?",
+    "options": [
+      "To manage foreign exchange risk",
+      "To calculate risk-weighted assets",
+      "To detect and prevent misuse of legal persons",
+      "To assess ESG compliance"
+    ],
+    "correct_answer": "To detect and prevent misuse of legal persons",
+    "explanation": "Legal persons can be abused for ML/TF unless their beneficial owners are identified.",
+    "source": "FATF – Recommendation 24 (2022)"
+  },
+  {
+    "id": "banking_6",
+    "category": "Banking",
+    "question": "Which red flag may indicate misuse of a retail bank account for money laundering?",
+    "options": [
+      "Salary payments from employer",
+      "Multiple ATM withdrawals in same city",
+      "Frequent international wire transfers inconsistent with customer profile",
+      "Online payment of utility bills"
+    ],
+    "correct_answer": "Frequent international wire transfers inconsistent with customer profile",
+    "explanation": "Inconsistency between expected behavior and actual transactions is a core ML red flag.",
+    "source": "World Bank – Financial Intelligence Operations Manual (2017)"
+  },
+  {
+    "id": "banking_7",
+    "category": "Banking",
+    "question": "In private banking, what is a risk of relying solely on relationship managers for KYC?",
+    "options": [
+      "They are overly technical",
+      "They may have conflicts of interest and overlook red flags",
+      "They cannot open accounts",
+      "They do not understand banking products"
+    ],
+    "correct_answer": "They may have conflicts of interest and overlook red flags",
+    "explanation": "Relationship managers may prioritize client satisfaction over regulatory compliance.",
+    "source": "FATF – Managing the ML Risks of Private Banking (2001)"
+  },
+  {
+    "id": "banking_8",
+    "category": "Banking",
+    "question": "What role does transaction monitoring play in corporate banking AML programs?",
+    "options": [
+      "It enables real-time credit scoring",
+      "It detects unusual activity across large-value transfers",
+      "It calculates reserve ratios",
+      "It informs ESG ratings"
+    ],
+    "correct_answer": "It detects unusual activity across large-value transfers",
+    "explanation": "Transaction monitoring is essential to detect and escalate unusual patterns.",
+    "source": "FATF – Recommendation 20 (2012)"
+  },
+  {
+    "id": "banking_9",
+    "category": "Banking",
+    "question": "Which AML measure is especially important when onboarding politically exposed persons (PEPs)?",
+    "options": [
+      "Simplified due diligence",
+      "Automated interest payouts",
+      "Enhanced due diligence and senior management approval",
+      "Cross-selling of wealth products"
+    ],
+    "correct_answer": "Enhanced due diligence and senior management approval",
+    "explanation": "PEPs pose heightened risk and require additional scrutiny and approval.",
+    "source": "FATF – Recommendation 12"
+  },
+  {
+    "id": "banking_10",
+    "category": "Banking",
+    "question": "What’s a key AML risk of investment banking services like structured finance?",
+    "options": [
+      "Lack of profitability",
+      "Cross-border investment restrictions",
+      "Complexity may mask illicit origins of funds",
+      "Retail client exposure"
+    ],
+    "correct_answer": "Complexity may mask illicit origins of funds",
+    "explanation": "Structured products can be misused to layer or integrate illicit funds across jurisdictions.",
+    "source": "IMF – AML Risks in Financial Markets (2021)"
+  },
+  {
+    "id": "banking_11",
+    "category": "Banking",
+    "question": "Which feature of corporate banking clients presents elevated AML risk?",
+    "options": [
+      "Public listing on a stock exchange",
+      "Simple ownership structure",
+      "Operation in multiple jurisdictions with limited transparency",
+      "Use of a single currency"
+    ],
+    "correct_answer": "Operation in multiple jurisdictions with limited transparency",
+    "explanation": "Cross-border operations combined with opaque structures make due diligence more complex.",
+    "source": "FATF – Risk-Based Approach for the Banking Sector (2014)"
+  },
+  {
+    "id": "banking_12",
+    "category": "Banking",
+    "question": "In retail banking, which product is most vulnerable to misuse for structuring?",
+    "options": [
+      "Overdraft facilities",
+      "Prepaid debit cards",
+      "Term loans",
+      "Fixed deposits"
+    ],
+    "correct_answer": "Prepaid debit cards",
+    "explanation": "Prepaid cards can be loaded in cash anonymously and used across borders, making them attractive for ML.",
+    "source": "FATF – Money Laundering Using New Payment Methods (2010)"
+  },
+  {
+    "id": "banking_13",
+    "category": "Banking",
+    "question": "What must investment banks verify before providing services to a special purpose vehicle (SPV)?",
+    "options": [
+      "Credit rating",
+      "Number of directors",
+      "Beneficial ownership and purpose",
+      "Geographic location of investors"
+    ],
+    "correct_answer": "Beneficial ownership and purpose",
+    "explanation": "SPVs can be used to conceal illicit assets if their purpose and ownership are unclear.",
+    "source": "IMF – AML Risks in Capital Markets (2022)"
+  },
+  {
+    "id": "banking_14",
+    "category": "Banking",
+    "question": "Which corporate banking activity is considered high AML risk?",
+    "options": [
+      "Opening checking accounts",
+      "Managing pension funds",
+      "Trade finance with complex shipping routes",
+      "Payroll processing"
+    ],
+    "correct_answer": "Trade finance with complex shipping routes",
+    "explanation": "Trade finance is vulnerable to invoice manipulation and over/under invoicing schemes.",
+    "source": "FATF – Trade-Based Money Laundering (2006)"
+  },
+  {
+    "id": "banking_15",
+    "category": "Banking",
+    "question": "What is a key AML challenge in investment banking when underwriting securities?",
+    "options": [
+      "Tax calculation",
+      "Verifying the proceeds’ origin and destination",
+      "Setting interest rates",
+      "ESG certification"
+    ],
+    "correct_answer": "Verifying the proceeds’ origin and destination",
+    "explanation": "Underwriting large capital raises can be exploited to inject or repatriate illicit funds.",
+    "source": "IMF – AML Issues in Capital Markets (2021)"
+  },
+  {
+    "id": "banking_16",
+    "category": "Banking",
+    "question": "In retail banking, why is identity theft a major AML concern?",
+    "options": [
+      "It affects compliance staff bonuses",
+      "It allows the use of accounts by criminals under false names",
+      "It improves mobile banking adoption",
+      "It increases credit card points"
+    ],
+    "correct_answer": "It allows the use of accounts by criminals under false names",
+    "explanation": "Accounts opened with stolen identities can be used to launder money undetected.",
+    "source": "World Bank – Strengthening Financial Integrity (2020)"
+  },
+  {
+    "id": "banking_17",
+    "category": "Banking",
+    "question": "What should a bank do before establishing a correspondent relationship?",
+    "options": [
+      "Request balance sheets",
+      "Conduct due diligence on the respondent bank’s AML controls",
+      "Offer premium FX rates",
+      "Open an omnibus account immediately"
+    ],
+    "correct_answer": "Conduct due diligence on the respondent bank’s AML controls",
+    "explanation": "Banks must assess the risk posed by the respondent, especially in high-risk jurisdictions.",
+    "source": "FATF – Recommendation 13"
+  },
+  {
+    "id": "banking_18",
+    "category": "Banking",
+    "question": "What is a typical misuse of private banking services for ML?",
+    "options": [
+      "Cross-selling loans and deposits",
+      "Using family trusts to hide beneficial ownership",
+      "Limiting access to portfolio reports",
+      "Buying only ESG assets"
+    ],
+    "correct_answer": "Using family trusts to hide beneficial ownership",
+    "explanation": "Trusts and layered entities are used to conceal ownership and evade detection.",
+    "source": "FATF – Managing ML Risks in the Securities Sector (2009)"
+  },
+  {
+    "id": "banking_19",
+    "category": "Banking",
+    "question": "Which factor increases AML risk in corporate lending?",
+    "options": [
+      "Collateralized loans",
+      "Loans to large-cap listed companies",
+      "Use of multiple layered guarantors with unclear ownership",
+      "Benchmark-based pricing"
+    ],
+    "correct_answer": "Use of multiple layered guarantors with unclear ownership",
+    "explanation": "Complex guarantor structures can mask illicit control or money flows.",
+    "source": "FATF – Risk-Based Approach: Banking Sector (2014)"
+  },
+  {
+    "id": "banking_20",
+    "category": "Banking",
+    "question": "What is the main AML function of Know Your Customer (KYC) procedures?",
+    "options": [
+      "To issue loan approvals",
+      "To verify tax status",
+      "To identify and assess ML/TF risks associated with a client",
+      "To calculate interest margins"
+    ],
+    "correct_answer": "To identify and assess ML/TF risks associated with a client",
+    "explanation": "KYC is the foundation of an effective AML program, helping prevent misuse of the financial system.",
+    "source": "FATF – Recommendation 10"
+  },
+  {
+    "id": "banking_21",
+    "category": "Banking",
+    "question": "What is a potential AML risk in retail banking from dormant accounts?",
+    "options": [
+      "They attract too many deposits",
+      "They can be reactivated and used for layering",
+      "They are automatically closed",
+      "They are heavily monitored"
+    ],
+    "correct_answer": "They can be reactivated and used for layering",
+    "explanation": "Dormant accounts can be exploited to move illicit funds with less scrutiny.",
+    "source": "World Bank – Financial Intelligence Operations Manual (2017)"
+  },
+  {
+    "id": "banking_22",
+    "category": "Banking",
+    "question": "Why is offshore investment activity a concern in private banking?",
+    "options": [
+      "It leads to higher taxes",
+      "It’s always illegal",
+      "It may obscure the origin and ownership of funds",
+      "It prevents market access"
+    ],
+    "correct_answer": "It may obscure the origin and ownership of funds",
+    "explanation": "Offshore structures can hide beneficial owners and asset origins, increasing ML risk.",
+    "source": "FATF – Guidance on the Risk-Based Approach for Private Banking (2007)"
+  },
+  {
+    "id": "banking_23",
+    "category": "Banking",
+    "question": "Which feature of investment banking makes AML due diligence more complex?",
+    "options": [
+      "Fast trade settlement",
+      "Use of public stock exchanges",
+      "Securitization and packaging of financial instruments",
+      "Lower client volumes"
+    ],
+    "correct_answer": "Securitization and packaging of financial instruments",
+    "explanation": "Complex products may conceal illicit fund movements within structured transactions.",
+    "source": "IMF – Financial Integrity in Capital Markets (2022)"
+  },
+  {
+    "id": "banking_24",
+    "category": "Banking",
+    "question": "In corporate banking, what is a key AML control when handling large wire transfers?",
+    "options": [
+      "Consolidating them into one transfer",
+      "Ensuring they are under €10,000",
+      "Verifying the economic purpose and counterparties",
+      "Executing them on weekends"
+    ],
+    "correct_answer": "Verifying the economic purpose and counterparties",
+    "explanation": "Unusual or unjustified large wire transfers can indicate laundering or sanctions evasion.",
+    "source": "FATF – Recommendations 10 and 20"
+  },
+  {
+    "id": "banking_25",
+    "category": "Banking",
+    "question": "Which banking product is often exploited in layering stage of money laundering?",
+    "options": [
+      "Mortgages",
+      "Personal savings accounts",
+      "Wire transfers and correspondent accounts",
+      "Fixed-rate bonds"
+    ],
+    "correct_answer": "Wire transfers and correspondent accounts",
+    "explanation": "Layering typically involves moving funds across accounts and borders using complex transfers.",
+    "source": "FATF – Trade-Based Money Laundering (2006)"
+  },
+  {
+    "id": "banking_26",
+    "category": "Banking",
+    "question": "Why do banks assess a customer’s expected transaction profile?",
+    "options": [
+      "To optimize marketing",
+      "To predict interest rates",
+      "To detect anomalies that may signal ML/TF",
+      "To comply with MiFID"
+    ],
+    "correct_answer": "To detect anomalies that may signal ML/TF",
+    "explanation": "Understanding expected behavior helps flag suspicious deviations and apply appropriate monitoring.",
+    "source": "FATF – Recommendation 10"
+  },
+  {
+    "id": "banking_27",
+    "category": "Banking",
+    "question": "What is the AML risk of bearer shares in corporate banking?",
+    "options": [
+      "They are hard to transfer",
+      "They are not accepted by regulators",
+      "They allow anonymous ownership transfer",
+      "They are always illegal"
+    ],
+    "correct_answer": "They allow anonymous ownership transfer",
+    "explanation": "Bearer shares make it difficult to identify the beneficial owner, raising transparency concerns.",
+    "source": "FATF – Misuse of Corporate Vehicles (2006)"
+  },
+  {
+    "id": "banking_28",
+    "category": "Banking",
+    "question": "Why is ongoing customer due diligence important in private banking?",
+    "options": [
+      "To prevent customer churn",
+      "To monitor changing risk profiles and detect suspicious activity",
+      "To reduce account fees",
+      "To support ESG reporting"
+    ],
+    "correct_answer": "To monitor changing risk profiles and detect suspicious activity",
+    "explanation": "Clients’ risk levels and behaviors may evolve, requiring continuous monitoring to detect red flags.",
+    "source": "FATF – Guidance for Private Banking (2007)"
+  },
+  {
+    "id": "banking_29",
+    "category": "Banking",
+    "question": "What’s a key AML control for investment banks managing client portfolios?",
+    "options": [
+      "Only investing in ETFs",
+      "Avoiding high-net-worth clients",
+      "Monitoring unusual inflows and outflows",
+      "Using chatbots for onboarding"
+    ],
+    "correct_answer": "Monitoring unusual inflows and outflows",
+    "explanation": "Rapid or unexplained movement of funds may indicate layering or integration of illicit assets.",
+    "source": "IMF – AML in Securities and Derivatives (2021)"
+  },
+  {
+    "id": "banking_30",
+    "category": "Banking",
+    "question": "In retail banking, what is the purpose of a risk-based approach to AML?",
+    "options": [
+      "To apply the same controls to all customers",
+      "To focus resources on high-risk clients and transactions",
+      "To reduce the number of SARs filed",
+      "To avoid regulatory requirements"
+    ],
+    "correct_answer": "To focus resources on high-risk clients and transactions",
+    "explanation": "A risk-based approach ensures banks allocate AML efforts based on customer and product risk.",
+    "source": "FATF – Guidance on the Risk-Based Approach to AML/CFT (2007)"
+  },
+  {
+    "id": "banking_31",
+    "category": "Banking",
+    "question": "What is a typical red flag in investment banking syndication activities?",
+    "options": [
+      "Clients requesting delayed settlement",
+      "High demand from jurisdictions with weak AML laws",
+      "Use of third-party custodians",
+      "Investors opting for green bonds"
+    ],
+    "correct_answer": "High demand from jurisdictions with weak AML laws",
+    "explanation": "Demand from high-risk jurisdictions may indicate attempts to integrate illicit funds.",
+    "source": "IMF – AML Risk in Securities Markets (2022)"
+  },
+  {
+    "id": "banking_32",
+    "category": "Banking",
+    "question": "What is a common AML risk with correspondent banking?",
+    "options": [
+      "Lack of mobile banking",
+      "Exposure to nested accounts with unknown customers",
+      "Central bank regulation",
+      "Use of blockchain technology"
+    ],
+    "correct_answer": "Exposure to nested accounts with unknown customers",
+    "explanation": "Nested accounts obscure the identity of underlying customers and create risk for the correspondent.",
+    "source": "FATF – Guidance on Correspondent Banking Services (2016)"
+  },
+  {
+    "id": "banking_33",
+    "category": "Banking",
+    "question": "Which customer type is considered higher risk in private banking?",
+    "options": [
+      "Students",
+      "Pensioners",
+      "Politically Exposed Persons (PEPs)",
+      "Salaried employees"
+    ],
+    "correct_answer": "Politically Exposed Persons (PEPs)",
+    "explanation": "PEPs are more vulnerable to corruption and misuse of banking services.",
+    "source": "FATF – Guidance on PEPs (2013)"
+  },
+  {
+    "id": "banking_34",
+    "category": "Banking",
+    "question": "Why is it important for banks to monitor wire transfers involving tax havens?",
+    "options": [
+      "For better exchange rates",
+      "Because they often trigger currency conversion fees",
+      "Because tax havens may conceal beneficial ownership",
+      "Because they lower the cost of compliance"
+    ],
+    "correct_answer": "Because tax havens may conceal beneficial ownership",
+    "explanation": "Transfers to or from tax havens require scrutiny to identify the true origin and destination of funds.",
+    "source": "World Bank – Financial Transparency and AML (2020)"
+  },
+  {
+    "id": "banking_35",
+    "category": "Banking",
+    "question": "In corporate banking, what is the purpose of Know Your Business (KYB)?",
+    "options": [
+      "To assess the customer’s ESG score",
+      "To verify the corporate branding",
+      "To identify the entity's beneficial owners and nature of operations",
+      "To assess audit results"
+    ],
+    "correct_answer": "To identify the entity's beneficial owners and nature of operations",
+    "explanation": "KYB procedures aim to understand corporate structures and ownership to assess risk.",
+    "source": "FATF – Risk-Based Approach for the Banking Sector (2014)"
+  },
+  {
+    "id": "banking_36",
+    "category": "Banking",
+    "question": "Which financial product is often used to obscure the origin of illicit funds?",
+    "options": [
+      "Certificates of deposit",
+      "Structured products with early redemption features",
+      "Payroll cards",
+      "Revolving credit facilities"
+    ],
+    "correct_answer": "Structured products with early redemption features",
+    "explanation": "Such products can be quickly liquidated, making them useful for layering or integration.",
+    "source": "IMF – AML Risks in Capital Markets (2022)"
+  },
+  {
+    "id": "banking_37",
+    "category": "Banking",
+    "question": "What does FATF recommend banks do when onboarding clients in high-risk jurisdictions?",
+    "options": [
+      "Limit access to internet banking",
+      "Apply simplified due diligence",
+      "Conduct enhanced due diligence measures",
+      "Only allow cash transactions"
+    ],
+    "correct_answer": "Conduct enhanced due diligence measures",
+    "explanation": "EDD ensures a deeper understanding of client profiles and transactions in high-risk regions.",
+    "source": "FATF – Recommendation 10"
+  },
+  {
+    "id": "banking_38",
+    "category": "Banking",
+    "question": "Why are front companies a concern in corporate banking?",
+    "options": [
+      "They have better tax conditions",
+      "They provide free audits",
+      "They can serve as a cover for illicit financial flows",
+      "They are more regulated"
+    ],
+    "correct_answer": "They can serve as a cover for illicit financial flows",
+    "explanation": "Front companies can appear legitimate while being used for laundering and obscuring money trails.",
+    "source": "FATF – Misuse of Corporate Vehicles (2006)"
+  },
+  {
+    "id": "banking_39",
+    "category": "Banking",
+    "question": "What is the main AML function of transaction monitoring systems in banks?",
+    "options": [
+      "Detect potential suspicious activity in real-time or post-event",
+      "Optimize credit scoring",
+      "Track marketing campaign success",
+      "Reduce branch traffic"
+    ],
+    "correct_answer": "Detect potential suspicious activity in real-time or post-event",
+    "explanation": "Monitoring systems support detection of patterns consistent with ML/TF typologies.",
+    "source": "World Bank – AML Monitoring Practices (2020)"
+  },
+  {
+    "id": "banking_40",
+    "category": "Banking",
+    "question": "Why should banks conduct regular AML training for staff?",
+    "options": [
+      "To improve Excel skills",
+      "To comply with GDPR",
+      "To maintain AML program effectiveness and awareness",
+      "To learn about retirement planning"
+    ],
+    "correct_answer": "To maintain AML program effectiveness and awareness",
+    "explanation": "Ongoing training ensures staff remain alert to evolving threats and regulatory updates.",
+    "source": "FATF – Internal Controls and Foreign Branches (Recommendation 18)"
+  }
+]
