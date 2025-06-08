@@ -33,7 +33,7 @@ if not st.session_state.authenticated:
     if password:
         if password == PASSWORD:
             st.session_state.authenticated = True
-      
+            st.experimental_rerun()
         else:
             st.error("Incorrect password.")
     st.stop()
@@ -73,8 +73,7 @@ if st.session_state.mode is None:
         )
         st.session_state.current = 0
         st.session_state.score = 0
-        if st.session_state.mode == "Time Attack":
-            st.session_state.start_time = time.time()
+        st.session_state.start_time = None  # reset for Time Attack
         st.stop()
 
 # --- Classic Quiz Mode ---
@@ -101,8 +100,11 @@ elif st.session_state.mode == "Classic Quiz":
 
 # --- Time Attack Mode ---
 elif st.session_state.mode == "Time Attack":
+    if st.session_state.start_time is None:
+        st.session_state.start_time = time.time()
     now = time.time()
     remaining = 120 - int(now - st.session_state.start_time)
+
     if remaining <= 0 or st.session_state.current >= len(st.session_state.questions):
         st.markdown(f"### ⌛ Time's up! Score: {st.session_state.score}")
         if st.session_state.score >= 10:
