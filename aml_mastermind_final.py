@@ -4,175 +4,150 @@ import random
 import time
 from datetime import datetime
 
-# --- Configuration ---
+# --- Config ---
 PASSWORD = "iloveaml2025"
 DATA_FILE = "questions_cleaned.json"
 
-# --- Load Questions ---
 @st.cache_data
 def load_questions():
     with open(DATA_FILE, "r", encoding="utf-8") as f:
         return json.load(f)
 
-def group_questions_by_category(data):
+def group_by_category(questions):
     grouped = {}
-    for q in data:
+    for q in questions:
         cat = q.get("category", "Other").strip()
         grouped.setdefault(cat, []).append(q)
     return grouped
 
-# --- Streamlit Setup ---
-st.set_page_config(page_title="AML Mastermind Deluxe", layout="centered")
+# --- UI Setup ---
+st.set_page_config(page_title="AML Mastermind", layout="centered")
 
 # --- Auth ---
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
-
 if not st.session_state.authenticated:
-    st.title("🔒 AML Mastermind Deluxe")
-    password = st.text_input("Enter the password to play:", type="password")
-    if password:
-        if password == PASSWORD:
-            st.session_state.authenticated = True
-            st.rerun()
-        else:
-            st.error("Incorrect password.")
+    st.title("🔐 AML Mastermind Deluxe")
+    pw = st.text_input("Enter password to continue:", type="password")
+    if pw == PASSWORD:
+        st.session_state.authenticated = True
+        st.rerun()
+    elif pw:
+        st.error("Wrong password.")
     st.stop()
 
-# --- Load & group questions ---
+# --- Load questions ---
 questions_data = load_questions()
-grouped = group_questions_by_category(questions_data)
+categories = group_by_category(questions_data)
 
-# --- Session Initialization ---
-for key, default in {
-    "mode": None, "category": None, "questions": [],
-    "current": 0, "answers": [], "start_time": None,
-    "player_name": "", "max_time": 0, "name_confirmed": False
-}.items():
+# --- Game States ---
+default_state = {
+    "player_name": "",
+    "confirmed_name": False,
+    "mode": None,
+    "category": None,
+    "questions": [],
+    "answers": [],
+    "current": 0,
+    "start_time": None,
+    "max_time": 0,
+    "done": False
+}
+for key, val in default_state.items():
     if key not in st.session_state:
-        st.session_state[key] = default
+        st.session_state[key] = val
 
-# --- Player Name Step ---
-if not st.session_state.name_confirmed:
-    st.title("🕵️ Welcome to AML Mastermind Deluxe")
-    st.session_state.player_name = st.text_input("Enter your name:")
-    if st.button("Confirm Name") and st.session_state.player_name.strip() != "":
-        st.session_state.name_confirmed = True
+# --- Player name ---
+if not st.session_state["confirmed_name"]:
+    st.title("🎯 AML Mastermind Deluxe")
+    st.session_state["player_name"] = st.text_input("Enter your name to start:")
+    if st.button("Confirm") and st.session_state["player_name"].strip():
+        st.session_state["confirmed_name"] = True
         st.rerun()
     st.stop()
 
-# --- Game Setup ---
-if st.session_state.mode is None:
-    st.title("🎮 Select Game Mode")
-    st.session_state.mode = st.radio("Choose a game mode:", ["Classic Quiz", "Time Attack"])
-    st.session_state.category = st.selectbox("Select a category:", list(grouped.keys()))
-
-    if st.session_state.mode == "Classic Quiz":
-        st.session_state.num_questions = st.slider("Number of Questions", 5, 30, 10)
+# --- Game setup ---
+if not st.session_state["mode"]:
+    st.title("🎮 Game Setup")
+    st.session_state["mode"] = st.radio("Choose your mode:", ["Classic Quiz", "Time Attack"])
+    st.session_state["category"] = st.selectbox("Select a category:", list(categories.keys()))
+    if st.session_state["mode"] == "Classic Quiz":
+        st.session_state["num_questions"] = st.slider("Number of questions", 5, 30, 10)
     else:
-        st.session_state.max_time = st.radio("Time Limit (in seconds):", [60, 120, 180])
+        st.session_state["max_time"] = st.radio("Time limit (seconds):", [60, 120, 180])
 
     if st.button("Start Game"):
-        qlist = grouped.get(st.session_state.category, [])
-        if not qlist:
-            st.error("❌ No questions found for this category.")
+        all_q = categories.get(st.session_state["category"], [])
+        if not all_q:
+            st.error("❌ No questions in this category.")
             st.stop()
-
-        if st.session_state.mode == "Classic Quiz":
-            st.session_state.questions = random.sample(qlist, min(st.session_state.num_questions, len(qlist)))
+        random.shuffle(all_q)
+        if st.session_state["mode"] == "Classic Quiz":
+            st.session_state["questions"] = all_q[:st.session_state["num_questions"]]
         else:
-            random.shuffle(qlist)
-            st.session_state.questions = qlist
-            st.session_state.start_time = time.time()
-
-        st.session_state.current = 0
-        st.session_state.answers = []
+            st.session_state["questions"] = all_q
+            st.session_state["start_time"] = time.time()
         st.rerun()
 
-# --- Classic Quiz Mode ---
-if st.session_state.mode == "Classic Quiz" and st.session_state.current < len(st.session_state.questions):
-    i = st.session_state.current
-    q = st.session_state.questions[i]
-    st.markdown(f"### Question {i + 1}/{len(st.session_state.questions)}")
-    with st.form(key=f"form_classic_{i}"):
-        st.subheader(q["question"])
-        options = q["options"].copy()
-        random.shuffle(options)
-        selected = st.radio("Choose your answer:", options, key=f"answer_{i}")
-        submit = st.form_submit_button("Submit Answer")
+# --- Quiz Loop ---
+questions = st.session_state["questions"]
+index = st.session_state["current"]
+mode = st.session_state["mode"]
+player = st.session_state["player_name"]
 
-    if submit:
-        correct = selected.strip().lower() == q["correct_answer"].strip().lower()
-        st.session_state.answers.append(correct)
-        if correct:
-            st.success("✅ Correct!")
-        else:
-            st.error(f"❌ Wrong! Correct answer: {q['correct_answer']}")
-        st.caption(q["explanation"])
-        st.session_state.current += 1
-        st.rerun()
-
-# --- Classic Mode Result ---
-if st.session_state.mode == "Classic Quiz" and st.session_state.current >= len(st.session_state.questions):
-    score = sum(st.session_state.answers)
-    total = len(st.session_state.questions)
-    st.success(f"🏁 You completed the quiz, {st.session_state.player_name}!")
-    if total > 0:
+if st.session_state["done"]:
+    score = sum(st.session_state["answers"])
+    total = len(st.session_state["answers"])
+    st.success(f"Game finished, {player}!")
+    if total:
         percent = round(score / total * 100)
         st.markdown(f"### 🧮 Score: {score}/{total} ({percent}%)")
         if percent >= 75:
-            st.success("🏅 Congratulations! You earned a certificate!")
+            st.success("🏅 Certificate earned!")
         else:
-            st.info("📘 Keep learning and try again!")
+            st.info("📘 Try again to improve your score.")
     else:
-        st.warning("⚠️ No valid questions were loaded.")
+        st.warning("⚠️ No questions answered.")
 
     if st.button("Play Again"):
-        for k in ["mode", "category", "questions", "current", "answers", "start_time", "max_time"]:
-            del st.session_state[k]
+        for k in list(default_state.keys()):
+            st.session_state[k] = default_state[k]
         st.rerun()
+    st.stop()
 
-# --- Time Attack Mode ---
-if st.session_state.mode == "Time Attack":
-    elapsed = int(time.time() - st.session_state.start_time)
-    remaining = st.session_state.max_time - elapsed
-    if remaining <= 0 or st.session_state.current >= len(st.session_state.questions):
-        score = sum(st.session_state.answers)
-        st.success(f"⏱️ Time's up, {st.session_state.player_name}!")
-        st.markdown(f"### 🧮 Score: {score} correct answers in {st.session_state.max_time} seconds")
-        if score >= 10:
-            st.success("🏅 Congratulations! You earned a certificate!")
-        else:
-            st.info("📘 Keep practicing to improve your score!")
+# --- Time check for Time Attack ---
+if mode == "Time Attack":
+    elapsed = int(time.time() - st.session_state["start_time"])
+    time_left = st.session_state["max_time"] - elapsed
+    if time_left <= 0 or index >= len(questions):
+        st.session_state["done"] = True
+        st.rerun()
+    st.markdown(f"⏳ Time left: **{time_left} sec**")
 
-        if st.button("Play Again"):
-            for k in ["mode", "category", "questions", "current", "answers", "start_time", "max_time"]:
-                del st.session_state[k]
-            st.rerun()
-        st.stop()
+# --- Show Question ---
+if index < len(questions):
+    q = questions[index]
+    st.markdown(f"### Q{index + 1}: {q['question']}")
+    with st.form(f"form_{index}"):
+        opts = q["options"].copy()
+        random.shuffle(opts)
+        sel = st.radio("Choose an answer:", opts, key=f"answer_{index}")
+        submitted = st.form_submit_button("Submit")
 
-    i = st.session_state.current
-    q = st.session_state.questions[i]
-    st.markdown(f"⏳ Time Remaining: **{remaining} seconds**")
-    st.markdown(f"### Question {i + 1}")
-    with st.form(key=f"form_ta_{i}"):
-        st.subheader(q["question"])
-        options = q["options"].copy()
-        random.shuffle(options)
-        selected = st.radio("Choose your answer:", options, key=f"ta_answer_{i}")
-        submit = st.form_submit_button("Submit Answer")
-
-    if submit:
-        correct = selected.strip().lower() == q["correct_answer"].strip().lower()
-        st.session_state.answers.append(correct)
+    if submitted:
+        correct = sel.strip().lower() == q["correct_answer"].strip().lower()
+        st.session_state["answers"].append(correct)
         if correct:
             st.success("✅ Correct!")
         else:
             st.error(f"❌ Wrong! Correct answer: {q['correct_answer']}")
         st.caption(q["explanation"])
-        st.session_state.current += 1
+        st.session_state["current"] += 1
+
+        if mode == "Classic Quiz" and st.session_state["current"] >= len(questions):
+            st.session_state["done"] = True
         st.rerun()
 
 # --- Footer ---
 st.markdown("---")
-st.caption("📚 Powered by FATF, IOSCO & IMF guidelines – Created by Guilhem ROS, 2025")
+st.caption("© 2025 – AML Mastermind. Inspired by FATF, IOSCO, IMF guidelines.")
