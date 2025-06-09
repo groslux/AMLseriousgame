@@ -4,7 +4,7 @@ import random
 import time
 from datetime import datetime
 
-# --- Configuration ---
+# --- Config ---
 PASSWORD = "iloveaml2025"
 DATA_FILE = "questions_cleaned.json"
 
@@ -22,7 +22,7 @@ def group_by_category(questions):
     return grouped
 
 # --- Page Setup ---
-st.set_page_config(page_title="AML Mastermind Deluxe", layout="centered")
+st.set_page_config(page_title="AML Mastermind", layout="centered")
 
 # --- Authentication ---
 if "authenticated" not in st.session_state:
@@ -32,11 +32,12 @@ if not st.session_state.authenticated:
     pw = st.text_input("Enter password to continue:", type="password")
     if pw == PASSWORD:
         st.session_state.authenticated = True
+        st.session_state.step = "intro"
     elif pw:
         st.error("Wrong password.")
     st.stop()
 
-# --- Load and Group Questions ---
+# --- Load Questions and Group by Category ---
 questions_data = load_questions()
 categories = group_by_category(questions_data)
 
@@ -51,7 +52,7 @@ defaults = {
     "current": 0,
     "start_time": None,
     "max_time": 0,
-    "done": False
+    "done": False,
 }
 for k, v in defaults.items():
     if k not in st.session_state:
@@ -66,11 +67,12 @@ if st.session_state.step == "intro":
         st.session_state.step = "mode"
     st.stop()
 
-# --- Step: Mode and Category Selection ---
+# --- Step: Game Mode and Category Selection ---
 if st.session_state.step == "mode":
     st.title("🎮 Game Setup")
     st.session_state.mode = st.radio("Choose your mode:", ["Classic Quiz", "Time Attack"], index=0)
     st.session_state.category = st.selectbox("Select a category:", list(categories.keys()))
+
     if st.session_state.mode == "Classic Quiz":
         st.session_state.num_questions = st.slider("Number of questions", 5, 30, 10)
     else:
@@ -81,6 +83,7 @@ if st.session_state.step == "mode":
         if not all_q:
             st.error("❌ No questions found in this category.")
             st.stop()
+
         random.shuffle(all_q)
         st.session_state.questions = (
             all_q[:st.session_state.num_questions] if st.session_state.mode == "Classic Quiz" else all_q
@@ -92,7 +95,7 @@ if st.session_state.step == "mode":
         st.session_state.step = "quiz"
     st.stop()
 
-# --- Step: Quiz Logic ---
+# --- Step: Quiz ---
 if st.session_state.step == "quiz":
     questions = st.session_state.questions
     index = st.session_state.current
@@ -102,16 +105,17 @@ if st.session_state.step == "quiz":
         elapsed = int(time.time() - st.session_state.start_time)
         time_left = st.session_state.max_time - elapsed
         if time_left <= 0 or index >= len(questions):
-            st.session_state.done = True
             st.session_state.step = "result"
-            st.experimental_rerun()
-        st.markdown(f"⏳ Time left: **{time_left} seconds**")
+        else:
+            st.markdown(f"⏳ Time left: **{time_left} seconds**")
 
     if index < len(questions):
         q = questions[index]
         st.markdown(f"### Q{index + 1}: {q['question']}")
+
         with st.form(key=f"form_{index}"):
             opts = q["options"].copy()
+            random.seed(q["id"])  # Consistent shuffling
             random.shuffle(opts)
             sel = st.radio("Choose an answer:", opts, key=f"answer_{index}")
             submit = st.form_submit_button("Submit")
@@ -123,19 +127,18 @@ if st.session_state.step == "quiz":
                 st.success("✅ Correct!")
             else:
                 st.error(f"❌ Wrong! Correct answer: {q['correct_answer']}")
-            st.caption(f"📘 **Explanation:** {q['explanation']}")
+            st.caption(f"**Explanation:** {q['explanation']}")
             st.markdown(f"🔗 **Source:** {q['source']}")
+
             st.session_state.current += 1
-            if mode == "Classic Quiz" and st.session_state.current >= len(questions):
-                st.session_state.done = True
+            if st.session_state.mode == "Classic Quiz" and st.session_state.current >= len(questions):
                 st.session_state.step = "result"
             st.stop()
     else:
-        st.session_state.done = True
         st.session_state.step = "result"
         st.stop()
 
-# --- Step: Results ---
+# --- Step: Result ---
 if st.session_state.step == "result":
     st.title("✅ Quiz Completed")
     score = sum(st.session_state.answers)
@@ -153,7 +156,7 @@ if st.session_state.step == "result":
     if st.button("Play Again"):
         for k in defaults:
             del st.session_state[k]
-        st.session_state.authenticated = True  # Avoid asking password again
+        st.session_state.authenticated = True
         st.session_state.step = "intro"
 
 # --- Footer ---
