@@ -46,8 +46,9 @@ if not player_name:
     st.stop()
 
 # --- Load & group questions ---
-questions_data = load_questions()
-grouped = group_questions_by_category(questions_data)
+def load_questions():
+    with open("questions_cleaned.json", "r", encoding="utf-8") as f:
+        return json.load(f)
 
 # --- Session Initialization ---
 for key, default in {
