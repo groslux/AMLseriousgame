@@ -75,7 +75,7 @@ if not st.session_state.game_ready:
         st.session_state.score = 0
         st.session_state.answers = []
         st.session_state.start_time = time.time()
-        st.experimental_rerun()  # Required to render next screen
+    
     elif start_button and not name.strip():
         st.warning("Please enter your name before starting.")
     st.stop()
