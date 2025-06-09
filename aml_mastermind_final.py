@@ -96,46 +96,31 @@ if not st.session_state.mode:
         st.session_state.answers = []
 
 # --- CLASSIC MODE ---
-elif st.session_state.mode == "Classic Quiz":
-    i = st.session_state.current
-    if i < len(st.session_state.questions):
-        q = st.session_state.questions[i]
-        with st.form(f"form_classic_{i}"):
-            st.subheader(f"Q{i+1}: {q['question']}")
-            choices = q["options"].copy()
-            random.shuffle(choices)
-            picked = st.radio("Choose your answer:", choices)
-            submitted = st.form_submit_button("Submit")
-        if submitted:
-            correct = picked.strip().lower() == q["correct_answer"].strip().lower()
-            st.session_state.answers.append(correct)
-            if correct:
-                st.success("✅ Correct!")
-            else:
-                st.error(f"❌ Wrong! Correct answer: {q['correct_answer']}")
-            st.info(f"💡 {q['explanation']}")
-            st.caption(f"📚 Source: {q['source']}")
-            st.session_state.current += 1
-    else:
-        score = sum(st.session_state.answers)
-        total = len(st.session_state.answers)
-        if st.session_state.start_time:
- if st.session_state.start_time:
-    duration = int(time.time() - st.session_state.start_time)
-else:
-    duration = 0
+# --- Result Page (Classic Mode End) ---
+if st.session_state.mode == "Classic Quiz" and st.session_state.current >= len(st.session_state.questions):
+    score = sum(st.session_state.answers)
+    total = len(st.session_state.answers)
 
-        pct = round(score / total * 100) if total > 0 else 0
-        save_result("Classic Quiz", st.session_state.category, score, total, duration)
-        st.markdown(f"### ✅ Score: {score}/{total} ({pct}%)")
-        st.markdown(f"🕓 Duration: {duration} sec")
-        if pct >= 75:
-            st.success("🏆 You passed! Certificate earned!")
-        else:
-            st.warning("🔁 Try again to score at least 75%!")
-        if st.button("Play Again"):
-            for k in ["mode", "category", "questions", "current", "answers", "start_time"]:
-                del st.session_state[k]
+    if st.session_state.start_time:
+        duration = int(time.time() - st.session_state.start_time)
+    else:
+        duration = 0
+
+    pct = round(score / total * 100) if total > 0 else 0
+    save_result("Classic Quiz", st.session_state.category, score, total, duration)
+
+    st.markdown(f"### 🧮 Score: {score}/{total} ({pct}%)")
+    st.markdown(f"⏱️ Time: {duration} seconds")
+
+    if total > 0 and pct >= 75:
+        st.success(f"🏆 Congratulations {st.session_state.player_name}, you earned your certificate!")
+    else:
+        st.info("📘 Keep learning and try again!")
+
+    if st.button("Play Again"):
+        for key in ["mode", "category", "questions", "current", "answers", "start_time"]:
+            del st.session_state[key]
+
 
 # --- TIME ATTACK MODE ---
 elif st.session_state.mode == "Time Attack":
