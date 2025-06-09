@@ -113,36 +113,51 @@ if st.session_state.step == "quiz":
     if index < len(questions):
         q = questions[index]
         st.markdown(f"### Q{index + 1}: {q['question']}")
-        with st.form(key=f"form_{index}"):
-            opts = q["options"].copy()
-            random.shuffle(opts)
-            sel = st.radio("Choose an answer:", opts, key=f"answer_{index}")
-            submit = st.form_submit_button("Submit")
 
-        if submit:
-            # Normalize and compare answer
-            selected_clean = sel.strip().lower()
-            correct_clean = q["correct_answer"].strip().lower()
-            correct = selected_clean == correct_clean
+        answer_key = f"answer_{index}"
+        submitted_key = f"submitted_{index}"
 
-            st.session_state.answers.append(correct)
+        if submitted_key not in st.session_state:
+            with st.form(key=f"form_{index}"):
+                opts = q["options"].copy()
+                random.shuffle(opts)
+                sel = st.radio("Choose an answer:", opts, key=answer_key)
+                submit = st.form_submit_button("Submit")
+
+            if submit:
+                st.session_state[submitted_key] = True
+                selected_clean = sel.strip().lower()
+                correct_clean = q["correct_answer"].strip().lower()
+                correct = selected_clean == correct_clean
+                st.session_state.answers.append(correct)
+                st.session_state[f"was_correct_{index}"] = correct
+                st.session_state[f"selected_{index}"] = sel
+
+                st.experimental_rerun()
+        else:
+            correct = st.session_state[f"was_correct_{index}"]
+            sel = st.session_state[f"selected_{index}"]
+
             if correct:
                 st.success("✅ Correct!")
             else:
-                st.error(f"❌ Wrong! Correct answer: {q['correct_answer']}")
+                st.error(f"❌ Wrong! You chose: {sel}\n\nCorrect answer: {q['correct_answer']}")
             if "explanation" in q:
                 st.markdown(f"**Explanation:** {q['explanation']}")
             if "source" in q:
                 st.markdown(f"🔗 **Source:** {q['source']}")
-            st.session_state.current += 1
-            if mode == "Classic Quiz" and st.session_state.current >= len(questions):
-                st.session_state.done = True
-                st.session_state.step = "result"
-            st.rerun()
+
+            if st.button("Next"):
+                st.session_state.current += 1
+                if mode == "Classic Quiz" and st.session_state.current >= len(questions):
+                    st.session_state.done = True
+                    st.session_state.step = "result"
+                st.rerun()
     else:
         st.session_state.done = True
         st.session_state.step = "result"
         st.rerun()
+
 
 # --- Step: Result ---
 if st.session_state.step == "result":
