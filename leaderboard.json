@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Player 1",
+    "score": 9,
+    "total": 10,
+    "percentage": 90.0,
+    "duration": 75,
+    "category": "Banking",
+    "timestamp": "2025-06-09 16:29:25"
+  },
+  {
+    "name": "Player 2",
+    "score": 8,
+    "total": 10,
+    "percentage": 80.0,
+    "duration": 60,
+    "category": "Crypto",
+    "timestamp": "2025-06-09 16:29:25"
+  }
+]
