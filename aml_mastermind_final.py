@@ -96,30 +96,41 @@ if not st.session_state.mode:
         st.session_state.answers = []
 
 # --- CLASSIC MODE ---
-# --- Result Page (Classic Mode End) ---
-if st.session_state.mode == "Classic Quiz" and st.session_state.current >= len(st.session_state.questions):
-    score = sum(st.session_state.answers)
-    total = len(st.session_state.answers)
 
-    if st.session_state.start_time:
+if (
+    st.session_state.get("mode") == "Classic Quiz"
+    and st.session_state.get("questions")
+    and st.session_state.get("current", 0) >= len(st.session_state.get("questions", []))
+):
+    score = sum(st.session_state.get("answers", []))
+    total = len(st.session_state.get("answers", []))
+
+    st.subheader("📊 Quiz Results")
+    st.markdown(f"### 🧮 Score: {score}/{total}" + (f" ({round(score/total*100)}%)" if total else ""))
+
+    if "start_time" in st.session_state and st.session_state.start_time is not None:
         duration = int(time.time() - st.session_state.start_time)
-    else:
-        duration = 0
+        st.markdown(f"⏱️ Duration: {duration} seconds")
 
-    pct = round(score / total * 100) if total > 0 else 0
-    save_result("Classic Quiz", st.session_state.category, score, total, duration)
+    # Save anonymized result to JSON
+    save_result(
+        name=st.session_state.get("player_name", "anonymous"),
+        category=st.session_state.get("category", "Unknown"),
+        score=score,
+        total=total,
+        mode="Classic",
+        duration=duration if "duration" in locals() else None
+    )
 
-    st.markdown(f"### 🧮 Score: {score}/{total} ({pct}%)")
-    st.markdown(f"⏱️ Time: {duration} seconds")
-
-    if total > 0 and pct >= 75:
-        st.success(f"🏆 Congratulations {st.session_state.player_name}, you earned your certificate!")
-    else:
-        st.info("📘 Keep learning and try again!")
+    if total > 0 and score / total >= 0.75:
+        st.success("🏆 Congratulations! You earned a certificate!")
+    elif total > 0:
+        st.warning("📘 Keep practicing to reach 75% for a certificate.")
 
     if st.button("Play Again"):
         for key in ["mode", "category", "questions", "current", "answers", "start_time"]:
-            del st.session_state[key]
+            st.session_state.pop(key, None)
+        st.experimental_rerun()
 
 
 # --- TIME ATTACK MODE ---
