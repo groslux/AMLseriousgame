@@ -49,6 +49,20 @@ if not player_name:
 def load_questions():
     with open("questions_cleaned.json", "r", encoding="utf-8") as f:
         return json.load(f)
+        questions_data = load_questions()
+
+if not questions_data:
+    st.error("❌ No questions loaded. Please check if 'questions.json' exists and is valid.")
+    st.stop()
+
+grouped = group_questions_by_category(questions_data)
+
+if not grouped:
+    st.error("❌ No categories found in the questions. Please check your JSON structure.")
+    st.stop()
+
+st.write("✅ Loaded categories:", list(grouped.keys()))
+
 
 # --- Session Initialization ---
 for key, default in {
