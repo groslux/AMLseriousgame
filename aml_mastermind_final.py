@@ -46,7 +46,6 @@ if not st.session_state.authenticated:
     pw = st.text_input("Enter password to play:", type="password")
     if pw == PASSWORD:
         st.session_state.authenticated = True
-        st.experimental_rerun()
     elif pw:
         st.error("❌ Incorrect password.")
     st.stop()
@@ -181,7 +180,7 @@ if st.session_state.game_ended:
     if st.button("Play Again"):
         for k in list(defaults.keys()) + ["num_questions"]:
             st.session_state.pop(k, None)
-        st.experimental_rerun()
+   
 
 # --- FOOTER ---
 st.markdown("---")
