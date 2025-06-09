@@ -110,23 +110,16 @@ if st.session_state.step == "quiz":
             st.rerun()
         st.markdown(f"⏳ Time left: **{time_left} seconds**")
 
-    if index < len(questions):
-        q = questions[index]
+  if index < len(questions):
+    q = questions[index]
+    random.seed(q["id"])  # Ensure consistent shuffling
+    opts = q["options"].copy()
+    random.shuffle(opts)
+
+    with st.form(key=f"form_{index}"):
         st.markdown(f"### Q{index + 1}: {q['question']}")
-
-        answer_key = f"answer_{index}"
-        submitted_key = f"submitted_{index}"
-
-        if submitted_key not in st.session_state:
-            with st.form(key=f"form_{index}"):
-            random.seed(q["id"])  # Ensures consistent shuffling
-opts = q["options"].copy()
-random.shuffle(opts)
-
-with st.form(key=f"form_{index}"):
-    st.markdown(f"### Q{index + 1}: {q['question']}")
-    sel = st.radio("Choose an answer:", opts, key=f"answer_{index}")
-    submit = st.form_submit_button("Submit")
+        sel = st.radio("Choose an answer:", opts, key=f"answer_{index}")
+        submit = st.form_submit_button("Submit")
 
     if submit:
         correct = sel.strip().lower() == q["correct_answer"].strip().lower()
@@ -137,7 +130,16 @@ with st.form(key=f"form_{index}"):
             st.error(f"❌ Wrong! Correct answer: {q['correct_answer']}")
         st.caption(f"**Explanation:** {q['explanation']}  \n\n🔗 **Source:** {q['source']}")
         st.session_state.current += 1
-        st.stop()  # Prevent immediate rerun on submission
+
+        if mode == "Classic Quiz" and st.session_state.current >= len(questions):
+            st.session_state.done = True
+            st.session_state.step = "result"
+        elif mode == "Time Attack":
+            # Time check happens at top, so we continue
+            pass
+
+        st.rerun()
+
 
 
 # --- Step: Result ---
