@@ -132,7 +132,8 @@ if st.session_state.step == "quiz":
                 st.session_state.answers.append(correct)
                 st.session_state[f"was_correct_{index}"] = correct
                 st.session_state[f"selected_{index}"] = sel
-                    else:
+                st.rerun()
+        else:
             correct = st.session_state[f"was_correct_{index}"]
             sel = st.session_state[f"selected_{index}"]
 
@@ -140,6 +141,7 @@ if st.session_state.step == "quiz":
                 st.success("✅ Correct!")
             else:
                 st.error(f"❌ Wrong! You chose: {sel}\n\nCorrect answer: {q['correct_answer']}")
+
             if "explanation" in q:
                 st.markdown(f"**Explanation:** {q['explanation']}")
             if "source" in q:
@@ -155,7 +157,6 @@ if st.session_state.step == "quiz":
         st.session_state.done = True
         st.session_state.step = "result"
         st.rerun()
-
 
 # --- Step: Result ---
 if st.session_state.step == "result":
