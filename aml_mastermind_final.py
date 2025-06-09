@@ -22,7 +22,7 @@ def group_by_category(questions):
     return grouped
 
 # --- UI Setup ---
-st.set_page_config(page_title="AML Mastermind", layout="centered")
+st.set_page_config(page_title="AML Mastermind STILL UNDER DEVELOPMENT", layout="centered")
 
 # --- Authentication ---
 if "authenticated" not in st.session_state:
