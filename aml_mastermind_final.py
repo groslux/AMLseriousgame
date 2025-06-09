@@ -132,7 +132,6 @@ if st.session_state.step == "quiz":
                 st.session_state.answers.append(correct)
                 st.session_state[f"was_correct_{index}"] = correct
                 st.session_state[f"selected_{index}"] = sel
-   st.rerun()
                     else:
             correct = st.session_state[f"was_correct_{index}"]
             sel = st.session_state[f"selected_{index}"]
