@@ -172,15 +172,23 @@ elif st.session_state.mode == "Time Attack":
             st.session_state.current += 1
 
 # --- Leaderboard Display ---
-st.markdown("---")
-if st.checkbox("📊 Show Leaderboard"):
-    leaderboard = load_leaderboard()
-    if leaderboard:
-        recent = sorted(leaderboard, key=lambda x: x["timestamp"], reverse=True)[:15]
-        for r in recent:
-            pct = round(r["score"] / r["total"] * 100) if r["total"] > 0 else 0
-            st.markdown(f"- {r['timestamp']} | {r['mode']} | {r['category']} | {r['score']}/{r['total']} ({pct}%) in {r['duration']}s")
-    else:
-        st.info("No scores yet. Be the first to play!")
+# --- Show Leaderboard ---
+if st.checkbox("📈 Show Leaderboard"):
+    try:
+        with open("results.json", "r", encoding="utf-8") as f:
+            results = json.load(f)
+        st.subheader("🏅 Leaderboard")
+        for r in results:
+            pct = round(r["score"] / r["total"] * 100) if r["total"] else 0
+            st.markdown(
+                f"- {r.get('timestamp', 'unknown')} | "
+                f"{r.get('mode', 'N/A')} | "
+                f"{r.get('category', 'N/A')} | "
+                f"{r.get('score', 0)}/{r.get('total', 0)} ({pct}%)"
+                + (f" in {r['duration']}s" if 'duration' in r and r['duration'] is not None else "")
+            )
+    except Exception as e:
+        st.error(f"Could not load leaderboard: {e}")
+
 
 st.caption("© 2025 - AML Mastermind | Inspired by FATF, IOSCO, IMF & World Bank")
