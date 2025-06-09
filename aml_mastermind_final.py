@@ -71,15 +71,20 @@ for key, val in defaults.items():
     if key not in st.session_state:
         st.session_state[key] = val
 
-# --- PLAYER SETUP ---
+# --- PLAYER SETUP + START BUTTON ---
 st.title("🕵️ AML Mastermind Deluxe")
-st.session_state.player_name = st.text_input("Enter your name to begin:")
 
-if not st.session_state.player_name.strip():
+if "player_ready" not in st.session_state:
+    st.session_state.player_ready = False
+
+if not st.session_state.player_ready:
+    st.session_state.player_name = st.text_input("Enter your name to begin:")
+
+    if st.session_state.player_name.strip() and st.button("Start"):
+        st.session_state.player_ready = True
+        st.session_state.mode = None
     st.stop()
 
-# --- GAME MODE SELECTION ---
-if st.session_state.mode is None:
     st.subheader("🎮 Choose your game mode")
     st.session_state.mode = st.selectbox("Mode", ["Classic Quiz", "Time Attack"])
     st.session_state.category = st.selectbox("Select a Category", list(grouped.keys()))
