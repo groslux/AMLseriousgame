@@ -5,70 +5,54 @@ import time
 from datetime import datetime
 import os
 
-# --- CONFIGURATION ---
+import streamlit as st
+import json
+import random
+import time
+from datetime import datetime
+
+# --- Configuration ---
 PASSWORD = "iloveaml2025"
 DATA_FILE = "questions_cleaned.json"
-LEADERBOARD_FILE = "leaderboard.json"
-TIME_OPTIONS = [60, 120, 180]
-
-# --- SETUP ---
 st.set_page_config(page_title="AML Mastermind Deluxe", layout="centered")
 
-# --- CACHE DATA ---
-@st.cache_data
-def load_questions():
-    with open(DATA_FILE, "r", encoding="utf-8") as f:
-        return json.load(f)
-
-def group_questions_by_category(data):
-    grouped = {}
-    for q in data:
-        cat = q.get("category", "Other").strip()
-        grouped.setdefault(cat, []).append(q)
-    return grouped
-
-def load_leaderboard():
-    if os.path.exists(LEADERBOARD_FILE):
-        with open(LEADERBOARD_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
-    return []
-
-def save_leaderboard(records):
-    with open(LEADERBOARD_FILE, "w", encoding="utf-8") as f:
-        json.dump(records, f, indent=2)
-
-# --- AUTHENTICATION ---
+# --- Password Step ---
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
 if not st.session_state.authenticated:
-    st.title("🔒 AML Mastermind Deluxe")
-    pw = st.text_input("Enter password to play:", type="password")
-    if pw == PASSWORD:
+    st.title("🔐 AML Mastermind Deluxe")
+    password = st.text_input("Enter password to continue:", type="password")
+    if password == PASSWORD:
         st.session_state.authenticated = True
-    elif pw:
+    elif password:
         st.error("❌ Incorrect password.")
     st.stop()
 
-# --- LOAD DATA ---
-questions_data = load_questions()
-grouped = group_questions_by_category(questions_data)
+# --- Player Name Step ---
+st.title("🕵️ AML Mastermind Deluxe")
+if "player_name" not in st.session_state:
+    st.session_state.player_name = ""
 
-# --- INITIAL STATE ---
-defaults = {
-    "player_name": "",
-    "mode": None,
-    "category": None,
-    "questions": [],
-    "current": 0,
-    "answers": [],
-    "start_time": None,
-    "time_limit": None,
-    "game_ended": False
-}
-for key, val in defaults.items():
-    if key not in st.session_state:
-        st.session_state[key] = val
+if "name_entered" not in st.session_state:
+    st.session_state.name_entered = False
+
+if not st.session_state.name_entered:
+    name = st.text_input("Enter your name:")
+    start_game = st.button("Start Game")
+    if start_game:
+        if name.strip():
+            st.session_state.player_name = name.strip()
+            st.session_state.name_entered = True
+        else:
+            st.warning("Please enter your name.")
+    st.stop()
+
+# ✅ At this point, password and name have been successfully entered.
+# You can now continue with question loading, mode selection, etc.
+
+st.success(f"Welcome, {st.session_state.player_name}! Let's begin your AML journey.")
+
 
 # --- PLAYER SETUP + START BUTTON ---
 st.title("🕵️ AML Mastermind Deluxe")
