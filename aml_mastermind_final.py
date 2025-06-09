@@ -122,8 +122,8 @@ if st.session_state.step == "quiz":
              random.seed(q["id"])  # deterministic shuffle based on question ID
             opts = q["options"].copy()
             random.shuffle(opts)
-                sel = st.radio("Choose an answer:", opts, key=answer_key)
-                submit = st.form_submit_button("Submit")
+            sel = st.radio("Choose an answer:", opts, key=answer_key)
+            submit = st.form_submit_button("Submit")
 
             if submit:
                 st.session_state[submitted_key] = True
