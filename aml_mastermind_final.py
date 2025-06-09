@@ -22,7 +22,7 @@ def group_by_category(questions):
     return grouped
 
 # --- UI Setup ---
-st.set_page_config(page_title="AML Mastermind", layout="centered")
+st.set_page_config(page_title="AML Mastermind, an AML/CFT learning game", layout="centered")
 
 # --- Authentication ---
 if "authenticated" not in st.session_state:
@@ -159,4 +159,4 @@ if st.session_state.step == "result":
 
 # --- Footer ---
 st.markdown("---")
-st.caption("© 2025 – AML Mastermind. Powered by FATF / IOSCO / IMF best practices.")
+st.caption("© 2025 – AML Mastermind. Designed and built by Guilhem ROS. Powered by FATF / IOSCO / IMF public reports.")
