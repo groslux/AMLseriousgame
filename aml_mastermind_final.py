@@ -53,43 +53,33 @@ if not st.session_state.authenticated:
 
 
 
-# --- Player Info ---
-player_name = st.text_input("Your Name:", max_chars=20)
-if not player_name.strip():
-    st.stop()
+# --- Player name and Game Setup ---
+if "game_ready" not in st.session_state:
+    st.session_state.game_ready = False
 
-# --- Load Questions ---
-questions_data = load_questions()
-grouped_questions = group_questions(questions_data)
+if not st.session_state.game_ready:
+    st.title("🕵️ AML Mastermind Deluxe")
+    st.subheader("Enter your details to begin")
 
-# --- Init Session ---
-defaults = {
-    "mode": None, "category": None, "questions": [],
-    "current": 0, "answers": [], "start_time": None,
-    "duration": 0, "game_over": False, "max_questions": 10
-}
-for k, v in defaults.items():
-    if k not in st.session_state:
-        st.session_state[k] = v
+    name = st.text_input("Your name")
+    mode = st.selectbox("Choose Game Mode", ["Classic Quiz", "Time Attack"])
+    category = st.selectbox("Choose a Category", ["Crypto", "Banking", "Collective Investment Sector"])
+    start_button = st.button("Start Game")
 
-# --- Game Setup ---
-if not st.session_state.mode:
-    st.subheader("🎮 Select Game Mode")
-    st.session_state.mode = st.radio("Mode", ["Classic Quiz", "Time Attack"])
-    st.session_state.category = st.selectbox("Category", list(grouped_questions.keys()))
-    if st.session_state.mode == "Classic Quiz":
-        st.session_state.max_questions = st.slider("Number of Questions", 5, 30, 10)
-    else:
-        st.session_state.duration = st.select_slider("⏱️ Time Limit (seconds)", options=[60, 120, 180], value=120)
-
-    if st.button("Start Game"):
-        q_pool = grouped_questions[st.session_state.category]
-        random.shuffle(q_pool)
-        st.session_state.questions = q_pool
+    if start_button and name.strip():
+        st.session_state.name = name.strip()
+        st.session_state.mode = mode
+        st.session_state.category = category
+        st.session_state.game_ready = True
         st.session_state.current = 0
+        st.session_state.score = 0
         st.session_state.answers = []
         st.session_state.start_time = time.time()
-        st.session_state.game_over = False
+        st.experimental_rerun()  # Required to render next screen
+    elif start_button and not name.strip():
+        st.warning("Please enter your name before starting.")
+    st.stop()
+
 
 # --- Game Loop ---
 if st.session_state.questions and not st.session_state.game_over:
