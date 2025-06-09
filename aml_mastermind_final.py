@@ -16,7 +16,7 @@ def load_questions():
 def group_questions_by_category(data):
     grouped = {}
     for q in data:
-        cat = q.get("category", "Other").strip()  # Ensure no whitespace bugs
+        cat = q.get("category", "Other").strip()
         grouped.setdefault(cat, []).append(q)
     return grouped
 
@@ -30,13 +30,13 @@ if "authenticated" not in st.session_state:
 if not st.session_state.authenticated:
     st.title("🔒 AML Mastermind Deluxe")
     password = st.text_input("Enter the password to play:", type="password")
-   if password:
-    if password == PASSWORD:
-        st.session_state.authenticated = True
-        st.success("✅ Access granted. Please reload the page if nothing happens.")
-        st.stop()  # force stop and wait for reload
-    else:
-        st.error("Incorrect password.")
+    if password:
+        if password == PASSWORD:
+            st.session_state.authenticated = True
+            st.rerun()  # ✅ Correct for Streamlit ≥ 1.35
+        else:
+            st.error("Incorrect password.")
+    st.stop()
 
 # --- Player name ---
 st.title("🕵️ AML Mastermind Deluxe")
@@ -80,7 +80,7 @@ if st.session_state.mode is None:
         st.session_state.current = 0
         st.session_state.answers = []
         st.session_state.start_time = None
-        st.experimental_rerun()
+        st.rerun()
 
 # --- Classic Quiz Mode ---
 elif st.session_state.mode == "Classic Quiz":
@@ -103,7 +103,7 @@ elif st.session_state.mode == "Classic Quiz":
                 st.error(f"❌ Wrong! Correct answer: {q['correct_answer']}")
             st.caption(q["explanation"])
             st.session_state.current += 1
-            st.experimental_rerun()
+            st.rerun()
 
 # --- Time Attack Mode ---
 elif st.session_state.mode == "Time Attack":
@@ -122,6 +122,7 @@ elif st.session_state.mode == "Time Attack":
         if st.button("Play Again"):
             for key in ["mode", "category", "questions", "current", "answers", "start_time"]:
                 del st.session_state[key]
+            st.rerun()
         st.stop()
     else:
         i = st.session_state.current
@@ -143,7 +144,7 @@ elif st.session_state.mode == "Time Attack":
                 st.error(f"❌ Wrong! Correct answer: {q['correct_answer']}")
             st.caption(q["explanation"])
             st.session_state.current += 1
-            st.experimental_rerun()
+            st.rerun()
 
 # --- Result Page (Classic Mode End) ---
 if st.session_state.mode == "Classic Quiz" and st.session_state.current >= len(st.session_state.questions):
@@ -159,7 +160,7 @@ if st.session_state.mode == "Classic Quiz" and st.session_state.current >= len(s
     if st.button("Play Again"):
         for key in ["mode", "category", "questions", "current", "answers"]:
             del st.session_state[key]
-        st.experimental_rerun()
+        st.rerun()
 
 # --- Footer ---
 st.markdown("---")
