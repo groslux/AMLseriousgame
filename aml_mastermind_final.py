@@ -100,6 +100,9 @@ if st.session_state.mode is None:
     if st.button("Start Game"):
         pool = grouped.get(st.session_state.category, [])
         random.shuffle(pool)
+        if st.session_state.mode == "Classic Quiz":
+            st.session_state.num_questions = min(st.session_state.num_questions or 10, len(pool))
+
         st.session_state.questions = pool
         st.session_state.current = 0
         st.session_state.answers = []
