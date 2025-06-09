@@ -16,7 +16,7 @@ def load_questions():
 def group_questions_by_category(data):
     grouped = {}
     for q in data:
-        cat = q.get("category", "Other").strip()  # Strip whitespace
+        cat = q.get("category", "Other").strip()  # Ensure no whitespace bugs
         grouped.setdefault(cat, []).append(q)
     return grouped
 
@@ -26,13 +26,14 @@ st.set_page_config(page_title="AML Mastermind Deluxe", layout="centered")
 # --- Auth ---
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
-st.rerun
+
 if not st.session_state.authenticated:
     st.title("🔒 AML Mastermind Deluxe")
     password = st.text_input("Enter the password to play:", type="password")
     if password:
         if password == PASSWORD:
             st.session_state.authenticated = True
+            st.experimental_rerun()  # RERUN properly here
         else:
             st.error("Incorrect password.")
     st.stop()
@@ -48,13 +49,11 @@ if not player_name:
 questions_data = load_questions()
 grouped = group_questions_by_category(questions_data)
 
-# --- Optional Debug: show categories loaded
-# st.write("✅ Categories found:", list(grouped.keys()))
-
 # --- Session Initialization ---
 for key, default in {
     "mode": None, "category": None, "questions": [],
-    "current": 0, "score": 0, "start_time": None
+    "current": 0, "answers": [],
+    "start_time": None
 }.items():
     if key not in st.session_state:
         st.session_state[key] = default
@@ -79,9 +78,9 @@ if st.session_state.mode is None:
             min(question_count, len(available_questions))
         )
         st.session_state.current = 0
-        st.session_state.score = 0
-        st.session_state.start_time = None  # reset for Time Attack
-        st.stop()
+        st.session_state.answers = []
+        st.session_state.start_time = None
+        st.experimental_rerun()
 
 # --- Classic Quiz Mode ---
 elif st.session_state.mode == "Classic Quiz":
@@ -96,14 +95,15 @@ elif st.session_state.mode == "Classic Quiz":
             submit = st.form_submit_button("Submit Answer")
 
         if submit:
-            if selected.strip().lower() == q["correct_answer"].strip().lower():
+            is_correct = selected.strip().lower() == q["correct_answer"].strip().lower()
+            st.session_state.answers.append(is_correct)
+            if is_correct:
                 st.success("✅ Correct!")
-                st.session_state.score += 1
             else:
                 st.error(f"❌ Wrong! Correct answer: {q['correct_answer']}")
             st.caption(q["explanation"])
             st.session_state.current += 1
-            st.stop()
+            st.experimental_rerun()
 
 # --- Time Attack Mode ---
 elif st.session_state.mode == "Time Attack":
@@ -113,13 +113,14 @@ elif st.session_state.mode == "Time Attack":
     remaining = 120 - int(now - st.session_state.start_time)
 
     if remaining <= 0 or st.session_state.current >= len(st.session_state.questions):
-        st.markdown(f"### ⌛ Time's up! Score: {st.session_state.score}")
-        if st.session_state.score >= 10:
+        score = sum(st.session_state.answers)
+        st.markdown(f"### ⌛ Time's up! Score: {score}")
+        if score >= 10:
             st.success(f"🏆 Well done {player_name}, you earned your certificate!")
         else:
             st.info("Keep practicing to improve your score!")
         if st.button("Play Again"):
-            for key in ["mode", "category", "questions", "current", "score", "start_time"]:
+            for key in ["mode", "category", "questions", "current", "answers", "start_time"]:
                 del st.session_state[key]
         st.stop()
     else:
@@ -134,19 +135,20 @@ elif st.session_state.mode == "Time Attack":
             submit = st.form_submit_button("Submit Answer")
 
         if submit:
-            if selected.strip().lower() == q["correct_answer"].strip().lower():
+            is_correct = selected.strip().lower() == q["correct_answer"].strip().lower()
+            st.session_state.answers.append(is_correct)
+            if is_correct:
                 st.success("✅ Correct!")
-                st.session_state.score += 1
             else:
                 st.error(f"❌ Wrong! Correct answer: {q['correct_answer']}")
             st.caption(q["explanation"])
             st.session_state.current += 1
-            st.stop()
+            st.experimental_rerun()
 
 # --- Result Page (Classic Mode End) ---
 if st.session_state.mode == "Classic Quiz" and st.session_state.current >= len(st.session_state.questions):
-    total = len(st.session_state.questions)
-    score = st.session_state.score
+    score = sum(st.session_state.answers)
+    total = len(st.session_state.answers)
     st.markdown(f"### 🎯 Final Score: {score}/{total}")
     if total > 0 and score / total >= 0.75:
         st.success(f"🏆 Congratulations {player_name}, you passed and earned your certificate!")
@@ -155,9 +157,9 @@ if st.session_state.mode == "Classic Quiz" and st.session_state.current >= len(s
     else:
         st.warning("No questions were loaded. Please restart and select a different category.")
     if st.button("Play Again"):
-        for key in ["mode", "category", "questions", "current", "score"]:
+        for key in ["mode", "category", "questions", "current", "answers"]:
             del st.session_state[key]
-    st.stop()
+        st.experimental_rerun()
 
 # --- Footer ---
 st.markdown("---")
