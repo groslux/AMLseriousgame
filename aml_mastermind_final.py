@@ -122,7 +122,8 @@ elif st.session_state.mode == "Classic Quiz":
                 st.success("✅ Correct!")
             else:
                 st.error(f"❌ Wrong! Correct answer: {q['correct_answer']}")
-            st.caption(q["explanation"])
+            st.info(f"💡 {q['explanation']}")
+            st.caption(f"🔗 Source: {q['source']}")
             st.session_state.current += 1
             st.experimental_rerun()
     else:
@@ -188,8 +189,9 @@ elif st.session_state.mode == "Time Attack":
             if correct:
                 st.success("✅ Correct!")
             else:
-                st.error(f"❌ Wrong! Correct: {q['correct_answer']}")
-            st.caption(q["explanation"])
+                st.error(f"❌ Wrong! Correct answer: {q['correct_answer']}")
+            st.info(f"💡 {q['explanation']}")
+            st.caption(f"🔗 Source: {q['source']}")
             st.session_state.current += 1
             st.experimental_rerun()
 
