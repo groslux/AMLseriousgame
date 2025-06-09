@@ -32,7 +32,6 @@ if not st.session_state.authenticated:
     pw = st.text_input("Enter password to continue:", type="password")
     if pw == PASSWORD:
         st.session_state.authenticated = True
-        st.experimental_rerun()
     elif pw:
         st.error("Wrong password.")
     st.stop()
@@ -65,7 +64,6 @@ if st.session_state.step == "intro":
     if st.button("Confirm Name") and name.strip():
         st.session_state.player_name = name.strip()
         st.session_state.step = "mode"
-        st.experimental_rerun()
     st.stop()
 
 # --- Step: Mode and Category Selection ---
@@ -92,7 +90,6 @@ if st.session_state.step == "mode":
         st.session_state.done = False
         st.session_state.start_time = time.time() if st.session_state.mode == "Time Attack" else None
         st.session_state.step = "quiz"
-        st.experimental_rerun()
     st.stop()
 
 # --- Step: Quiz Logic ---
@@ -136,7 +133,7 @@ if st.session_state.step == "quiz":
     else:
         st.session_state.done = True
         st.session_state.step = "result"
-        st.experimental_rerun()
+        st.stop()
 
 # --- Step: Results ---
 if st.session_state.step == "result":
@@ -156,7 +153,8 @@ if st.session_state.step == "result":
     if st.button("Play Again"):
         for k in defaults:
             del st.session_state[k]
-        st.experimental_rerun()
+        st.session_state.authenticated = True  # Avoid asking password again
+        st.session_state.step = "intro"
 
 # --- Footer ---
 st.markdown("---")
