@@ -110,7 +110,8 @@
     "correct_answer": "Micro amounts used to obfuscate flows",
     "explanation": "Dust confuses analysis tools.",
     "source": "Europol – Crypto Laundering Trends (2021)"
-  },
+  }
+], [
   {
     "id": "crypto_29",
     "category": "Crypto",
@@ -320,7 +321,9 @@
     "correct_answer": "Conducting customer due diligence (CDD)",
     "explanation": "Fund managers must perform CDD to verify the identity and risk profile of each investor.",
     "source": "FATF – Recommendation 10"
-  },
+  }
+],
+[
   {
     "id": "collective_4",
     "category": "Collective Investment Sector",
@@ -572,7 +575,8 @@
     "correct_answer": "Suspend onboarding of new investors",
     "explanation": "Access to KYC data is essential for AML compliance; refusal requires escalation and possibly termination of onboarding.",
     "source": "CSSF – AML/CTF Guidelines for the Fund Industry (2021)"
-  },
+  }
+], [
   {
     "id": "collective_22",
     "category": "Collective Investment Sector",
@@ -810,7 +814,9 @@
     "correct_answer": "High-net-worth individuals with complex structures",
     "explanation": "HNWI investing through offshore vehicles can be used to obscure identity and source of wealth.",
     "source": "FATF – Risk-Based Approach for the Securities Sector (2009)"
-  },
+  }
+],
+[
   {
     "id": "funds_29",
     "category": "Collective Investment Sector",
@@ -1090,7 +1096,9 @@
     "correct_answer": "They are the first line to detect suspicious behavior",
     "explanation": "Sales agents interact directly with investors and can detect red flags early.",
     "source": "FATF – Recommendation 18"
-  },
+  }
+],
+[
   {
     "id": "funds_49",
     "category": "Collective Investment Sector",
@@ -1384,7 +1392,8 @@
     "correct_answer": "Use of multiple layered guarantors with unclear ownership",
     "explanation": "Complex guarantor structures can mask illicit control or money flows.",
     "source": "FATF – Risk-Based Approach: Banking Sector (2014)"
-  },
+  }
+] [
   {
     "id": "banking_20",
     "category": "Banking",
