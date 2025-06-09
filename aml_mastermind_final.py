@@ -22,7 +22,7 @@ def group_by_category(questions):
     return grouped
 
 # --- UI Setup ---
-st.set_page_config(page_title="AML Mastermind STILL UNDER DEVELOPMENT", layout="centered")
+st.set_page_config(page_title="AML Mastermind", layout="centered")
 
 # --- Authentication ---
 if "authenticated" not in st.session_state:
@@ -120,13 +120,20 @@ if st.session_state.step == "quiz":
             submit = st.form_submit_button("Submit")
 
         if submit:
-            correct = sel.strip().lower() == q["correct_answer"].strip().lower()
+            # Normalize and compare answer
+            selected_clean = sel.strip().lower()
+            correct_clean = q["correct_answer"].strip().lower()
+            correct = selected_clean == correct_clean
+
             st.session_state.answers.append(correct)
             if correct:
                 st.success("✅ Correct!")
             else:
                 st.error(f"❌ Wrong! Correct answer: {q['correct_answer']}")
-            st.caption(q["explanation"])
+            if "explanation" in q:
+                st.markdown(f"**Explanation:** {q['explanation']}")
+            if "source" in q:
+                st.markdown(f"🔗 **Source:** {q['source']}")
             st.session_state.current += 1
             if mode == "Classic Quiz" and st.session_state.current >= len(questions):
                 st.session_state.done = True
