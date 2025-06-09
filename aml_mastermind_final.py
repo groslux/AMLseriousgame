@@ -30,13 +30,13 @@ if "authenticated" not in st.session_state:
 if not st.session_state.authenticated:
     st.title("🔒 AML Mastermind Deluxe")
     password = st.text_input("Enter the password to play:", type="password")
-    if password:
-        if password == PASSWORD:
-            st.session_state.authenticated = True
-            st.experimental_rerun()  # RERUN properly here
-        else:
-            st.error("Incorrect password.")
-    st.stop()
+   if password:
+    if password == PASSWORD:
+        st.session_state.authenticated = True
+        st.success("✅ Access granted. Please reload the page if nothing happens.")
+        st.stop()  # force stop and wait for reload
+    else:
+        st.error("Incorrect password.")
 
 # --- Player name ---
 st.title("🕵️ AML Mastermind Deluxe")
