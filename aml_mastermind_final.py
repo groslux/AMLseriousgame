@@ -51,9 +51,11 @@ if not st.session_state.authenticated:
     else:
         st.stop()
 
+# --- Load & group questions ---
+questions_data = load_questions()
+grouped = group_questions_by_category(questions_data)
 
-
-# --- Player name and Game Setup ---
+# --- Game Setup ---
 if "game_ready" not in st.session_state:
     st.session_state.game_ready = False
 
@@ -63,23 +65,32 @@ if not st.session_state.game_ready:
 
     name = st.text_input("Your name")
     mode = st.selectbox("Choose Game Mode", ["Classic Quiz", "Time Attack"])
-    category = st.selectbox("Choose a Category", ["Crypto", "Banking", "Collective Investment Sector"])
+    category = st.selectbox("Choose a Category", list(grouped.keys()))
+    if mode == "Classic Quiz":
+        question_count = st.slider("Number of Questions", 5, 30, 10)
+    else:
+        question_count = 999  # Will be handled by time limit
+
     start_button = st.button("Start Game")
 
     if start_button and name.strip():
         st.session_state.name = name.strip()
         st.session_state.mode = mode
         st.session_state.category = category
-        st.session_state.game_ready = True
+        st.session_state.question_count = question_count
+        st.session_state.questions = random.sample(
+            grouped[category],
+            min(question_count, len(grouped[category]))
+        )
         st.session_state.current = 0
         st.session_state.score = 0
         st.session_state.answers = []
         st.session_state.start_time = time.time()
-    
+        st.session_state.game_ready = True
+        st.experimental_rerun()
     elif start_button and not name.strip():
         st.warning("Please enter your name before starting.")
     st.stop()
-
 
 # --- Game Loop ---
 if st.session_state.questions and not st.session_state.game_over:
