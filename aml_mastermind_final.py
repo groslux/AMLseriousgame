@@ -6,6 +6,10 @@ import uuid
 from datetime import datetime
 import os
 
+# --- Page Setup ---
+st.set_page_config(page_title="AML Mastermind Deluxe", layout="centered")
+st.title("🧠 AML Mastermind Deluxe")
+
 # --- Constants ---
 PASSWORD = "iloveaml2025"
 QUESTIONS_FILE = "questions_cleaned.json"
@@ -47,9 +51,7 @@ if not st.session_state.authenticated:
     else:
         st.stop()
 
-# --- Page Setup ---
-st.set_page_config(page_title="AML Mastermind Deluxe", layout="centered")
-st.title("🧠 AML Mastermind Deluxe")
+
 
 # --- Player Info ---
 player_name = st.text_input("Your Name:", max_chars=20)
