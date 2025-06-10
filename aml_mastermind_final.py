@@ -136,7 +136,7 @@ else:
                 del st.session_state[k]
 
 # --- TIME ATTACK MODE ---
-elif st.session_state.mode == "Time Attack":
+if st.session_state.mode == "Time Attack":
     elapsed = int(time.time() - st.session_state.start_time)
     remaining = st.session_state.timer_limit - elapsed
     if remaining <= 0 or st.session_state.current >= len(st.session_state.questions):
