@@ -25,7 +25,7 @@ def group_by_category(questions):
     return grouped
 
 # --- UI Setup ---
-st.set_page_config(page_title="AML Mastermind", layout="centered")
+st.set_page_config(page_title="DO NOT USE FOR NOW - Under Dev - AML Mastermind", layout="centered")
 
 # --- Load and Prepare Data ---
 questions_data = load_questions()
@@ -51,7 +51,7 @@ for k, v in defaults.items():
 
 # --- Step: Introduction ---
 if st.session_state.step == "intro":
-    st.title("🎯 AML Mastermind Deluxe")
+    st.title("🎯 DO NOT USE FOR NOW - Under Dev - AML Mastermind)
     name = st.text_input("Enter your name to start:", value=st.session_state.player_name)
     if st.button("Confirm Name"):
         if name.strip():
