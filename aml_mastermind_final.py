@@ -11,8 +11,12 @@ DATA_FILE = "questions_cleaned.json"
 # --- Load Questions ---
 @st.cache_data
 def load_questions():
-    with open(DATA_FILE, "r", encoding="utf-8") as f:
-        return json.load(f)
+    try:
+        with open(DATA_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        st.error(f"❌ Failed to load questions: {e}")
+        return []
 
 def group_by_category(questions):
     grouped = {}
@@ -37,7 +41,7 @@ if not st.session_state.authenticated:
             st.session_state.step = "intro"
             st.experimental_rerun()
         else:
-            st.error("Wrong password.")
+            st.error("❌ Wrong password.")
     st.stop()
 
 # --- Load and Prepare Data ---
@@ -72,7 +76,7 @@ if st.session_state.step == "intro":
             st.session_state.step = "mode"
             st.experimental_rerun()
         else:
-            st.error("Please enter a name.")
+            st.error("⚠️ Please enter a name.")
     st.stop()
 
 # --- Step: Select Mode & Category ---
@@ -109,7 +113,6 @@ if st.session_state.step == "quiz":
     idx = st.session_state.current
     mode = st.session_state.mode
 
-    # Time-Attack countdown
     if mode == "Time Attack":
         elapsed = int(time.time() - st.session_state.start_time)
         time_left = st.session_state.max_time - elapsed
@@ -119,30 +122,29 @@ if st.session_state.step == "quiz":
             st.experimental_rerun()
         st.markdown(f"⏳ Time left: **{time_left} seconds**")
 
-    # Present question
     if idx < len(questions):
         q = questions[idx]
         st.markdown(f"### Q{idx + 1}: {q['question']}")
+        st.progress((idx + 1) / len(questions))
         with st.form(key=f"form_{idx}"):
             opts = q["options"].copy()
             random.shuffle(opts)
-            # use casefold for robust comparison
             sel = st.radio("Choose an answer:", opts, key=f"answer_{idx}")
             submitted = st.form_submit_button("Submit")
 
         if submitted:
-            correct_answer = q["correct_answer"]
-            is_correct = (sel.strip().casefold() == correct_answer.strip().casefold())
+            correct = q["correct_answer"]
+            is_correct = (sel.strip().casefold() == correct.strip().casefold())
             st.session_state.answers.append(is_correct)
 
             if is_correct:
                 st.success("✅ Correct!")
             else:
-                st.error(f"❌ Wrong! Correct answer: **{correct_answer}**")
-            st.caption(f"**Explanation:** {q['explanation']}  \n\n🔗 **Source:** {q['source']}")
+                st.error(f"❌ Wrong! Correct answer: **{correct}**")
+            st.caption(f"**Explanation:** {q['explanation']}  \n🔗 **Source:** {q['source']}")
 
             st.session_state.current += 1
-            # Advance immediately
+            time.sleep(0.3)
             if mode == "Classic Quiz" and st.session_state.current >= len(questions):
                 st.session_state.done = True
                 st.session_state.step = "result"
@@ -169,8 +171,8 @@ if st.session_state.step == "result":
         st.warning("⚠️ No questions were answered.")
 
     if st.button("Play Again"):
-        for k in defaults.keys():
-            del st.session_state[k]
+        for k in list(defaults.keys()) + ["authenticated"]:
+            st.session_state.pop(k, None)
         st.experimental_rerun()
 
 # --- Footer ---
