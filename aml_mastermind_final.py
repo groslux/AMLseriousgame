@@ -10,10 +10,10 @@ DATA_FILE = "questions_cleaned.json"
 LEADERBOARD_FILE = "leaderboard.json"
 TIME_OPTIONS = [60, 120, 180]
 
-# --- SETUP ---
+# --- PAGE SETUP ---
 st.set_page_config(page_title="AML Mastermind Deluxe", layout="centered")
 
-# --- CACHED LOADERS ---
+# --- LOADERS ---
 @st.cache_data
 def load_questions():
     with open(DATA_FILE, "r", encoding="utf-8") as f:
@@ -59,11 +59,17 @@ for key, val in defaults.items():
 questions_data = load_questions()
 grouped = group_by_category(questions_data)
 
-# --- UI: TITLE AND NAME ---
-st.title("🕵️ AML Mastermind Deluxe ")
-st.markdown("Welcome to the ultimate anti-money laundering quiz. Test your skills and climb the leaderboard!")
-st.markdown("Designed by Guilhem ROS")
-st.markdown("----")
+# --- UI: HEADER ---
+st.title("🕵️ AML Mastermind Deluxe")
+st.markdown("""
+<div style="text-align: center; font-size:18px;">
+    Welcome to the ultimate anti-money laundering quiz.<br>
+    Test your skills and climb the leaderboard!
+</div>
+""", unsafe_allow_html=True)
+st.markdown("---")
+
+# --- NAME INPUT ---
 st.session_state.player_name = st.text_input("Enter your name to begin:")
 
 if not st.session_state.player_name.strip():
@@ -106,16 +112,16 @@ if not st.session_state.game_ended and st.session_state.current < len(st.session
     q_idx = st.session_state.current
     question = st.session_state.questions[q_idx]
 
-    # Show time left
+    # Time check
     if st.session_state.mode == "Time Attack":
         remaining = st.session_state.time_limit - int(time.time() - st.session_state.start_time)
         if remaining <= 0:
             st.session_state.game_ended = True
-          
+            st.experimental_rerun()
         else:
             st.markdown(f"⏳ Time Left: **{remaining} seconds**")
 
-    # Stable shuffling
+    # Stable shuffle
     if f"options_{q_idx}" not in st.session_state:
         options = question["options"].copy()
         random.shuffle(options)
@@ -146,9 +152,9 @@ if not st.session_state.game_ended and st.session_state.current < len(st.session
         st.caption(f"📚 Source: {question.get('source', 'Unknown')}")
 
         st.session_state.current += 1
-  
+        st.experimental_rerun()
 
-# --- GAME END ---
+# --- RESULTS ---
 if st.session_state.game_ended or st.session_state.current >= len(st.session_state.questions):
     st.session_state.game_ended = True
     score = sum(st.session_state.answers)
@@ -169,11 +175,11 @@ if st.session_state.game_ended or st.session_state.current >= len(st.session_sta
     else:
         st.info("📘 Keep practicing to improve your score!")
 
-    # Save leaderboard only once
-    if not st.session_state.leaderboard_saved:
+    # Save to leaderboard once
+    if not st.session_state.leaderboard_saved and score > 0:
         leaderboard = load_leaderboard()
         leaderboard.append({
-            "name": st.session_state.player_name.strip()[:5] + "***",
+            "name": st.session_state.player_name.strip()[:3] + "###",
             "mode": st.session_state.mode,
             "category": st.session_state.category,
             "score": score,
@@ -185,37 +191,24 @@ if st.session_state.game_ended or st.session_state.current >= len(st.session_sta
         save_leaderboard(leaderboard)
         st.session_state.leaderboard_saved = True
 
-    # Show Leaderboard
-   if st.checkbox("📊 Show Leaderboard"):
-    leaderboard = load_leaderboard()
+    # --- Show Leaderboard ---
+    if st.checkbox("📊 Show Leaderboard"):
+        leaderboard = load_leaderboard()
+        valid_entries = [r for r in leaderboard if r["score"] > 0]
+        for r in valid_entries:
+            r["efficiency"] = r["duration"] / r["score"]
 
-    # Filter out zero-score entries to avoid division by zero
-    filtered = [r for r in leaderboard if r["score"] > 0]
+        top10 = sorted(valid_entries, key=lambda x: x["efficiency"])[:10]
 
-    # Compute efficiency (time per correct answer)
-    for r in filtered:
-        r["efficiency"] = r["duration"] / r["score"]
+        st.markdown("### 🏆 Top 10 Efficient Players")
+        st.caption("Ranked by seconds per correct answer (lower is better)")
 
-    # Sort by efficiency (lower is better)
-    top10 = sorted(filtered, key=lambda x: x["efficiency"])[:10]
+        for i, r in enumerate(top10, start=1):
+            st.markdown(
+                f"**{i}.** {r['name']} | {r['mode']} | {r['category']} | "
+                f"{r['score']}/{r['total']} correct | "
+                f"{r['duration']}s | {r['efficiency']:.2f} sec/correct"
+            )
 
-    st.markdown("### 🏆 Top 10 Efficient Players")
-
-    for i, r in enumerate(top10, start=1):
-        st.markdown(
-            f"**{i}.** {r['name']} | {r['mode']} | {r['category']} | "
-            f"{r['score']}/{r['total']} correct | "
-            f"{r['duration']}s total | "
-            f"{r['efficiency']:.2f} sec/correct"
-        )
-
-
-    # Play Again Button
     if st.button("🔄 Play Again"):
-        for k in list(defaults.keys()) + [f"options_{i}" for i in range(len(st.session_state.questions))]:
-            st.session_state.pop(k, None)
-   
-
-# --- FOOTER ---
-st.markdown("---")
-st.caption("Serious game developped for AML Training purposes by Guilhem ROS - 2025– Powered by FATF, IOSCO, IMF & World Bank public reports.")
+        for k in list(defaul
