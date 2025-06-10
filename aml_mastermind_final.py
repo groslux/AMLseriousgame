@@ -5,7 +5,6 @@ import time
 from datetime import datetime
 
 # --- Config ---
-PASSWORD = "iloveaml2025"
 DATA_FILE = "questions_cleaned.json"
 
 # --- Load Questions ---
@@ -27,22 +26,6 @@ def group_by_category(questions):
 
 # --- UI Setup ---
 st.set_page_config(page_title="AML Mastermind", layout="centered")
-
-# --- Authentication ---
-if "authenticated" not in st.session_state:
-    st.session_state.authenticated = False
-
-if not st.session_state.authenticated:
-    st.title("🔐 AML Mastermind Deluxe")
-    pw = st.text_input("Enter password to continue:", type="password")
-    if st.button("Login"):
-        if pw == PASSWORD:
-            st.session_state.authenticated = True
-            st.session_state.step = "intro"
-            st.experimental_rerun()
-        else:
-            st.error("❌ Wrong password.")
-    st.stop()
 
 # --- Load and Prepare Data ---
 questions_data = load_questions()
@@ -74,7 +57,6 @@ if st.session_state.step == "intro":
         if name.strip():
             st.session_state.player_name = name.strip()
             st.session_state.step = "mode"
-            st.experimental_rerun()
         else:
             st.error("⚠️ Please enter a name.")
     st.stop()
@@ -85,7 +67,7 @@ if st.session_state.step == "mode":
     st.session_state.mode = st.radio("Choose your mode:", ["Classic Quiz", "Time Attack"], index=0)
     st.session_state.category = st.selectbox("Select a category:", list(categories.keys()))
     if st.session_state.mode == "Classic Quiz":
-        st.session_state.num_questions = st.slider("Number of questions", 5, 30, 10)
+        st.session_state.num_questions = st.slider("Number of questions", 5, 10, 20)
     else:
         st.session_state.max_time = st.radio("Time limit (seconds):", [60, 120, 180], index=1)
 
