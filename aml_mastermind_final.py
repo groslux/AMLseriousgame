@@ -121,7 +121,7 @@ elif st.session_state.mode == "Classic Quiz":
         total = len(st.session_state.answers)
         if st.session_state.start_time:
             duration = int(time.time() - st.session_state.start_time)
-    else:   
+else:
         duration = 0
         pct = round(score / total * 100) 
     if total > 0 else 0
