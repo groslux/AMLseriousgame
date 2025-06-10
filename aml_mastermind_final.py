@@ -27,14 +27,17 @@ st.set_page_config(page_title="AML Mastermind", layout="centered")
 # --- Authentication ---
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
+
 if not st.session_state.authenticated:
     st.title("🔐 AML Mastermind Deluxe")
     pw = st.text_input("Enter password to continue:", type="password")
-    if st.button("Login") and pw == PASSWORD:
-        st.session_state.authenticated = True
-        st.session_state.step = "intro"
-    elif pw:
-        st.error("Wrong password.")
+    if st.button("Login"):
+        if pw == PASSWORD:
+            st.session_state.authenticated = True
+            st.session_state.step = "intro"
+            st.experimental_rerun()
+        else:
+            st.error("Wrong password.")
     st.stop()
 
 # --- Load and Prepare Data ---
@@ -52,7 +55,8 @@ defaults = {
     "current": 0,
     "start_time": None,
     "max_time": 0,
-    "done": False
+    "done": False,
+    "num_questions": 0
 }
 for k, v in defaults.items():
     if k not in st.session_state:
@@ -62,9 +66,13 @@ for k, v in defaults.items():
 if st.session_state.step == "intro":
     st.title("🎯 AML Mastermind Deluxe")
     name = st.text_input("Enter your name to start:", value=st.session_state.player_name)
-    if st.button("Confirm Name") and name.strip():
-        st.session_state.player_name = name.strip()
-        st.session_state.step = "mode"
+    if st.button("Confirm Name"):
+        if name.strip():
+            st.session_state.player_name = name.strip()
+            st.session_state.step = "mode"
+            st.experimental_rerun()
+        else:
+            st.error("Please enter a name.")
     st.stop()
 
 # --- Step: Select Mode & Category ---
@@ -83,57 +91,66 @@ if st.session_state.step == "mode":
             st.error("❌ No questions found in this category.")
             st.stop()
         random.shuffle(all_q)
-        st.session_state.questions = (
-            all_q[:st.session_state.num_questions] if st.session_state.mode == "Classic Quiz" else all_q
-        )
+        if st.session_state.mode == "Classic Quiz":
+            st.session_state.questions = all_q[:st.session_state.num_questions]
+        else:
+            st.session_state.questions = all_q
         st.session_state.answers = []
         st.session_state.current = 0
         st.session_state.done = False
         st.session_state.start_time = time.time()
         st.session_state.step = "quiz"
+        st.experimental_rerun()
     st.stop()
 
 # --- Step: Quiz ---
 if st.session_state.step == "quiz":
     questions = st.session_state.questions
-    index = st.session_state.current
+    idx = st.session_state.current
     mode = st.session_state.mode
 
+    # Time-Attack countdown
     if mode == "Time Attack":
         elapsed = int(time.time() - st.session_state.start_time)
         time_left = st.session_state.max_time - elapsed
-        if time_left <= 0 or index >= len(questions):
+        if time_left <= 0 or idx >= len(questions):
             st.session_state.done = True
             st.session_state.step = "result"
-            st.stop()
+            st.experimental_rerun()
         st.markdown(f"⏳ Time left: **{time_left} seconds**")
 
-    if index < len(questions):
-        q = questions[index]
-        st.markdown(f"### Q{index + 1}: {q['question']}")
-        with st.form(key=f"form_{index}"):
+    # Present question
+    if idx < len(questions):
+        q = questions[idx]
+        st.markdown(f"### Q{idx + 1}: {q['question']}")
+        with st.form(key=f"form_{idx}"):
             opts = q["options"].copy()
             random.shuffle(opts)
-            sel = st.radio("Choose an answer:", opts, key=f"answer_{index}")
-            submit = st.form_submit_button("Submit")
+            # use casefold for robust comparison
+            sel = st.radio("Choose an answer:", opts, key=f"answer_{idx}")
+            submitted = st.form_submit_button("Submit")
 
-        if submit:
-            correct = sel.strip().lower() == q["correct_answer"].strip().lower()
-            st.session_state.answers.append(correct)
-            if correct:
+        if submitted:
+            correct_answer = q["correct_answer"]
+            is_correct = (sel.strip().casefold() == correct_answer.strip().casefold())
+            st.session_state.answers.append(is_correct)
+
+            if is_correct:
                 st.success("✅ Correct!")
             else:
-                st.error(f"❌ Wrong! Correct answer: {q['correct_answer']}")
+                st.error(f"❌ Wrong! Correct answer: **{correct_answer}**")
             st.caption(f"**Explanation:** {q['explanation']}  \n\n🔗 **Source:** {q['source']}")
+
             st.session_state.current += 1
+            # Advance immediately
             if mode == "Classic Quiz" and st.session_state.current >= len(questions):
                 st.session_state.done = True
                 st.session_state.step = "result"
-            st.stop()
+            st.experimental_rerun()
     else:
         st.session_state.done = True
         st.session_state.step = "result"
-        st.stop()
+        st.experimental_rerun()
 
 # --- Step: Result ---
 if st.session_state.step == "result":
@@ -154,7 +171,7 @@ if st.session_state.step == "result":
     if st.button("Play Again"):
         for k in defaults.keys():
             del st.session_state[k]
-        st.rerun()
+        st.experimental_rerun()
 
 # --- Footer ---
 st.markdown("---")
