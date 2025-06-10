@@ -124,7 +124,6 @@ elif st.session_state.mode == "Classic Quiz":
 else:
         duration = 0
         pct = round(score / total * 100) 
-        if total > 0 
             save_result("Classic Quiz", st.session_state.category, score, total, duration)
             st.markdown(f"### ✅ Score: {score}/{total} ({pct}%)")
             st.markdown(f"🕓 Duration: {duration} sec")
