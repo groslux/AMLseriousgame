@@ -108,7 +108,7 @@ if st.session_state.step == "quiz":
         q = questions[idx]
         st.markdown(f"### Q{idx + 1}: {q['question']}")
         st.progress((idx + 1) / len(questions))
-        shuffle_key = f\"shuffled_{idx}\"
+        shuffle_key = f\"shuffled_{idx}\
         if shuffle_key not in st.session_state:
             opts = q[\"options\"].copy()
             random.shuffle(opts)
