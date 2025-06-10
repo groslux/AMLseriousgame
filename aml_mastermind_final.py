@@ -117,7 +117,7 @@ if st.session_state.step == "quiz":
         else:
             opts = st.session_state[shuffle_key]
 
-        sel = st.radio("Choose an answer:", opts, key=f"answer_{idx}")
+            sel = st.radio("Choose an answer:", opts, key=f"answer_{idx}")
 
 
 
