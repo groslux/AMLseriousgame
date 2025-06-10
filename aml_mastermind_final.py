@@ -12,7 +12,8 @@ TIME_OPTIONS = [60, 120, 180]
 
 # --- SETUP ---
 st.set_page_config(page_title="AML Mastermind Deluxe", layout="centered")
-
+st.markdown("Welcome to the ultimate anti-money laundering quiz. Test your skills and climb the leaderboard!")
+st.markdown("Designed by Guilhem ROS")
 # --- CACHED LOADERS ---
 @st.cache_data
 def load_questions():
