@@ -86,7 +86,7 @@ if st.session_state.step == "mode":
         st.session_state.done = False
         st.session_state.start_time = time.time()
         st.session_state.step = "quiz"
-        st.experimental_rerun()
+   
     st.stop()
 
 # --- Step: Quiz ---
@@ -101,7 +101,7 @@ if st.session_state.step == "quiz":
         if time_left <= 0 or idx >= len(questions):
             st.session_state.done = True
             st.session_state.step = "result"
-            st.experimental_rerun()
+  
         st.markdown(f"⏳ Time left: **{time_left} seconds**")
 
     if idx < len(questions):
@@ -130,11 +130,11 @@ if st.session_state.step == "quiz":
             if mode == "Classic Quiz" and st.session_state.current >= len(questions):
                 st.session_state.done = True
                 st.session_state.step = "result"
-            st.experimental_rerun()
+      
     else:
         st.session_state.done = True
         st.session_state.step = "result"
-        st.experimental_rerun()
+ 
 
 # --- Step: Result ---
 if st.session_state.step == "result":
@@ -155,7 +155,7 @@ if st.session_state.step == "result":
     if st.button("Play Again"):
         for k in list(defaults.keys()) + ["authenticated"]:
             st.session_state.pop(k, None)
-        st.experimental_rerun()
+
 
 # --- Footer ---
 st.markdown("---")
