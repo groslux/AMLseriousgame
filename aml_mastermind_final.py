@@ -60,7 +60,9 @@ questions_data = load_questions()
 grouped = group_by_category(questions_data)
 
 # --- UI: TITLE AND NAME ---
-st.title("🕵️ AML Mastermind Deluxe")
+st.title("🕵️ AML Mastermind Deluxe ")
+st.markdown("Welcome to the ultimate anti-money laundering quiz. Test your skills and climb the leaderboard!")
+st.markdown("Designed by Guilhem ROS")
 st.session_state.player_name = st.text_input("Enter your name to begin:")
 
 if not st.session_state.player_name.strip():
@@ -170,7 +172,7 @@ if st.session_state.game_ended or st.session_state.current >= len(st.session_sta
     if not st.session_state.leaderboard_saved:
         leaderboard = load_leaderboard()
         leaderboard.append({
-            "name": st.session_state.player_name.strip()[:3] + "###",
+            "name": st.session_state.player_name.strip()[:5] + "***",
             "mode": st.session_state.mode,
             "category": st.session_state.category,
             "score": score,
@@ -199,4 +201,4 @@ if st.session_state.game_ended or st.session_state.current >= len(st.session_sta
 
 # --- FOOTER ---
 st.markdown("---")
-st.caption("Made for AML training – Powered by FATF, IOSCO, IMF & World Bank best practices.")
+st.caption("Serious game developped for AML Training purposes by Guilhem ROS - 2025– Powered by FATF, IOSCO, IMF & World Bank public reports.")
