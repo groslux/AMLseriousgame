@@ -108,9 +108,9 @@ if st.session_state.step == "quiz":
         q = questions[idx]
         st.markdown(f"### Q{idx + 1}: {q['question']}")
         st.progress((idx + 1) / len(questions))
-        with st.form(key=f"form_{idx}"):
-
-# Create a session key for shuffled options
+        with st.form(key=f"form_{idx}"):        
+            
+        
         shuffle_key = f"shuffled_{idx}"
         if shuffle_key not in st.session_state:
             opts = q["options"].copy()
@@ -118,6 +118,11 @@ if st.session_state.step == "quiz":
             st.session_state[shuffle_key] = opts
         else:
             opts = st.session_state[shuffle_key]
+
+        sel = st.radio("Choose an answer:", opts, key=f"answer_{idx}")
+
+
+
 
             sel = st.radio("Choose an answer:", opts, key=f"answer_{idx}")
 
