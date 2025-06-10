@@ -96,7 +96,7 @@ if not st.session_state.mode:
         st.session_state.answers = []
 
 # --- CLASSIC MODE ---
-elif st.session_state.mode == "Classic Quiz":
+if st.session_state.mode == "Classic Quiz":
     i = st.session_state.current
     if i < len(st.session_state.questions):
         q = st.session_state.questions[i]
