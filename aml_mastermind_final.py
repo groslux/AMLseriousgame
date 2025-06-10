@@ -110,57 +110,56 @@ if st.session_state.step == "quiz":
         st.progress((idx + 1) / len(questions))
         shuffle_key = f\"shuffled_{idx}\"
         if shuffle_key not in st.session_state:
-            opts = q["options"].copy()
+            opts = q[\"options\"].copy()
             random.shuffle(opts)
             st.session_state[shuffle_key] = opts
         else:
             opts = st.session_state[shuffle_key]
 
         with st.form(key=f\"form_{idx}\"):
-            sel = st.radio("Choose an answer:", opts, key=f\"answer_{idx}\")
-            submitted = st.form_submit_button("Submit")
+            sel = st.radio(\"Choose an answer:\", opts, key=f\"answer_{idx}\")
+            submitted = st.form_submit_button(\"Submit\")
 
         if submitted:
-            correct = q["correct_answer"]
+            correct = q[\"correct_answer\"]
             is_correct = (sel.strip().casefold() == correct.strip().casefold())
             st.session_state.answers.append(is_correct)
 
             if is_correct:
-                st.success("✅ Correct!")
+                st.success(\"✅ Correct!\")
             else:
-                st.error(f"❌ Wrong! Correct answer: **{correct}**")
-            st.caption(f"**Explanation:** {q['explanation']}  \\n🔗 **Source:** {q['source']}")
-
+                st.error(f\"❌ Wrong! Correct answer: **{correct}**\")
+            st.caption(f\"**Explanation:** {q['explanation']}  \\n🔗 **Source:** {q['source']}\")
             st.session_state.current += 1
             time.sleep(0.3)
-            if mode == "Classic Quiz" and st.session_state.current >= len(questions):
+            if mode == \"Classic Quiz\" and st.session_state.current >= len(questions):
                 st.session_state.done = True
-                st.session_state.step = "result"
+                st.session_state.step = \"result\"
 
     else:
         st.session_state.done = True
-        st.session_state.step = "result"
+        st.session_state.step = \"result\"
 
 # --- Step: Result ---
-if st.session_state.step == "result":
-    st.title("✅ Quiz Completed")
+if st.session_state.step == \"result\":
+    st.title(\"✅ Quiz Completed\")
     score = sum(st.session_state.answers)
     total = len(st.session_state.answers)
     duration = int(time.time() - st.session_state.start_time)
     if total > 0:
         percent = round(score / total * 100)
-        st.markdown(f"### 🧮 Score: {score}/{total} ({percent}%) in {duration} seconds")
+        st.markdown(f\"### 🧮 Score: {score}/{total} ({percent}%) in {duration} seconds\")
         if percent >= 75:
-            st.success(f"🏅 Certificate earned, {st.session_state.player_name}!")
+            st.success(f\"🏅 Certificate earned, {st.session_state.player_name}!\")
         else:
-            st.info("📘 Try again to improve your score.")
+            st.info(\"📘 Try again to improve your score.\")
     else:
-        st.warning("⚠️ No questions were answered.")
+        st.warning(\"⚠️ No questions were answered.\")
 
-    if st.button("Play Again"):
-        for k in list(defaults.keys()) + ["authenticated"]:
+    if st.button(\"Play Again\"):
+        for k in list(defaults.keys()) + [\"authenticated\"]:
             st.session_state.pop(k, None)
 
 # --- Footer ---
-st.markdown("---")
-st.caption("© 2025 – AML Mastermind. Powered by FATF / IOSCO / IMF best practices.")
+st.markdown(\"---\")
+st.caption(\"© 2025 – AML Mastermind. Powered by FATF / IOSCO / IMF best practices.\")
