@@ -186,13 +186,29 @@ if st.session_state.game_ended or st.session_state.current >= len(st.session_sta
         st.session_state.leaderboard_saved = True
 
     # Show Leaderboard
-    if st.checkbox("📊 Show Leaderboard"):
-        sorted_lb = sorted(load_leaderboard(), key=lambda x: (-x["percent"], x["duration"]))
-        for r in sorted_lb[:10]:
-            st.markdown(
-                f"- {r['timestamp']} | {r['name']} | {r['mode']} | {r['category']} | "
-                f"{r['score']}/{r['total']} ({r['percent']}%) in {r['duration']}s"
-            )
+   if st.checkbox("📊 Show Leaderboard"):
+    leaderboard = load_leaderboard()
+
+    # Filter out zero-score entries to avoid division by zero
+    filtered = [r for r in leaderboard if r["score"] > 0]
+
+    # Compute efficiency (time per correct answer)
+    for r in filtered:
+        r["efficiency"] = r["duration"] / r["score"]
+
+    # Sort by efficiency (lower is better)
+    top10 = sorted(filtered, key=lambda x: x["efficiency"])[:10]
+
+    st.markdown("### 🏆 Top 10 Efficient Players")
+
+    for i, r in enumerate(top10, start=1):
+        st.markdown(
+            f"**{i}.** {r['name']} | {r['mode']} | {r['category']} | "
+            f"{r['score']}/{r['total']} correct | "
+            f"{r['duration']}s total | "
+            f"{r['efficiency']:.2f} sec/correct"
+        )
+
 
     # Play Again Button
     if st.button("🔄 Play Again"):
