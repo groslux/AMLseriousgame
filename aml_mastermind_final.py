@@ -60,10 +60,10 @@ questions_data = load_questions()
 grouped = group_by_category(questions_data)
 
 # --- UI: TITLE AND NAME ---
-st.title("🕵️ AML Mastermind Deluxe ", layout="centered")
-st.markdown("Welcome to the ultimate anti-money laundering quiz. Test your skills and climb the leaderboard!", layout="centered")
-st.markdown("Designed by Guilhem ROS", layout="centered")
-st.markdown("----", layout="centered")
+st.title("🕵️ AML Mastermind Deluxe ")
+st.markdown("Welcome to the ultimate anti-money laundering quiz. Test your skills and climb the leaderboard!")
+st.markdown("Designed by Guilhem ROS")
+st.markdown("----")
 st.session_state.player_name = st.text_input("Enter your name to begin:")
 
 if not st.session_state.player_name.strip():
