@@ -108,7 +108,7 @@ if not st.session_state.game_ended and st.session_state.current < len(st.session
         remaining = st.session_state.time_limit - int(time.time() - st.session_state.start_time)
         if remaining <= 0:
             st.session_state.game_ended = True
-            st.experimental_rerun()
+          
         else:
             st.markdown(f"⏳ Time Left: **{remaining} seconds**")
 
@@ -143,7 +143,7 @@ if not st.session_state.game_ended and st.session_state.current < len(st.session
         st.caption(f"📚 Source: {question.get('source', 'Unknown')}")
 
         st.session_state.current += 1
-        st.experimental_rerun()
+  
 
 # --- GAME END ---
 if st.session_state.game_ended or st.session_state.current >= len(st.session_state.questions):
@@ -195,7 +195,7 @@ if st.session_state.game_ended or st.session_state.current >= len(st.session_sta
     if st.button("🔄 Play Again"):
         for k in list(defaults.keys()) + [f"options_{i}" for i in range(len(st.session_state.questions))]:
             st.session_state.pop(k, None)
-        st.experimental_rerun()
+   
 
 # --- FOOTER ---
 st.markdown("---")
