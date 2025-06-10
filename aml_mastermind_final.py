@@ -124,9 +124,9 @@ elif st.session_state.mode == "Classic Quiz":
 else:
         duration = 0
         pct = round(score / total * 100) 
-            save_result("Classic Quiz", st.session_state.category, score, total, duration)
-            st.markdown(f"### ✅ Score: {score}/{total} ({pct}%)")
-            st.markdown(f"🕓 Duration: {duration} sec")
+        save_result("Classic Quiz", st.session_state.category, score, total, duration)
+        st.markdown(f"### ✅ Score: {score}/{total} ({pct}%)")
+        st.markdown(f"🕓 Duration: {duration} sec")
         if pct >= 75:
             st.success("🏆 You passed! Certificate earned!")
         else:
