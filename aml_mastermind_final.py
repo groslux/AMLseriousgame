@@ -240,6 +240,12 @@ if st.session_state.game_ended or st.session_state.current >= len(st.session_sta
     total = st.session_state.current
     percent = round(score / total * 100) if total else 0
     duration = int(time.time() - st.session_state.start_time)
+    incorrect_qs = [
+    st.session_state.questions[i]
+    for i, correct in enumerate(st.session_state.answers)
+    if not correct
+]
+
 
     st.markdown("## Game Complete!")
     st.markdown(f"**Player:** {st.session_state.player_name}")
