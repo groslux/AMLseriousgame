@@ -1,4 +1,3 @@
-
 import streamlit as st
 import json
 import random
@@ -149,7 +148,6 @@ if not st.session_state.game_ended and st.session_state.current < len(st.session
     q_idx = st.session_state.current
     question = st.session_state.questions[q_idx]
 
-    # Time check
     if st.session_state.mode == "Time Attack":
         remaining = st.session_state.time_limit - int(time.time() - st.session_state.start_time)
         if remaining <= 0:
@@ -241,9 +239,12 @@ if st.session_state.game_ended or st.session_state.current >= len(st.session_sta
     )
 
     if st.checkbox("Show Leaderboard"):
-        valid_entries = [r for r in leaderboard if r["score"] > 0]
+        valid_entries = [r for r in leaderboard if r.get("score", 0) > 0]
         for r in valid_entries:
-            r["efficiency"] = r["duration"] / r["score"]
+            try:
+                r["efficiency"] = r["duration"] / r["score"]
+            except (ZeroDivisionError, KeyError):
+                r["efficiency"] = float("inf")
 
         top10 = sorted(valid_entries, key=lambda x: x["efficiency"])[:10]
 
@@ -252,9 +253,9 @@ if st.session_state.game_ended or st.session_state.current >= len(st.session_sta
 
         for i, r in enumerate(top10, start=1):
             st.markdown(
-                f"{i}. {r['name']} | {r['mode']} | {r['category']} | "
-                f"{r['score']}/{r['total']} correct | "
-                f"{r['duration']}s | {r['efficiency']:.2f} sec/correct"
+                f"{i}. {r.get('name', '???')} | {r.get('mode', '-') } | {r.get('category', '-') } | "
+                f"{r.get('score', 0)}/{r.get('total', 0)} correct | "
+                f"{r.get('duration', 0)}s | {r.get('efficiency', 999):.2f} sec/correct"
             )
 
     if st.button("Play Again"):
