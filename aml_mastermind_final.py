@@ -57,41 +57,44 @@ def generate_certificate(player_name, score, total, percent, duration, incorrect
     y = height - 240
     if percent >= 75:
         c.setFont("Helvetica-Bold", 14)
-        c.drawString(100, y, "Congratulations! Your performance is impressive.")
+        c.drawString(100, y, "Congratulations! You performed excellently.")
     else:
         c.setFont("Helvetica-Bold", 14)
-        c.drawString(100, y, "Areas to Improve:")
-
+        c.drawString(100, y, "Areas to Improve (based on incorrect answers):")
         y -= 20
-        for q in incorrect_qs:
-            c.setFont("Helvetica", 10)
-            c.drawString(110, y, f"- {q['question'][:90]}...")
-            y -= 12
-            c.drawString(120, y, f"Correct: {q.get('correct_answer', 'N/A')}")
-            y -= 12
-            c.drawString(120, y, f"Explanation: {q.get('explanation', 'No explanation')[:100]}...")
-            y -= 14
-            if y < 100:
-                c.showPage()
-                y = height - 100
 
-        y -= 10
+        for q in incorrect_qs:
+            c.setFont("Helvetica-Bold", 10)
+            lines = [
+                f"Q: {q.get('question', '')}",
+                f"✔ Correct Answer: {q.get('correct_answer', '')}",
+                f"ℹ Explanation: {q.get('explanation', 'No explanation provided.')}"
+            ]
+            for line in lines:
+                wrapped = [line[i:i+100] for i in range(0, len(line), 100)]
+                for subline in wrapped:
+                    c.drawString(110, y, subline)
+                    y -= 12
+                    if y < 80:
+                        c.showPage()
+                        y = height - 80
+            y -= 10
+
         categories = sorted(set(q.get("category", "Other") for q in incorrect_qs))
         c.setFont("Helvetica-Bold", 12)
-        c.drawString(100, y, "Suggested Topics to Review:")
+        c.drawString(100, y, "📚 Suggested Topics to Review:")
         y -= 16
         for cat in categories:
             c.setFont("Helvetica", 10)
             c.drawString(120, y, f"- {cat}")
             y -= 12
-            if y < 100:
+            if y < 80:
                 c.showPage()
-                y = height - 100
+                y = height - 80
 
     c.save()
     buffer.seek(0)
     return buffer
-
 # --- SESSION STATE DEFAULTS ---
 defaults = {
     "player_name": "",
