@@ -1,3 +1,4 @@
+
 import streamlit as st
 import json
 import random
@@ -45,7 +46,7 @@ def generate_certificate(player_name, score, total, percent, duration, incorrect
     width, height = A4
 
     c.setFont("Helvetica-Bold", 20)
-    c.drawCentredString(width / 2, height - 100, "🎓 AML Mastermind Certificate")
+    c.drawCentredString(width / 2, height - 100, "AML Mastermind Certificate")
 
     c.setFont("Helvetica", 12)
     c.drawString(100, height - 140, f"Name: {player_name}")
@@ -98,10 +99,10 @@ leaderboard = load_leaderboard()
 player_count = len([r for r in leaderboard if r.get("score", 0) > 0])
 
 # --- UI: HEADER ---
-st.title("🕵️ AML Mastermind Deluxe")
+st.title("AML Mastermind Deluxe")
 st.markdown(f"<div style='text-align: center; font-size:18px;'>"
             f"Welcome to the ultimate anti-money laundering quiz.<br>"
-            f"👥 Players who have already played: <b>{player_count}</b>"
+            f"Players who have already played: <b>{player_count}</b>"
             f"</div>", unsafe_allow_html=True)
 st.markdown("---")
 
@@ -113,7 +114,7 @@ if not st.session_state.player_name.strip():
 
 # --- GAME SETUP ---
 if not st.session_state.game_started:
-    st.subheader("🎮 Choose your game mode")
+    st.subheader("Choose your game mode")
     mode = st.selectbox("Mode", ["Classic Quiz", "Time Attack"])
     category = st.selectbox("Select a Category", list(grouped.keys()))
 
@@ -125,7 +126,7 @@ if not st.session_state.game_started:
     if st.button("Start Game"):
         pool = grouped.get(category, [])
         if not pool:
-            st.error("❌ No questions available in this category.")
+            st.error("No questions available in this category.")
             st.stop()
 
         random.shuffle(pool)
@@ -154,9 +155,8 @@ if not st.session_state.game_ended and st.session_state.current < len(st.session
         if remaining <= 0:
             st.session_state.game_ended = True
         else:
-            st.markdown(f"⏳ Time Left: **{remaining} seconds**")
+            st.markdown(f"Time Left: **{remaining} seconds**")
 
-    # Shuffle options
     if f"options_{q_idx}" not in st.session_state:
         options = question["options"].copy()
         random.shuffle(options)
@@ -179,12 +179,12 @@ if not st.session_state.game_ended and st.session_state.current < len(st.session
         st.session_state.answers.append(is_correct)
 
         if is_correct:
-            st.success("✅ Correct!")
+            st.success("Correct!")
         else:
-            st.error(f"❌ Wrong. Correct answer: **{question['correct_answer']}**")
+            st.error(f"Wrong. Correct answer: {question['correct_answer']}")
 
         st.info(question.get("explanation", "No explanation provided."))
-        st.caption(f"📚 Source: {question.get('source', 'Unknown')}")
+        st.caption(f"Source: {question.get('source', 'Unknown')}")
 
         st.session_state.current += 1
 
@@ -196,18 +196,18 @@ if st.session_state.game_ended or st.session_state.current >= len(st.session_sta
     percent = round(score / total * 100) if total else 0
     duration = int(time.time() - st.session_state.start_time)
 
-    st.markdown("## 🧾 Game Complete!")
-    st.markdown(f"**Player:** {st.session_state.player_name}")
-    st.markdown(f"**Mode:** {st.session_state.mode}")
-    st.markdown(f"**Category:** {st.session_state.category}")
-    st.markdown(f"**Score:** {score}/{total} ({percent}%)")
-    st.markdown(f"**Time Taken:** {duration} seconds")
-    st.markdown(f"**Date:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    st.markdown("## Game Complete!")
+    st.markdown(f"Player: {st.session_state.player_name}")
+    st.markdown(f"Mode: {st.session_state.mode}")
+    st.markdown(f"Category: {st.session_state.category}")
+    st.markdown(f"Score: {score}/{total} ({percent}%)")
+    st.markdown(f"Time Taken: {duration} seconds")
+    st.markdown(f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
     if percent >= 75:
-        st.success("🏅 Excellent! You've earned a certificate!")
+        st.success("Excellent! You've earned a certificate!")
     else:
-        st.info("📘 Keep practicing to improve your score!")
+        st.info("Keep practicing to improve your score!")
 
     if not st.session_state.leaderboard_saved and score > 0:
         leaderboard.append({
@@ -223,7 +223,6 @@ if st.session_state.game_ended or st.session_state.current >= len(st.session_sta
         save_leaderboard(leaderboard)
         st.session_state.leaderboard_saved = True
 
-    # --- PDF Certificate ---
     incorrect_qs = [st.session_state.questions[i] for i, correct in enumerate(st.session_state.answers) if not correct]
     pdf_data = generate_certificate(
         st.session_state.player_name,
@@ -235,34 +234,32 @@ if st.session_state.game_ended or st.session_state.current >= len(st.session_sta
     )
 
     st.download_button(
-        label="📄 Download your certificate",
+        label="Download your certificate",
         data=pdf_data,
         file_name=f"{st.session_state.player_name}_certificate.pdf",
         mime="application/pdf"
     )
 
-    # --- Leaderboard Display ---
-    if st.checkbox("📊 Show Leaderboard"):
+    if st.checkbox("Show Leaderboard"):
         valid_entries = [r for r in leaderboard if r["score"] > 0]
         for r in valid_entries:
             r["efficiency"] = r["duration"] / r["score"]
 
         top10 = sorted(valid_entries, key=lambda x: x["efficiency"])[:10]
 
-        st.markdown("### 🏆 Top 10 Efficient Players")
+        st.markdown("### Top 10 Efficient Players")
         st.caption("Ranked by seconds per correct answer (lower is better)")
 
         for i, r in enumerate(top10, start=1):
             st.markdown(
-                f"**{i}.** {r['name']} | {r['mode']} | {r['category']} | "
+                f"{i}. {r['name']} | {r['mode']} | {r['category']} | "
                 f"{r['score']}/{r['total']} correct | "
                 f"{r['duration']}s | {r['efficiency']:.2f} sec/correct"
             )
 
-    if st.button("🔄 Play Again"):
+    if st.button("Play Again"):
         for k in list(defaults.keys()) + [f"options_{i}" for i in range(len(st.session_state.questions))]:
             st.session_state.pop(k, None)
 
-# --- FOOTER ---
 st.markdown("---")
 st.caption("Made for AML training – Powered by FATF, IOSCO, IMF & World Bank best practices.")
