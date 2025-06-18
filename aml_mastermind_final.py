@@ -68,6 +68,20 @@ def generate_certificate(player_name, score, total, percent, duration, incorrect
                 c.showPage()
                 y = height - 100
 
+        topic_y = y - 20
+        categories = sorted(set(q.get("category", "Other") for q in incorrect_qs))
+        c.setFont("Helvetica-Bold", 12)
+        c.drawString(100, topic_y, "Suggested Topics to Review:")
+        topic_y -= 16
+
+        for cat in categories:
+            c.setFont("Helvetica", 10)
+            c.drawString(120, topic_y, f"- {cat}")
+            topic_y -= 14
+            if topic_y < 100:
+                c.showPage()
+                topic_y = height - 100
+
     c.save()
     buffer.seek(0)
     return buffer
@@ -209,7 +223,7 @@ if st.session_state.game_ended or st.session_state.current >= len(st.session_sta
 
     if not st.session_state.leaderboard_saved and score > 0:
         leaderboard.append({
-            "name": st.session_state.player_name.strip()[:3] + "###",
+            "name": st.session_state.player_name.strip()[:5] + "###",
             "mode": st.session_state.mode,
             "category": st.session_state.category,
             "score": score,
