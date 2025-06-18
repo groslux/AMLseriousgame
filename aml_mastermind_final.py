@@ -128,16 +128,19 @@ st.markdown("---")
 # --- NAME INPUT & GAME INSTRUCTIONS ---
 st.session_state.player_name = st.text_input("Enter your name to begin:")
 
-if st.session_state.player_name.strip():
-    st.markdown(\"""
+if not st.session_state.player_name.strip():
+    st.info("Please enter your name above to continue.")
+    st.stop()
+else:
+    st.markdown("""
     ## Welcome to AML Mastermind Deluxe
 
     ### How the Game Works:
     - After entering your name, you'll choose between two game modes:
-      - **Classic Quiz**: Answer a fixed number of questions at your own pace (the quicker the better).
+      - **Classic Quiz**: Answer a fixed number of questions at your own pace.
       - **Time Attack**: Answer as many questions as possible within a time limit.
 
-    - **Available Topics** depend on the dataset, in this release:
+    - **Available Topics** depend on the dataset, in this current release your choices are:
       - Crypto
       - Collective Investment Sector
       - Banking
@@ -149,12 +152,10 @@ if st.session_state.player_name.strip():
     ### After the Game:
     - You'll receive:
       - Your **score** and **time**,
-      - A **certificate** highlighting areas to improve (if applicable),
+      - A **certificate** highlighting areas to improve,
       - A **leaderboard** showcasing the top players based on highest score and fastest time.
-    \""")
+    """)
     st.markdown("---")
-else:
-    st.stop()
 # --- GAME SETUP ---
 if not st.session_state.game_started:
     st.subheader("Choose your game mode")
