@@ -4,6 +4,9 @@ import random
 import time
 from datetime import datetime
 import os
+from io import BytesIO
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
 
 # --- CONFIGURATION ---
 DATA_FILE = "questions_cleaned.json"
@@ -36,6 +39,39 @@ def save_leaderboard(records):
     with open(LEADERBOARD_FILE, "w", encoding="utf-8") as f:
         json.dump(records, f, indent=2)
 
+def generate_certificate(player_name, score, total, percent, duration, incorrect_qs):
+    buffer = BytesIO()
+    c = canvas.Canvas(buffer, pagesize=A4)
+    width, height = A4
+
+    c.setFont("Helvetica-Bold", 20)
+    c.drawCentredString(width / 2, height - 100, "🎓 AML Mastermind Certificate")
+
+    c.setFont("Helvetica", 12)
+    c.drawString(100, height - 140, f"Name: {player_name}")
+    c.drawString(100, height - 160, f"Score: {score}/{total} ({percent}%)")
+    c.drawString(100, height - 180, f"Duration: {duration} seconds")
+    c.drawString(100, height - 200, f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+
+    if percent >= 75:
+        c.setFont("Helvetica-Bold", 14)
+        c.drawString(100, height - 240, "Congratulations! You performed excellently.")
+    else:
+        c.setFont("Helvetica-Bold", 14)
+        c.drawString(100, height - 240, "Areas to improve:")
+        y = height - 260
+        for q in incorrect_qs:
+            c.setFont("Helvetica", 10)
+            c.drawString(120, y, f"- {q['question'][:90]}...")
+            y -= 14
+            if y < 100:
+                c.showPage()
+                y = height - 100
+
+    c.save()
+    buffer.seek(0)
+    return buffer
+
 # --- SESSION STATE DEFAULTS ---
 defaults = {
     "player_name": "",
@@ -58,15 +94,15 @@ for key, val in defaults.items():
 # --- LOAD DATA ---
 questions_data = load_questions()
 grouped = group_by_category(questions_data)
+leaderboard = load_leaderboard()
+player_count = len([r for r in leaderboard if r.get("score", 0) > 0])
 
 # --- UI: HEADER ---
 st.title("🕵️ AML Mastermind Deluxe")
-st.markdown("""
-<div style="text-align: center; font-size:18px;">
-    Welcome to the ultimate anti-money laundering quiz.<br>
-    Test your skills and climb the leaderboard!
-</div>
-""", unsafe_allow_html=True)
+st.markdown(f"<div style='text-align: center; font-size:18px;'>"
+            f"Welcome to the ultimate anti-money laundering quiz.<br>"
+            f"👥 Players who have already played: <b>{player_count}</b>"
+            f"</div>", unsafe_allow_html=True)
 st.markdown("---")
 
 # --- NAME INPUT ---
@@ -117,11 +153,10 @@ if not st.session_state.game_ended and st.session_state.current < len(st.session
         remaining = st.session_state.time_limit - int(time.time() - st.session_state.start_time)
         if remaining <= 0:
             st.session_state.game_ended = True
-
         else:
             st.markdown(f"⏳ Time Left: **{remaining} seconds**")
 
-    # Stable shuffle
+    # Shuffle options
     if f"options_{q_idx}" not in st.session_state:
         options = question["options"].copy()
         random.shuffle(options)
@@ -153,7 +188,6 @@ if not st.session_state.game_ended and st.session_state.current < len(st.session
 
         st.session_state.current += 1
 
-
 # --- RESULTS ---
 if st.session_state.game_ended or st.session_state.current >= len(st.session_state.questions):
     st.session_state.game_ended = True
@@ -175,9 +209,7 @@ if st.session_state.game_ended or st.session_state.current >= len(st.session_sta
     else:
         st.info("📘 Keep practicing to improve your score!")
 
-    # Save to leaderboard once
     if not st.session_state.leaderboard_saved and score > 0:
-        leaderboard = load_leaderboard()
         leaderboard.append({
             "name": st.session_state.player_name.strip()[:3] + "###",
             "mode": st.session_state.mode,
@@ -191,9 +223,26 @@ if st.session_state.game_ended or st.session_state.current >= len(st.session_sta
         save_leaderboard(leaderboard)
         st.session_state.leaderboard_saved = True
 
-    # --- Show Leaderboard ---
+    # --- PDF Certificate ---
+    incorrect_qs = [st.session_state.questions[i] for i, correct in enumerate(st.session_state.answers) if not correct]
+    pdf_data = generate_certificate(
+        st.session_state.player_name,
+        score,
+        total,
+        percent,
+        duration,
+        incorrect_qs
+    )
+
+    st.download_button(
+        label="📄 Download your certificate",
+        data=pdf_data,
+        file_name=f"{st.session_state.player_name}_certificate.pdf",
+        mime="application/pdf"
+    )
+
+    # --- Leaderboard Display ---
     if st.checkbox("📊 Show Leaderboard"):
-        leaderboard = load_leaderboard()
         valid_entries = [r for r in leaderboard if r["score"] > 0]
         for r in valid_entries:
             r["efficiency"] = r["duration"] / r["score"]
@@ -213,7 +262,6 @@ if st.session_state.game_ended or st.session_state.current >= len(st.session_sta
     if st.button("🔄 Play Again"):
         for k in list(defaults.keys()) + [f"options_{i}" for i in range(len(st.session_state.questions))]:
             st.session_state.pop(k, None)
-      
 
 # --- FOOTER ---
 st.markdown("---")
