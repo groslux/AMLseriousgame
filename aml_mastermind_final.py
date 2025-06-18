@@ -53,34 +53,40 @@ def generate_certificate(player_name, score, total, percent, duration, incorrect
     c.drawString(100, height - 180, f"Duration: {duration} seconds")
     c.drawString(100, height - 200, f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
+    y = height - 240
     if percent >= 75:
         c.setFont("Helvetica-Bold", 14)
-        c.drawString(100, height - 240, "Congratulations! You performed excellently.")
+        c.drawString(100, y, "Congratulations! You performed excellently.")
     else:
         c.setFont("Helvetica-Bold", 14)
-        c.drawString(100, height - 240, "Areas to improve:")
-        y = height - 260
+        c.drawString(100, y, "Areas to Improve:")
+
+        y -= 20
         for q in incorrect_qs:
             c.setFont("Helvetica", 10)
-            c.drawString(120, y, f"- {q['question'][:90]}...")
-            y -= 14
+            question_text = f"- {q['question'][:90]}..."
+            correct = f"  Correct: {q.get('correct_answer', 'N/A')}"
+            explanation = f"  Explanation: {q.get('explanation', 'No explanation')[:100]}..."
+
+            for line in [question_text, correct, explanation]:
+                c.drawString(110, y, line)
+                y -= 12
+                if y < 100:
+                    c.showPage()
+                    y = height - 100
+
+        y -= 10
+        categories = sorted(set(q.get("category", "Other") for q in incorrect_qs))
+        c.setFont("Helvetica-Bold", 12)
+        c.drawString(100, y, "Suggested Topics to Review:")
+        y -= 16
+        for cat in categories:
+            c.setFont("Helvetica", 10)
+            c.drawString(120, y, f"- {cat}")
+            y -= 12
             if y < 100:
                 c.showPage()
                 y = height - 100
-
-        topic_y = y - 20
-        categories = sorted(set(q.get("category", "Other") for q in incorrect_qs))
-        c.setFont("Helvetica-Bold", 12)
-        c.drawString(100, topic_y, "Suggested Topics to Review:")
-        topic_y -= 16
-
-        for cat in categories:
-            c.setFont("Helvetica", 10)
-            c.drawString(120, topic_y, f"- {cat}")
-            topic_y -= 14
-            if topic_y < 100:
-                c.showPage()
-                topic_y = height - 100
 
     c.save()
     buffer.seek(0)
@@ -254,22 +260,20 @@ if st.session_state.game_ended or st.session_state.current >= len(st.session_sta
 
     if st.checkbox("Show Leaderboard"):
         valid_entries = [r for r in leaderboard if r.get("score", 0) > 0]
-        for r in valid_entries:
-            try:
-                r["efficiency"] = r["duration"] / r["score"]
-            except (ZeroDivisionError, KeyError):
-                r["efficiency"] = float("inf")
 
-        top10 = sorted(valid_entries, key=lambda x: x["efficiency"])[:10]
+        top10 = sorted(
+            valid_entries,
+            key=lambda x: (-x.get("score", 0), x.get("duration", 99999))
+        )[:10]
 
-        st.markdown("### Top 10 Efficient Players")
-        st.caption("Ranked by seconds per correct answer (lower is better)")
+        st.markdown("### Top 10 Players")
+        st.caption("Ranked by highest score, then fastest time")
 
         for i, r in enumerate(top10, start=1):
             st.markdown(
                 f"{i}. {r.get('name', '???')} | {r.get('mode', '-') } | {r.get('category', '-') } | "
                 f"{r.get('score', 0)}/{r.get('total', 0)} correct | "
-                f"{r.get('duration', 0)}s | {r.get('efficiency', 999):.2f} sec/correct"
+                f"{r.get('duration', 0)}s"
             )
 
     if st.button("Play Again"):
