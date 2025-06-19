@@ -156,7 +156,7 @@
   {
     "id": "crypto_42",
     "category": "Crypto",
-    "question": "What makes hosted wallets more compliant?",
+    "question": "What makes hosted wallets less risky in terms of ML/TF?",
     "options": [
       "Better graphics",
       "KYC enforcement",
@@ -212,14 +212,14 @@
   {
     "id": "crypto_46",
     "category": "Crypto",
-    "question": "What does FATF say about NFTs and VASPs?",
+    "question": "What does FATF say about NFTs and VAs?",
     "options": [
-      "NFTs are never VASPs",
+      "NFTs are never VAs",
       "All NFTs are art",
-      "NFTs may be VASPs if used for payments",
+      "NFTs may be VAs if used for payments",
       "NFTs are illegal"
     ],
-    "correct_answer": "NFTs may be VASPs if used for payments",
+    "correct_answer": "NFTs may be VAs if used for payments",
     "explanation": "NFTs used for transfer of value can trigger AML laws.",
     "source": "FATF – Updated VASP Guidance (2021)"
   },
@@ -296,14 +296,14 @@
   {
     "id": "collective_2",
     "category": "Collective Investment Sector",
-    "question": "Why are nominee shareholder arrangements considered a red flag in investment fund structures?",
+    "question": "Why are nominee  arrangements present an ML/TF risk in investment fund structures?",
     "options": [
       "They simplify tax filings",
       "They reduce the cost of fund administration",
-      "They can obscure the beneficial owner",
+      "They can be used to obscure the real beneficial owner(s)",
       "They are always illegal"
     ],
-    "correct_answer": "They can obscure the beneficial owner",
+    "correct_answer": "They can obscure the real beneficial owner(s)",
     "explanation": "Nominee arrangements may hide the identity of the actual beneficial owner, raising AML concerns.",
     "source": "FATF – Transparency and Beneficial Ownership (2014)"
   },
@@ -338,7 +338,7 @@
   {
     "id": "collective_5",
     "category": "Collective Investment Sector",
-    "question": "Why must investment fund administrators monitor transactions after onboarding?",
+    "question": "Why is it crucial to monitor transactions after onboarding of investors?",
     "options": [
       "To report fund performance",
       "To detect unusual activity or patterns",
@@ -425,12 +425,12 @@
     "question": "Which risk arises when investment funds accept third-party payments?",
     "options": [
       "NAV fluctuation",
-      "Misuse of omnibus accounts",
+      "Lack of identification of real beneficial owners",
       "Breakdown in ESG scoring",
       "Benchmark misalignment"
     ],
-    "correct_answer": "Misuse of omnibus accounts",
-    "explanation": "Third-party payments may obscure the real source of funds and facilitate layering through pooled accounts.",
+    "correct_answer": "Lack of identification of real beneficial owners",
+    "explanation": "Third-party payments may obscure the real destination of funds.",
     "source": "FATF – Risk-Based Approach for the Securities Sector (2018)"
   },
   {
@@ -450,7 +450,7 @@
   {
     "id": "collective_13",
     "category": "Collective Investment Sector",
-    "question": "Which function must remain with the fund board despite delegation?",
+    "question": "Which function remains with the fund board despite delegation?",
     "options": [
       "Portfolio construction",
       "Risk scoring",
@@ -506,7 +506,7 @@
   {
     "id": "collective_17",
     "category": "Collective Investment Sector",
-    "question": "What role does the transfer agent play in AML/CFT controls?",
+    "question": "What role does the transfer agent often play in AML/CFT controls?",
     "options": [
       "Asset valuation",
       "Portfolio hedging",
@@ -524,10 +524,10 @@
     "options": [
       "They guarantee high returns",
       "They are always liquid",
-      "They allow concealment and storage of illicit value",
+      "They may allow concealment and storage of illicit high value goods",
       "They are exempt from FATF rules"
     ],
-    "correct_answer": "They allow concealment and storage of illicit value",
+    "correct_answer": "They may allow concealment and storage of illicit high value goods",
     "explanation": "Alternative assets are often hard to value and trace, making them attractive for placement and layering.",
     "source": "World Bank – Assets Under Management and AML Risks (2022)"
   },
@@ -552,10 +552,10 @@
     "options": [
       "The depository bank",
       "The investor",
-      "The fund manager remains ultimately responsible",
+      "UCITS Management Companies remain responsible",
       "The registrar"
     ],
-    "correct_answer": "The fund manager remains ultimately responsible",
+    "correct_answer": "UCITS Management Companies remain responsible",
     "explanation": "Even when distributors perform due diligence, the fund manager must ensure effectiveness and oversight.",
     "source": "CSSF – Circular 18/698 (2018)"
   },
@@ -565,11 +565,11 @@
     "question": "What should a fund manager do if a distributor refuses to share KYC information?",
     "options": [
       "Rely on annual audits",
-      "Suspend onboarding of new investors",
+      "Analyze and consider suspending onboarding of new investors",
       "Ignore it if distributor is reputable",
       "Increase NAV calculation frequency"
     ],
-    "correct_answer": "Suspend onboarding of new investors",
+    "correct_answer": "Analyze and consider suspending onboarding of new investors",
     "explanation": "Access to KYC data is essential for AML compliance; refusal requires escalation and possibly termination of onboarding.",
     "source": "CSSF – AML/CTF Guidelines for the Fund Industry (2021)"
   },
@@ -646,7 +646,7 @@
   {
     "id": "collective_27",
     "category": "Collective Investment Sector",
-    "question": "What is a key reason private funds may facilitate ML?",
+    "question": "What is a key reason private funds may be abused by money launderers?",
     "options": [
       "Use of ESG screens",
       "Long-term illiquidity",
@@ -800,7 +800,7 @@
   {
     "id": "funds_28",
     "category": "Collective Investment Sector",
-    "question": "What kind of investor profile increases AML risk in collective investment schemes?",
+    "question": "What kind of investor profile increases ML risk in collective investment schemes?",
     "options": [
       "Government pension funds",
       "Investors from low-risk jurisdictions",
@@ -814,28 +814,28 @@
   {
     "id": "funds_29",
     "category": "Collective Investment Sector",
-    "question": "Why is source of funds verification particularly critical in real estate investment funds?",
+    "question": "Why are assets due diligence particularly critical in real estate investment funds?",
     "options": [
       "Because real estate funds are illiquid",
       "To prevent sanction evasion",
-      "To detect possible integration of illicit wealth",
+      "To detect possible ML/TF considering the significant value of real estate transactions",
       "Because they’re regulated by banks"
     ],
-    "correct_answer": "To detect possible integration of illicit wealth",
+    "correct_answer": "To detect possible ML/TF considering the significant value of real estate transactions",
     "explanation": "Real estate is commonly used to integrate criminal proceeds into the financial system.",
     "source": "World Bank – Stolen Asset Recovery (StAR) Initiative (2011)"
   },
   {
     "id": "funds_30",
     "category": "Collective Investment Sector",
-    "question": "What action should fund administrators take when faced with incomplete CDD files from intermediaries?",
+    "question": "What action should fund administrators take when faced with intermediaries (aka nominees)?",
     "options": [
       "Proceed with transactions anyway",
       "Request CDD only for retail clients",
-      "Delay or reject subscription until CDD is complete",
-      "Transfer funds to a custodian"
+      "Perform Enhanced Due Diligence on the intermediaries to assess its AML/CFT framework",
+      "Perform Simplified Due Diligence on the intermediaries"
     ],
-    "correct_answer": "Delay or reject subscription until CDD is complete",
+    "correct_answer": "Perform Enhanced Due Diligence on the intermediaries to assess its AML/CFT framework",
     "explanation": "FATF standards require verification before establishing a business relationship.",
     "source": "FATF – Recommendations 10 and 17"
   },
@@ -846,10 +846,10 @@
     "options": [
       "Allow anonymous subscriptions",
       "Rely on the nominee’s declaration",
-      "Identify and verify the ultimate beneficial owners",
+      "Perform Enhanced Due Diligence on the nominee shareholders to assess its AML/CFT framework",
       "Ignore CDD if nominee is licensed"
     ],
-    "correct_answer": "Identify and verify the ultimate beneficial owners",
+    "correct_answer": "Perform Enhanced Due Diligence on the nominee shareholders to assess its AML/CFT framewor",
     "explanation": "Nominee structures are often used to obscure beneficial ownership and require enhanced CDD.",
     "source": "FATF – Guidance on Transparency and Beneficial Ownership (2014)"
   },
@@ -912,7 +912,7 @@
   {
     "id": "funds_36",
     "category": "Collective Investment Sector",
-    "question": "Which AML control is most effective in outsourced fund administration?",
+    "question": "Which of the following is most effective when outsourcing AML/CFT controls?",
     "options": [
       "Annual outsourcing reports",
       "Daily subscription reconciliation",
