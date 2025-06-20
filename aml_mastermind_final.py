@@ -143,7 +143,7 @@ else:
     This game is intended for educational and training purposes only. 
     While every effort has been made to ensure the accuracy and realism of the content, it may contain errors or simplifications.
     This application does not constitute legal, regulatory, or compliance advice.
-    The creators assume no liability for any consequences arising from the use or interpretation of the information presented in this game
+    The creator/designer assumes no liability for any consequences arising from the use or interpretation of the information presented in this game.
     
 
     ### How the Game Works:
