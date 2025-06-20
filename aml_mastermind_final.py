@@ -138,6 +138,13 @@ else:
     st.markdown("""
     ## Welcome to the 1st AML Serious Game for Supervisors
 
+    Disclaimer : 
+    This game is intended for educational and training purposes only. 
+    While every effort has been made to ensure the accuracy and realism of the content, it may contain errors or simplifications.
+    This application does not constitute legal, regulatory, or compliance advice.
+    The creators assume no liability for any consequences arising from the use or interpretation of the information presented in this game
+    
+
     ### How the Game Works:
     - After entering your name, you'll choose between two game modes:
       - **Classic Quiz**: Answer a fixed number of questions at your own pace.
