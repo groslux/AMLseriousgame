@@ -137,9 +137,18 @@ if not st.session_state.player_name.strip():
     st.info("Please enter your name above to continue.")
     st.stop()
 
+st.markdown("## 🕵️ Welcome to the AML Serious Game for Supervisors")
 st.markdown("""
-## Welcome to the 1st AML Serious Game for Supervisors
+**🚨 Your Mission:**  
+Read the questions, analyze the answers and make the right call.
 
+🔍 Test your AML skills  
+💰 Learn AML/CFT facts from Banking, Crypto, and Investment Funds  
+📜 Earn your certificate  
+🏆 Join the leaderboard!
+
+
+### 📝 Disclaimer:
 **Disclaimer**: This game is for educational and training purposes only. There may be approximations and simplifications. The creator of the game does not accept any liability.
 
 ### How the Game Works:
