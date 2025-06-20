@@ -272,7 +272,7 @@ if st.session_state.game_ended or st.session_state.current >= len(st.session_sta
         incorrect_qs
     )
 
-    st.download_button("\ud83d\udcc4 Download Your Certificate", data=cert_buffer,
+    st.download_button("📄 Download Your Certificate", data=cert_buffer.getvalue(),
                        file_name="AML_Certificate.pdf", mime="application/pdf")
 
     # --- Show Leaderboard ---
