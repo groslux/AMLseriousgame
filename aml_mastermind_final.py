@@ -140,7 +140,7 @@ if not st.session_state.player_name.strip():
 st.markdown("""
 ## Welcome to the 1st AML Serious Game for Supervisors
 
-**Disclaimer**: This game is for educational and training purposes only. No legal advice.
+**Disclaimer**: This game is for educational and training purposes only. There may be approximations and simplifications. The creator of the game does not accept any liability.
 
 ### How the Game Works:
 - Choose Classic or Time Attack mode
@@ -148,7 +148,7 @@ st.markdown("""
 - In each question, click Submit twice to proceed.
 
 ### Results:
-- You get a certificate, leaderboard rank, and feedback.
+- You will get a certificate, leaderboard rank, and feedback.
 """)
 
 if not st.session_state.game_started:
