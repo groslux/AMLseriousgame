@@ -151,6 +151,7 @@ else:
     - After entering your name, you'll choose between two game modes:
       - **Classic Quiz**: Answer a fixed number of questions at your own pace.
       - **Time Attack**: Answer as many questions as possible within a time limit.
+      
 
     - **Available Topics** depend on the dataset, in this current release (1.0) your choices are:
     
