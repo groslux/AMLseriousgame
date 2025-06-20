@@ -95,6 +95,7 @@ def generate_certificate(player_name, score, total, percent, duration, incorrect
     c.save()
     buffer.seek(0)
     return buffer
+
 # --- SESSION STATE DEFAULTS ---
 defaults = {
     "player_name": "",
@@ -118,60 +119,36 @@ for key, val in defaults.items():
 questions_data = load_questions()
 grouped = group_by_category(questions_data)
 leaderboard = load_leaderboard()
-player_count = len([r for r in leaderboard if r.get("score", 0) > 0])
 
 # --- UI HEADER ---
 st.title("AML Serious Game for Supervisors")
-st.markdown(f"<div style='text-align: center; font-size:18px;'>"
-            f"Welcome to the ultimate anti-money laundering quiz.<br>"
-            f"Players who have already played: <b>{player_count}</b>"
-            f"</div>", unsafe_allow_html=True)
-st.markdown("---")
-
-# --- NAME INPUT & GAME INSTRUCTIONS ---
 st.session_state.player_name = st.text_input("Enter your name to begin:")
 
 if not st.session_state.player_name.strip():
     st.info("Please enter your name above to continue.")
     st.stop()
-else:
-    st.markdown("""
-    ## Welcome to the 1st AML Serious Game for Supervisors
 
-    Disclaimer : 
-    
-    This game is intended for educational and training purposes only. 
-    While every effort has been made to ensure the accuracy and realism of the content, it may contain errors or simplifications.
-    This application does not constitute legal, regulatory, or compliance advice.
-    The creator/designer assumes no liability for any consequences arising from the use or interpretation of the information presented in this game.
-    
+# Instruction and disclaimer
+st.markdown(f"""
+<div style='text-align: center; font-size:18px;'>
+Welcome to the ultimate anti-money laundering quiz.<br>
+</div>""", unsafe_allow_html=True)
 
-    ### How the Game Works:
-    
-    - After entering your name, you'll choose between two game modes:
-      - **Classic Quiz**: Answer a fixed number of questions at your own pace.
-      - **Time Attack**: Answer as many questions as possible within a time limit.
-      
+st.markdown("""
+## Welcome to the 1st AML Serious Game for Supervisors
 
-    - **Available Topics** depend on the dataset, in this current release (1.0) your choices are:
-    
-      - Crypto
-      - Collective Investment Sector
-      - Banking
+**Disclaimer:** This game is intended for educational and training purposes only. It may contain simplifications. It does not constitute legal or regulatory advice. The creator assumes no liability for any use.
 
-    ### Important:
-    
-    - Each question has multiple options. Choose one and click **Submit Answer**.
-    - To proceed to the next question, you must click the **Submit Answer** button **twice** (first to check, then to continue).
+### How the Game Works:
+- **Classic Quiz**: Answer a fixed number of questions.
+- **Time Attack**: Answer as many questions as possible within a time limit.
+- Topics: Crypto, Collective Investment, Banking.
+- Click **Submit Answer** twice (once to check, once to continue).
 
-    ### After the Game:
-    
-    - You'll receive:
-      - Your **score** and **time**,
-      - A **certificate** highlighting areas to improve,
-      - A **leaderboard** showcasing the top players based on highest score and fastest time.
-    """)
-    st.markdown("---")
+At the end:
+- Get your score, certificate, and leaderboard rank.
+""")
+
 # --- GAME SETUP ---
 if not st.session_state.game_started:
     st.subheader("Choose your game mode")
@@ -246,6 +223,7 @@ if not st.session_state.game_ended and st.session_state.current < len(st.session
         st.caption(f"Source: {question.get('source', 'Unknown')}")
 
         st.session_state.current += 1
+
 # --- RESULTS ---
 if st.session_state.game_ended or st.session_state.current >= len(st.session_state.questions):
     st.session_state.game_ended = True
@@ -254,11 +232,10 @@ if st.session_state.game_ended or st.session_state.current >= len(st.session_sta
     percent = round(score / total * 100) if total else 0
     duration = int(time.time() - st.session_state.start_time)
     incorrect_qs = [
-    st.session_state.questions[i]
-    for i, correct in enumerate(st.session_state.answers)
-    if not correct
-]
-
+        st.session_state.questions[i]
+        for i, correct in enumerate(st.session_state.answers)
+        if not correct
+    ]
 
     st.markdown("## Game Complete!")
     st.markdown(f"**Player:** {st.session_state.player_name}")
@@ -268,7 +245,7 @@ if st.session_state.game_ended or st.session_state.current >= len(st.session_sta
     st.markdown(f"**Time Taken:** {duration} seconds")
     st.markdown(f"**Date:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
-    # Save to leaderboard once
+    # Save to leaderboard
     if not st.session_state.leaderboard_saved and score > 0:
         leaderboard = load_leaderboard()
         leaderboard.append({
@@ -284,24 +261,22 @@ if st.session_state.game_ended or st.session_state.current >= len(st.session_sta
         save_leaderboard(leaderboard)
         st.session_state.leaderboard_saved = True
 
-    # Generate certificate PDF
-    incorrect_qs = [
-        st.session_state.questions[i]
-        for i, correct in enumerate(st.session_state.answers)
-        if not correct
-    ]
+    # Update player count
+    leaderboard = load_leaderboard()
+    player_count = len([r for r in leaderboard if r.get("score", 0) > 0])
+    st.markdown(f"**Players who have already played:** {player_count}")
+
     cert_buffer = generate_certificate(
         st.session_state.player_name,
         score, total, percent, duration,
         incorrect_qs
     )
 
-    st.download_button("📄 Download Your Certificate", data=cert_buffer,
+    st.download_button("\ud83d\udcc4 Download Your Certificate", data=cert_buffer,
                        file_name="AML_Certificate.pdf", mime="application/pdf")
 
     # --- Show Leaderboard ---
     if st.checkbox("Show Leaderboard"):
-        leaderboard = load_leaderboard()
         valid_entries = [r for r in leaderboard if r.get("score", 0) > 0]
         top10 = sorted(
             valid_entries,
