@@ -8,67 +8,43 @@ from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-import pandas as pd
 
-# --- GOOGLE SHEETS SETUP ---
+# --- CONFIG ---
+SHEET_NAME = "AML_Leaderboard"
+TIME_OPTIONS = [60, 120, 180]
+
+# --- GOOGLE SHEET CONNECTION ---
 def connect_to_sheet():
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
     creds_dict = st.secrets["gcp_service_account"]
     creds = ServiceAccountCredentials.from_json_keyfile_dict(dict(creds_dict), scope)
     client = gspread.authorize(creds)
-    return client.open("AML_Leaderboard").sheet1
+    sheet = client.open(SHEET_NAME).sheet1
+    return sheet
 
-def save_score_to_sheet(data):
+def save_to_sheet(record):
     sheet = connect_to_sheet()
-    row = [
-        data["name"], data["mode"], data["category"], data["score"],
-        data["total"], data["percent"], data["duration"], data["timestamp"]
-    ]
-    sheet.append_row(row)
+    sheet.append_row([record[k] for k in ["name", "mode", "category", "score", "total", "percent", "duration", "timestamp"]])
+
+def get_leaderboard():
+    sheet = connect_to_sheet()
+    return sheet.get_all_records()
 
 def get_player_count():
-    sheet = connect_to_sheet()
-    return len(sheet.get_all_values()) - 1
-
-def load_leaderboard_df():
-    sheet = connect_to_sheet()
-    records = sheet.get_all_records()
-    return pd.DataFrame(records)
-
-# --- CONFIGURATION ---
-DATA_FILE = "questions_cleaned.json"
-TIME_OPTIONS = [60, 120, 180]
-
-st.set_page_config(page_title="A serious game for AML supervisors", layout="centered")
-
-# --- LOAD QUESTIONS ---
-@st.cache_data
-def load_questions():
-    with open(DATA_FILE, "r", encoding="utf-8") as f:
-        return json.load(f)
-
-def group_by_category(data):
-    grouped = {}
-    for q in data:
-        cat = q.get("category", "Other").strip()
-        grouped.setdefault(cat, []).append(q)
-    return grouped
+    return len(get_leaderboard())
 
 # --- CERTIFICATE ---
 def generate_certificate(player_name, score, total, percent, duration, incorrect_qs):
     buffer = BytesIO()
     c = canvas.Canvas(buffer, pagesize=A4)
     width, height = A4
-
     c.setFont("Helvetica-Bold", 20)
     c.drawCentredString(width / 2, height - 100, "AML Serious Game Certificate")
-
     c.setFont("Helvetica", 12)
     c.drawString(100, height - 140, f"Name: {player_name}")
     c.drawString(100, height - 160, f"Score: {score}/{total} ({percent}%)")
     c.drawString(100, height - 180, f"Duration: {duration} seconds")
     c.drawString(100, height - 200, f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-
     y = height - 240
     if percent >= 75:
         c.setFont("Helvetica-Bold", 14)
@@ -104,66 +80,76 @@ def generate_certificate(player_name, score, total, percent, duration, incorrect
             if y < 80:
                 c.showPage()
                 y = height - 80
-
     c.save()
     buffer.seek(0)
     return buffer
 
-# --- SESSION STATE DEFAULTS ---
-defaults = {
-    "player_name": "",
-    "mode": None,
-    "category": None,
-    "questions": [],
-    "current": 0,
-    "answers": [],
-    "start_time": None,
-    "time_limit": None,
-    "game_started": False,
-    "game_ended": False,
-    "submitted": False,
-    "leaderboard_saved": False
-}
-for key, val in defaults.items():
-    if key not in st.session_state:
-        st.session_state[key] = val
+# --- PAGE INIT ---
+st.set_page_config(page_title="AML Serious Game for Supervisors", layout="centered")
 
-# --- LOAD DATA ---
+# --- LOAD QUESTIONS ---
+@st.cache_data
+def load_questions():
+    with open("questions_cleaned.json", "r", encoding="utf-8") as f:
+        return json.load(f)
+
+def group_by_category(data):
+    grouped = {}
+    for q in data:
+        cat = q.get("category", "Other").strip()
+        grouped.setdefault(cat, []).append(q)
+    return grouped
+
+# --- STATE ---
+def init_state():
+    defaults = {
+        "player_name": "",
+        "mode": None,
+        "category": None,
+        "questions": [],
+        "current": 0,
+        "answers": [],
+        "start_time": None,
+        "time_limit": None,
+        "game_started": False,
+        "game_ended": False,
+        "submitted": False,
+        "leaderboard_saved": False
+    }
+    for k, v in defaults.items():
+        if k not in st.session_state:
+            st.session_state[k] = v
+
+init_state()
+
 questions_data = load_questions()
 grouped = group_by_category(questions_data)
+player_count = get_player_count()
 
-# --- UI HEADER ---
+# --- UI ---
 st.title("AML Serious Game for Supervisors")
-st.session_state.player_name = st.text_input("Enter your name to begin:")
+st.markdown(f"<div style='text-align:center;font-size:18px;'>Players who have already played: <b>{player_count}</b></div>", unsafe_allow_html=True)
+st.markdown("---")
 
+st.session_state.player_name = st.text_input("Enter your name to begin:")
 if not st.session_state.player_name.strip():
     st.info("Please enter your name above to continue.")
     st.stop()
 
-# Instruction and disclaimer
-player_count = get_player_count()
-st.markdown(f"""
-<div style='text-align: center; font-size:18px;'>
-Welcome to the ultimate anti-money laundering quiz.<br>
-Players who have already played: <b>{player_count}</b>
-</div>""", unsafe_allow_html=True)
-
 st.markdown("""
 ## Welcome to the 1st AML Serious Game for Supervisors
 
-**Disclaimer:** This game is intended for educational and training purposes only. It may contain simplifications. It does not constitute legal or regulatory advice. The creator assumes no liability for any use.
+**Disclaimer**: This game is for educational and training purposes only. No legal advice.
 
 ### How the Game Works:
-- **Classic Quiz**: Answer a fixed number of questions.
-- **Time Attack**: Answer as many questions as possible within a time limit.
-- Topics: Crypto, Collective Investment, Banking.
-- Click **Submit Answer** twice (once to check, once to continue).
+- Choose Classic or Time Attack mode
+- Select a topic: Crypto, Investment Funds, or Banking
+- In each question, click Submit twice to proceed.
 
-At the end:
-- Get your score, certificate, and leaderboard rank.
+### Results:
+- You get a certificate, leaderboard rank, and feedback.
 """)
 
-# --- GAME SETUP ---
 if not st.session_state.game_started:
     st.subheader("Choose your game mode")
     mode = st.selectbox("Mode", ["Classic Quiz", "Time Attack"])
@@ -176,21 +162,17 @@ if not st.session_state.game_started:
 
     if st.button("Start Game"):
         pool = grouped.get(category, [])
-        if not pool:
-            st.error("No questions available in this category.")
-            st.stop()
-
         random.shuffle(pool)
         st.session_state.mode = mode
         st.session_state.category = category
         st.session_state.questions = pool[:num_questions] if mode == "Classic Quiz" else pool
         st.session_state.time_limit = time_limit if mode == "Time Attack" else None
         st.session_state.start_time = time.time()
+        st.session_state.game_started = True
         st.session_state.current = 0
         st.session_state.answers = []
         st.session_state.submitted = False
         st.session_state.leaderboard_saved = False
-        st.session_state.game_started = True
         st.session_state.game_ended = False
     else:
         st.stop()
@@ -226,12 +208,7 @@ if not st.session_state.game_ended and st.session_state.current < len(st.session
         picked = st.session_state.selected_answer.strip().lower()
         is_correct = picked == correct
         st.session_state.answers.append(is_correct)
-
-        if is_correct:
-            st.success("Correct!")
-        else:
-            st.error(f"Wrong. Correct answer: {question['correct_answer']}")
-
+        st.success("Correct!" if is_correct else f"Wrong. Correct answer: {question['correct_answer']}")
         st.info(question.get("explanation", "No explanation provided."))
         st.caption(f"Source: {question.get('source', 'Unknown')}")
         st.session_state.current += 1
@@ -243,11 +220,6 @@ if st.session_state.game_ended or st.session_state.current >= len(st.session_sta
     total = st.session_state.current
     percent = round(score / total * 100) if total else 0
     duration = int(time.time() - st.session_state.start_time)
-    incorrect_qs = [
-        st.session_state.questions[i]
-        for i, correct in enumerate(st.session_state.answers)
-        if not correct
-    ]
 
     st.markdown("## Game Complete!")
     st.markdown(f"**Player:** {st.session_state.player_name}")
@@ -258,7 +230,7 @@ if st.session_state.game_ended or st.session_state.current >= len(st.session_sta
     st.markdown(f"**Date:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
     if not st.session_state.leaderboard_saved and score > 0:
-        save_score_to_sheet({
+        save_to_sheet({
             "name": st.session_state.player_name.strip()[:5] + "###",
             "mode": st.session_state.mode,
             "category": st.session_state.category,
@@ -270,27 +242,33 @@ if st.session_state.game_ended or st.session_state.current >= len(st.session_sta
         })
         st.session_state.leaderboard_saved = True
 
+    incorrect_qs = [
+        st.session_state.questions[i]
+        for i, correct in enumerate(st.session_state.answers)
+        if not correct
+    ]
     cert_buffer = generate_certificate(
-        st.session_state.player_name,
-        score, total, percent, duration,
-        incorrect_qs
+        st.session_state.player_name, score, total, percent, duration, incorrect_qs
     )
-
-    st.download_button("📄 Download Your Certificate", data=cert_buffer.getvalue(),
-                       file_name="AML_Certificate.pdf", mime="application/pdf")
+    st.download_button("📄 Download Your Certificate", data=cert_buffer, file_name="AML_Certificate.pdf", mime="application/pdf")
 
     if st.checkbox("Show Leaderboard"):
-        df = load_leaderboard_df()
-        if not df.empty:
-            df_sorted = df.sort_values(by=["score", "duration"], ascending=[False, True])
-            st.dataframe(df_sorted.head(10))
-        else:
-            st.info("Leaderboard is currently empty.")
+        top10 = sorted(
+            get_leaderboard(),
+            key=lambda x: (-x.get("score", 0), x.get("duration", 99999))
+        )[:10]
+        st.markdown("### Top 10 Players")
+        st.caption("Ranked by highest score, then fastest time")
+        for i, r in enumerate(top10, start=1):
+            st.markdown(
+                f"{i}. {r.get('name', '???')} | {r.get('mode', '-') } | {r.get('category', '-') } | "
+                f"{r.get('score', 0)}/{r.get('total', 0)} correct | "
+                f"{r.get('duration', 0)}s"
+            )
 
     if st.button("Play Again"):
-        for k in list(defaults.keys()) + [f"options_{i}" for i in range(len(st.session_state.questions))]:
-            st.session_state.pop(k, None)
+        for k in list(st.session_state.keys()):
+            del st.session_state[k]
 
-# --- FOOTER ---
 st.markdown("---")
 st.caption("Designed for AML training of Supervisors - GROS - Luxembourg – based on FATF, IOSCO, IMF & World Bank public reports.")
