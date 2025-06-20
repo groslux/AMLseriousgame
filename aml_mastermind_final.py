@@ -14,7 +14,7 @@ LEADERBOARD_FILE = "leaderboard.json"
 TIME_OPTIONS = [60, 120, 180]
 
 # --- PAGE SETUP ---
-st.set_page_config(page_title="AML Mastermind Deluxe", layout="centered")
+st.set_page_config(page_title="A serious game for AML supervisors", layout="centered")
 
 # --- LOADERS ---
 @st.cache_data
@@ -46,7 +46,7 @@ def generate_certificate(player_name, score, total, percent, duration, incorrect
     width, height = A4
 
     c.setFont("Helvetica-Bold", 20)
-    c.drawCentredString(width / 2, height - 100, "AML Mastermind Certificate")
+    c.drawCentredString(width / 2, height - 100, "AML Serious Game Certificate")
 
     c.setFont("Helvetica", 12)
     c.drawString(100, height - 140, f"Name: {player_name}")
@@ -121,7 +121,7 @@ leaderboard = load_leaderboard()
 player_count = len([r for r in leaderboard if r.get("score", 0) > 0])
 
 # --- UI HEADER ---
-st.title("AML Mastermind Deluxe")
+st.title("AML Serious Game for Supervisors")
 st.markdown(f"<div style='text-align: center; font-size:18px;'>"
             f"Welcome to the ultimate anti-money laundering quiz.<br>"
             f"Players who have already played: <b>{player_count}</b>"
@@ -136,14 +136,14 @@ if not st.session_state.player_name.strip():
     st.stop()
 else:
     st.markdown("""
-    ## Welcome to AML Mastermind Deluxe
+    ## Welcome to the 1st AML Serious Game for Supervisors
 
     ### How the Game Works:
     - After entering your name, you'll choose between two game modes:
       - **Classic Quiz**: Answer a fixed number of questions at your own pace.
       - **Time Attack**: Answer as many questions as possible within a time limit.
 
-    - **Available Topics** depend on the dataset, in this current release your choices are:
+    - **Available Topics** depend on the dataset, in this current release (1.0) your choices are:
       - Crypto
       - Collective Investment Sector
       - Banking
@@ -311,4 +311,4 @@ if st.session_state.game_ended or st.session_state.current >= len(st.session_sta
 
 # --- FOOTER ---
 st.markdown("---")
-st.caption("Designed for AML training of Reggulators - Guilhem Ros – Powered by FATF, IOSCO, IMF & World Bank public reports.")
+st.caption("Designed for AML training of Supervisors - GROS - Luxembourg – based on FATF, IOSCO, IMF & World Bank public reports.")
