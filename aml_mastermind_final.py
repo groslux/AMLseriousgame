@@ -3,7 +3,6 @@ import json
 import random
 import time
 from datetime import datetime
-import os
 from io import BytesIO
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
@@ -11,21 +10,13 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import pandas as pd
 
-# --- CONFIGURATION ---
-DATA_FILE = "questions_cleaned.json"
-SHEET_NAME = "AML_Leaderboard"
-SERVICE_ACCOUNT_FILE = "service_account.json"
-TIME_OPTIONS = [60, 120, 180]
-
-# --- PAGE SETUP ---
-st.set_page_config(page_title="A serious game for AML supervisors", layout="centered")
-
 # --- GOOGLE SHEETS SETUP ---
 def connect_to_sheet():
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-    creds = ServiceAccountCredentials.from_json_keyfile_name(SERVICE_ACCOUNT_FILE, scope)
+    creds_dict = st.secrets["gcp_service_account"]
+    creds = ServiceAccountCredentials.from_json_keyfile_dict(dict(creds_dict), scope)
     client = gspread.authorize(creds)
-    return client.open(SHEET_NAME).sheet1
+    return client.open("AML_Leaderboard").sheet1
 
 def save_score_to_sheet(data):
     sheet = connect_to_sheet()
@@ -43,6 +34,12 @@ def load_leaderboard_df():
     sheet = connect_to_sheet()
     records = sheet.get_all_records()
     return pd.DataFrame(records)
+
+# --- CONFIGURATION ---
+DATA_FILE = "questions_cleaned.json"
+TIME_OPTIONS = [60, 120, 180]
+
+st.set_page_config(page_title="A serious game for AML supervisors", layout="centered")
 
 # --- LOAD QUESTIONS ---
 @st.cache_data
@@ -80,7 +77,6 @@ def generate_certificate(player_name, score, total, percent, duration, incorrect
         c.setFont("Helvetica-Bold", 14)
         c.drawString(100, y, "Areas to Improve (based on incorrect answers):")
         y -= 20
-
         for q in incorrect_qs:
             c.setFont("Helvetica-Bold", 10)
             lines = [
@@ -97,7 +93,6 @@ def generate_certificate(player_name, score, total, percent, duration, incorrect
                         c.showPage()
                         y = height - 80
             y -= 10
-
         categories = sorted(set(q.get("category", "Other") for q in incorrect_qs))
         c.setFont("Helvetica-Bold", 12)
         c.drawString(100, y, "📚 Suggested Topics to Review:")
@@ -227,7 +222,6 @@ if not st.session_state.game_ended and st.session_state.current < len(st.session
 
     if st.session_state.submitted:
         st.session_state.submitted = False
-
         correct = question["correct_answer"].strip().lower()
         picked = st.session_state.selected_answer.strip().lower()
         is_correct = picked == correct
@@ -240,7 +234,6 @@ if not st.session_state.game_ended and st.session_state.current < len(st.session
 
         st.info(question.get("explanation", "No explanation provided."))
         st.caption(f"Source: {question.get('source', 'Unknown')}")
-
         st.session_state.current += 1
 
 # --- RESULTS ---
@@ -264,7 +257,6 @@ if st.session_state.game_ended or st.session_state.current >= len(st.session_sta
     st.markdown(f"**Time Taken:** {duration} seconds")
     st.markdown(f"**Date:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
-    # Save to Google Sheets leaderboard
     if not st.session_state.leaderboard_saved and score > 0:
         save_score_to_sheet({
             "name": st.session_state.player_name.strip()[:5] + "###",
@@ -287,7 +279,6 @@ if st.session_state.game_ended or st.session_state.current >= len(st.session_sta
     st.download_button("📄 Download Your Certificate", data=cert_buffer.getvalue(),
                        file_name="AML_Certificate.pdf", mime="application/pdf")
 
-    # --- Show Leaderboard ---
     if st.checkbox("Show Leaderboard"):
         df = load_leaderboard_df()
         if not df.empty:
