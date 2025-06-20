@@ -139,6 +139,7 @@ else:
     ## Welcome to the 1st AML Serious Game for Supervisors
 
     Disclaimer : 
+    
     This game is intended for educational and training purposes only. 
     While every effort has been made to ensure the accuracy and realism of the content, it may contain errors or simplifications.
     This application does not constitute legal, regulatory, or compliance advice.
@@ -146,20 +147,24 @@ else:
     
 
     ### How the Game Works:
+    
     - After entering your name, you'll choose between two game modes:
       - **Classic Quiz**: Answer a fixed number of questions at your own pace.
       - **Time Attack**: Answer as many questions as possible within a time limit.
 
     - **Available Topics** depend on the dataset, in this current release (1.0) your choices are:
+    
       - Crypto
       - Collective Investment Sector
       - Banking
 
     ### Important:
+    
     - Each question has multiple options. Choose one and click **Submit Answer**.
     - To proceed to the next question, you must click the **Submit Answer** button **twice** (first to check, then to continue).
 
     ### After the Game:
+    
     - You'll receive:
       - Your **score** and **time**,
       - A **certificate** highlighting areas to improve,
