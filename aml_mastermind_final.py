@@ -6,32 +6,35 @@ from datetime import datetime
 from io import BytesIO
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
+import os
+import pathlib
 
 # --- CONFIG ---
-SHEET_NAME = "AML_Leaderboard"
+LEADERBOARD_PATH = ".streamlit/leaderboard.json"
 TIME_OPTIONS = [60, 120, 180]
 
-# --- GOOGLE SHEET CONNECTION ---
-def connect_to_sheet():
-    scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-    creds_dict = st.secrets["gcp_service_account"]
-    creds = ServiceAccountCredentials.from_json_keyfile_dict(dict(creds_dict), scope)
-    client = gspread.authorize(creds)
-    sheet = client.open(SHEET_NAME).sheet1
-    return sheet
+# --- LOCAL LEADERBOARD UTILS ---
+def load_leaderboard():
+    if not os.path.exists(LEADERBOARD_PATH):
+        return []
+    with open(LEADERBOARD_PATH, "r", encoding="utf-8") as f:
+        return json.load(f)
 
-def save_to_sheet(record):
-    sheet = connect_to_sheet()
-    sheet.append_row([record[k] for k in ["name", "mode", "category", "score", "total", "percent", "duration", "timestamp"]])
+def save_leaderboard(data):
+    os.makedirs(pathlib.Path(LEADERBOARD_PATH).parent, exist_ok=True)
+    with open(LEADERBOARD_PATH, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2)
 
-def get_leaderboard():
-    sheet = connect_to_sheet()
-    return sheet.get_all_records()
+def append_to_leaderboard(record):
+    leaderboard = load_leaderboard()
+    leaderboard.append(record)
+    save_leaderboard(leaderboard)
 
 def get_player_count():
-    return len(get_leaderboard())
+    return len(load_leaderboard())
+
+def get_top_players():
+    return sorted(load_leaderboard(), key=lambda x: (-x['score'], x['duration']))[:10]
 
 # --- CERTIFICATE ---
 def generate_certificate(player_name, score, total, percent, duration, incorrect_qs):
@@ -100,7 +103,6 @@ def group_by_category(data):
         grouped.setdefault(cat, []).append(q)
     return grouped
 
-# --- STATE ---
 def init_state():
     defaults = {
         "player_name": "",
@@ -126,7 +128,6 @@ questions_data = load_questions()
 grouped = group_by_category(questions_data)
 player_count = get_player_count()
 
-# --- UI ---
 st.title("AML Serious Game for Supervisors")
 st.markdown(f"<div style='text-align:center;font-size:18px;'>Players who have already played: <b>{player_count}</b></div>", unsafe_allow_html=True)
 st.markdown("---")
@@ -230,7 +231,7 @@ if st.session_state.game_ended or st.session_state.current >= len(st.session_sta
     st.markdown(f"**Date:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
     if not st.session_state.leaderboard_saved and score > 0:
-        save_to_sheet({
+        append_to_leaderboard({
             "name": st.session_state.player_name.strip()[:5] + "###",
             "mode": st.session_state.mode,
             "category": st.session_state.category,
@@ -253,10 +254,7 @@ if st.session_state.game_ended or st.session_state.current >= len(st.session_sta
     st.download_button("📄 Download Your Certificate", data=cert_buffer, file_name="AML_Certificate.pdf", mime="application/pdf")
 
     if st.checkbox("Show Leaderboard"):
-        top10 = sorted(
-            get_leaderboard(),
-            key=lambda x: (-x.get("score", 0), x.get("duration", 99999))
-        )[:10]
+        top10 = get_top_players()
         st.markdown("### Top 10 Players")
         st.caption("Ranked by highest score, then fastest time")
         for i, r in enumerate(top10, start=1):
