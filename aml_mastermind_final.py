@@ -7,16 +7,44 @@ import os
 from io import BytesIO
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
+import pandas as pd
 
 # --- CONFIGURATION ---
 DATA_FILE = "questions_cleaned.json"
-LEADERBOARD_FILE = "leaderboard.json"
+SHEET_NAME = "AML_Leaderboard"
+SERVICE_ACCOUNT_FILE = "service_account.json"
 TIME_OPTIONS = [60, 120, 180]
 
 # --- PAGE SETUP ---
 st.set_page_config(page_title="A serious game for AML supervisors", layout="centered")
 
-# --- LOADERS ---
+# --- GOOGLE SHEETS SETUP ---
+def connect_to_sheet():
+    scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+    creds = ServiceAccountCredentials.from_json_keyfile_name(SERVICE_ACCOUNT_FILE, scope)
+    client = gspread.authorize(creds)
+    return client.open(SHEET_NAME).sheet1
+
+def save_score_to_sheet(data):
+    sheet = connect_to_sheet()
+    row = [
+        data["name"], data["mode"], data["category"], data["score"],
+        data["total"], data["percent"], data["duration"], data["timestamp"]
+    ]
+    sheet.append_row(row)
+
+def get_player_count():
+    sheet = connect_to_sheet()
+    return len(sheet.get_all_values()) - 1
+
+def load_leaderboard_df():
+    sheet = connect_to_sheet()
+    records = sheet.get_all_records()
+    return pd.DataFrame(records)
+
+# --- LOAD QUESTIONS ---
 @st.cache_data
 def load_questions():
     with open(DATA_FILE, "r", encoding="utf-8") as f:
@@ -28,16 +56,6 @@ def group_by_category(data):
         cat = q.get("category", "Other").strip()
         grouped.setdefault(cat, []).append(q)
     return grouped
-
-def load_leaderboard():
-    if os.path.exists(LEADERBOARD_FILE):
-        with open(LEADERBOARD_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
-    return []
-
-def save_leaderboard(records):
-    with open(LEADERBOARD_FILE, "w", encoding="utf-8") as f:
-        json.dump(records, f, indent=2)
 
 # --- CERTIFICATE ---
 def generate_certificate(player_name, score, total, percent, duration, incorrect_qs):
@@ -118,7 +136,6 @@ for key, val in defaults.items():
 # --- LOAD DATA ---
 questions_data = load_questions()
 grouped = group_by_category(questions_data)
-leaderboard = load_leaderboard()
 
 # --- UI HEADER ---
 st.title("AML Serious Game for Supervisors")
@@ -129,9 +146,11 @@ if not st.session_state.player_name.strip():
     st.stop()
 
 # Instruction and disclaimer
+player_count = get_player_count()
 st.markdown(f"""
 <div style='text-align: center; font-size:18px;'>
 Welcome to the ultimate anti-money laundering quiz.<br>
+Players who have already played: <b>{player_count}</b>
 </div>""", unsafe_allow_html=True)
 
 st.markdown("""
@@ -245,10 +264,9 @@ if st.session_state.game_ended or st.session_state.current >= len(st.session_sta
     st.markdown(f"**Time Taken:** {duration} seconds")
     st.markdown(f"**Date:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
-    # Save to leaderboard
+    # Save to Google Sheets leaderboard
     if not st.session_state.leaderboard_saved and score > 0:
-        leaderboard = load_leaderboard()
-        leaderboard.append({
+        save_score_to_sheet({
             "name": st.session_state.player_name.strip()[:5] + "###",
             "mode": st.session_state.mode,
             "category": st.session_state.category,
@@ -258,13 +276,7 @@ if st.session_state.game_ended or st.session_state.current >= len(st.session_sta
             "duration": duration,
             "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         })
-        save_leaderboard(leaderboard)
         st.session_state.leaderboard_saved = True
-
-    # Update player count
-    leaderboard = load_leaderboard()
-    player_count = len([r for r in leaderboard if r.get("score", 0) > 0])
-    st.markdown(f"**Players who have already played:** {player_count}")
 
     cert_buffer = generate_certificate(
         st.session_state.player_name,
@@ -277,21 +289,12 @@ if st.session_state.game_ended or st.session_state.current >= len(st.session_sta
 
     # --- Show Leaderboard ---
     if st.checkbox("Show Leaderboard"):
-        valid_entries = [r for r in leaderboard if r.get("score", 0) > 0]
-        top10 = sorted(
-            valid_entries,
-            key=lambda x: (-x.get("score", 0), x.get("duration", 99999))
-        )[:10]
-
-        st.markdown("### Top 10 Players")
-        st.caption("Ranked by highest score, then fastest time")
-
-        for i, r in enumerate(top10, start=1):
-            st.markdown(
-                f"{i}. {r.get('name', '???')} | {r.get('mode', '-') } | {r.get('category', '-') } | "
-                f"{r.get('score', 0)}/{r.get('total', 0)} correct | "
-                f"{r.get('duration', 0)}s"
-            )
+        df = load_leaderboard_df()
+        if not df.empty:
+            df_sorted = df.sort_values(by=["score", "duration"], ascending=[False, True])
+            st.dataframe(df_sorted.head(10))
+        else:
+            st.info("Leaderboard is currently empty.")
 
     if st.button("Play Again"):
         for k in list(defaults.keys()) + [f"options_{i}" for i in range(len(st.session_state.questions))]:
