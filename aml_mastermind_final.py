@@ -280,10 +280,12 @@ elif st.session_state.step == "results":
     pw = st.text_input("Enter admin password to view comments", type="password")
     if pw == ADMIN_PASSWORD:
         st.success("✅ Admin access granted")
-        for c in load_json(COMMENTS_PATH):
-            st.markdown(f"**{c['name']}** ({c['time']})")
-            st.write(c['comment'])
-        st.download_button("⬇️ Download comments", json.dumps(load_json(COMMENTS_PATH), indent=2), "comments.json", mime="application/json")
+       for c in load_json(COMMENTS_PATH):
+    name = c.get("name", "Anonymous")
+    comment = c.get("comment", "")
+    timestamp = c.get("time", "Unknown time")
+    st.markdown(f"**{name}** ({timestamp})")
+    st.write(comment)
 
     if st.button("Play Again"):
         for key in list(st.session_state.keys()):
