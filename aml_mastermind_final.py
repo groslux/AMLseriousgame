@@ -180,9 +180,16 @@ if st.session_state.step == "select_mode":
 if st.session_state.step == "quiz":
     current = st.session_state.current
     total_questions = len(st.session_state.questions)
-    if current >= total_questions or (st.session_state.mode == "Time Attack" and time.time() - st.session_state.start_time > st.session_state.time_limit):
+    
+    # FIX: Prevent out-of-range error
+    if current >= total_questions or (
+        st.session_state.mode == "Time Attack" and
+        time.time() - st.session_state.start_time > st.session_state.time_limit
+    ):
         st.session_state.step = "results"
-      
+        st.experimental_rerun()
+    
+    # Get the current question
     question = st.session_state.questions[current]
     if f"shuffled_options_{current}" not in st.session_state:
         options = question["options"].copy()
