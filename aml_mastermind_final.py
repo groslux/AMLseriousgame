@@ -1,105 +1,78 @@
 import streamlit as st
 import json
-import os
-import time
 import random
+import time
 from datetime import datetime
 from io import BytesIO
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
+import os
 import pathlib
 
 # --- CONFIG ---
 LEADERBOARD_PATH = ".streamlit/leaderboard.json"
 COMMENTS_PATH = ".streamlit/comments.json"
-PASSWORD_ADMIN = "iloveaml2025"
 TIME_OPTIONS = [60, 120, 180]
+PASSWORD = "iloveaml2025"
 
-# --- STATE INIT ---
-def init_state():
-    defaults = {
-        "page": "name",
-        "player_name": "",
-        "mode": None,
-        "category": None,
-        "questions": [],
-        "current": 0,
-        "answers": [],
-        "start_time": None,
-        "time_limit": None,
-        "submitted": False,
-        "game_ended": False,
-        "leaderboard_saved": False,
-        "show_feedback": False,
-        "admin_logged_in": False
-    }
-    for k, v in defaults.items():
-        if k not in st.session_state:
-            st.session_state[k] = v
-
-init_state()
-
-# --- UTILS ---
-def load_leaderboard():
-    if not os.path.exists(LEADERBOARD_PATH):
+# --- FILE UTILS ---
+def load_json(path):
+    if not os.path.exists(path):
         return []
-    with open(LEADERBOARD_PATH, "r", encoding="utf-8") as f:
+    with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
 
-def save_leaderboard(data):
-    os.makedirs(pathlib.Path(LEADERBOARD_PATH).parent, exist_ok=True)
-    with open(LEADERBOARD_PATH, "w", encoding="utf-8") as f:
+def save_json(path, data):
+    os.makedirs(pathlib.Path(path).parent, exist_ok=True)
+    with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2)
 
+# --- LEADERBOARD ---
 def append_to_leaderboard(record):
-    lb = load_leaderboard()
-    lb.append(record)
-    save_leaderboard(lb)
+    leaderboard = load_json(LEADERBOARD_PATH)
+    leaderboard.append(record)
+    save_json(LEADERBOARD_PATH, leaderboard)
 
-def load_comments():
-    if not os.path.exists(COMMENTS_PATH):
-        return []
-    with open(COMMENTS_PATH, "r", encoding="utf-8") as f:
-        return json.load(f)
+def get_top_players():
+    return sorted(load_json(LEADERBOARD_PATH), key=lambda x: (-x['score'], x['duration']))[:10]
 
-def save_comments(data):
-    os.makedirs(pathlib.Path(COMMENTS_PATH).parent, exist_ok=True)
-    with open(COMMENTS_PATH, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2)
+def get_player_count():
+    return len(load_json(LEADERBOARD_PATH))
 
-def append_comment(comment):
-    comments = load_comments()
-    comments.append(comment)
-    save_comments(comments)
+# --- COMMENTS ---
+def append_comment(record):
+    comments = load_json(COMMENTS_PATH)
+    comments.append(record)
+    save_json(COMMENTS_PATH, comments)
 
-def generate_certificate(name, score, total, percent, duration, incorrect_qs):
+# --- CERTIFICATE ---
+def generate_certificate(player_name, score, total, percent, duration, incorrect_qs):
     buffer = BytesIO()
     c = canvas.Canvas(buffer, pagesize=A4)
     width, height = A4
     c.setFont("Helvetica-Bold", 20)
-    c.drawCentredString(width / 2, height - 100, "🏅 AML Serious Game Certificate")
+    c.drawCentredString(width / 2, height - 100, "🎓 AML Serious Game Certificate")
     c.setFont("Helvetica", 12)
-    c.drawString(100, height - 140, f"Name: {name}")
+    c.drawString(100, height - 140, f"Name: {player_name}")
     c.drawString(100, height - 160, f"Score: {score}/{total} ({percent}%)")
     c.drawString(100, height - 180, f"Duration: {duration} seconds")
     c.drawString(100, height - 200, f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     y = height - 240
     if percent >= 75:
-        c.setFont("Helvetica-Bold", 14)
-        c.drawString(100, y, "🎉 Excellent performance!")
+        c.drawString(100, y, "👏 Excellent work! You're an AML star.")
     else:
-        c.setFont("Helvetica-Bold", 14)
-        c.drawString(100, y, "📌 Areas to Improve:")
+        c.drawString(100, y, "📚 Areas to Improve:")
         y -= 20
         for q in incorrect_qs:
-            c.setFont("Helvetica-Bold", 10)
-            for line in [
-                f"Q: {q.get('question')}",
-                f"✔ Correct: {q.get('correct_answer')}",
-                f"ℹ Explanation: {q.get('explanation', 'No explanation')}"
-            ]:
-                for subline in [line[i:i+100] for i in range(0, len(line), 100)]:
-                    c.drawString(110, y, subline)
+            lines = [
+                f"Q: {q.get('question', '')}",
+                f"✔ Correct Answer: {q.get('correct_answer', '')}",
+                f"ℹ Explanation: {q.get('explanation', 'No explanation provided.')}"
+            ]
+            for line in lines:
+                wrapped = [line[i:i+100] for i in range(0, len(line), 100)]
+                for sub in wrapped:
+                    c.drawString(110, y, sub)
                     y -= 12
                     if y < 80:
                         c.showPage()
@@ -109,168 +82,191 @@ def generate_certificate(name, score, total, percent, duration, incorrect_qs):
     buffer.seek(0)
     return buffer
 
+# --- PAGE SETUP ---
+st.set_page_config(page_title="AML Serious Game", layout="centered")
+
 @st.cache_data
 def load_questions():
     with open("questions_cleaned.json", "r", encoding="utf-8") as f:
         return json.load(f)
 
-def group_by_category(data):
+def group_by_category(questions):
     grouped = {}
-    for q in data:
-        cat = q.get("category", "Other").strip()
+    for q in questions:
+        cat = q.get("category", "Other")
         grouped.setdefault(cat, []).append(q)
     return grouped
 
+# --- STATE ---
+def init_state():
+    defaults = {
+        "step": "name",  # name -> intro -> quiz -> result
+        "player_name": "",
+        "mode": None,
+        "category": None,
+        "questions": [],
+        "current": 0,
+        "answers": [],
+        "start_time": None,
+        "time_limit": None,
+        "submitted": False,
+        "score_saved": False,
+        "comment_submitted": False
+    }
+    for k, v in defaults.items():
+        if k not in st.session_state:
+            st.session_state[k] = v
+
+init_state()
 questions_data = load_questions()
 grouped = group_by_category(questions_data)
 
 # --- PAGE 1: NAME ---
-if st.session_state.page == "name":
+if st.session_state.step == "name":
     st.title("AML Serious Game for Supervisors")
-    st.markdown(f"<div style='text-align:center;font-size:18px;'>🧑‍💼 Players who played: <b>{len(load_leaderboard())}</b></div>", unsafe_allow_html=True)
+    st.markdown(f"👤 Already played: **{get_player_count()}** users")
     st.session_state.player_name = st.text_input("Enter your name to begin:")
-    if st.button("Continue ➡️") and st.session_state.player_name.strip():
-        st.session_state.page = "intro"
+    if st.button("Continue"):
+        if st.session_state.player_name.strip():
+            st.session_state.step = "intro"
+        else:
+            st.warning("Please enter your name.")
 
 # --- PAGE 2: INTRO ---
-elif st.session_state.page == "intro":
-    st.title("🔍 Welcome to the AML Serious Game")
+elif st.session_state.step == "intro":
+    st.header("🕵️ Welcome to the AML Serious Game")
     st.markdown("""
 **🚨 Your Mission:**  
-Test your AML supervision skills across Banking, Crypto, and Investment Funds.
+Answer correctly and fast to climb the leaderboard!
 
-📜 Earn your certificate  
-🏆 Join the leaderboard  
-✉️ Leave private feedback for the game creator
+💰 Topics: Crypto, Investment Funds, Banking  
+📜 Certificate at the end  
+🏆 Compete on the leaderboard  
 
-### 📝 Disclaimer:
-This game is for educational and training purposes only. There may be mistakes or simplifications. This is not legal advice.
+**📝 Disclaimer**: This game is for educational purposes only. It may contain simplifications and is not legal advice.
 
-### How the Game Works:
-- Choose Classic or Time Attack mode  
-- Select a topic  
-- Submit answers and learn from explanations
 """)
-    mode = st.selectbox("Choose game mode", ["Classic Quiz", "Time Attack"])
-    category = st.selectbox("Select a topic", list(grouped.keys()))
-    if mode == "Classic Quiz":
-        num_q = st.slider("Number of questions", 5, 30, 10)
+    st.subheader("Choose your mode and category")
+    st.session_state.mode = st.selectbox("Mode", ["Classic Quiz", "Time Attack"])
+    st.session_state.category = st.selectbox("Category", list(grouped.keys()))
+    if st.session_state.mode == "Classic Quiz":
+        num = st.slider("Number of Questions", 5, 30, 10)
     else:
-        time_limit = st.selectbox("Time Limit (seconds)", TIME_OPTIONS)
+        st.session_state.time_limit = st.selectbox("Time Limit (seconds)", TIME_OPTIONS)
 
-    if st.button("Start Game ▶️"):
-        pool = grouped.get(category, [])
+    if st.button("Start Game"):
+        pool = grouped.get(st.session_state.category, [])
         random.shuffle(pool)
-        st.session_state.mode = mode
-        st.session_state.category = category
-        st.session_state.questions = pool[:num_q] if mode == "Classic Quiz" else pool
-        st.session_state.time_limit = time_limit if mode == "Time Attack" else None
+        st.session_state.questions = pool[:num] if st.session_state.mode == "Classic Quiz" else pool
         st.session_state.start_time = time.time()
-        st.session_state.page = "quiz"
+        st.session_state.step = "quiz"
 
 # --- PAGE 3: QUIZ ---
-elif st.session_state.page == "quiz":
+elif st.session_state.step == "quiz":
     if st.session_state.mode == "Time Attack":
         remaining = st.session_state.time_limit - int(time.time() - st.session_state.start_time)
-        st.markdown(f"⏱️ Time Left: **{max(0, remaining)} seconds**")
         if remaining <= 0:
-            st.session_state.page = "result"
+            st.session_state.step = "result"
+        else:
+            st.markdown(f"⏱️ Time left: **{remaining} seconds**")
 
     idx = st.session_state.current
-    if idx < len(st.session_state.questions):
+    if idx >= len(st.session_state.questions):
+        st.session_state.step = "result"
+    else:
         q = st.session_state.questions[idx]
-        st.markdown(f"### Question {idx+1}: {q['question']}")
+        st.subheader(f"Question {idx + 1} of {len(st.session_state.questions)}")
+        st.markdown(q["question"])
+
         if f"options_{idx}" not in st.session_state:
             opts = q["options"].copy()
             random.shuffle(opts)
             st.session_state[f"options_{idx}"] = opts
-        options = st.session_state[f"options_{idx}"]
-        selected = st.radio("Choose:", options, key=f"answer_{idx}")
+
+        selected = st.radio("Select an answer:", st.session_state[f"options_{idx}"], key=f"radio_{idx}")
 
         if not st.session_state.submitted:
-            if st.button("Submit Answer"):
-                st.session_state.submitted = True
+            if st.button("Submit"):
                 correct = q["correct_answer"].strip().lower()
                 picked = selected.strip().lower()
-                st.session_state.answers.append(picked == correct)
-                st.session_state.show_feedback = True
-
-        if st.session_state.show_feedback:
-            is_correct = st.session_state.answers[-1]
-            st.success("✅ Correct!" if is_correct else f"❌ Incorrect. Correct: {q['correct_answer']}")
-            st.info(q.get("explanation", "No explanation provided."))
-            st.caption(f"Source: {q.get('source', 'Unknown')}")
-            if st.button("Next Question ⏭️"):
+                is_correct = picked == correct
+                st.session_state.answers.append(is_correct)
+                st.session_state.submitted = True
+                if is_correct:
+                    st.success("✅ Correct!")
+                else:
+                    st.error(f"❌ Incorrect. Correct answer: {q['correct_answer']}")
+                st.info(q.get("explanation", "No explanation provided."))
+                st.caption(f"📚 Source: {q.get('source', 'Unknown')}")
+        else:
+            if st.button("Next"):
                 st.session_state.current += 1
                 st.session_state.submitted = False
-                st.session_state.show_feedback = False
-    else:
-        st.session_state.page = "result"
+                st.rerun()
 
-# --- RESULTS ---
-elif st.session_state.page == "result":
-    st.title("🎉 Game Complete!")
+# --- PAGE 4: RESULTS ---
+elif st.session_state.step == "result":
+    st.header("🎉 Quiz Complete!")
     score = sum(st.session_state.answers)
-    total = len(st.session_state.answers)
+    total = len(st.session_state.questions)
     percent = round(score / total * 100)
     duration = int(time.time() - st.session_state.start_time)
-
-    st.markdown(f"**Player:** {st.session_state.player_name}")
-    st.markdown(f"**Mode:** {st.session_state.mode}")
-    st.markdown(f"**Topic:** {st.session_state.category}")
+    st.markdown(f"**Name:** {st.session_state.player_name}")
     st.markdown(f"**Score:** {score}/{total} ({percent}%)")
-    st.markdown(f"**Time Taken:** {duration} seconds")
+    st.markdown(f"**Duration:** {duration} seconds")
 
-    if not st.session_state.leaderboard_saved and score > 0:
+    if not st.session_state.score_saved:
         append_to_leaderboard({
-            "name": st.session_state.player_name.strip()[:5] + "###",
+            "name": st.session_state.player_name[:5] + "###",
             "mode": st.session_state.mode,
             "category": st.session_state.category,
             "score": score,
             "total": total,
             "percent": percent,
             "duration": duration,
-            "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         })
-        st.session_state.leaderboard_saved = True
+        st.session_state.score_saved = True
 
-    incorrect = [st.session_state.questions[i] for i, c in enumerate(st.session_state.answers) if not c]
+    incorrect = [q for i, q in enumerate(st.session_state.questions) if not st.session_state.answers[i]]
     cert = generate_certificate(st.session_state.player_name, score, total, percent, duration, incorrect)
     st.download_button("📄 Download Your Certificate", data=cert, file_name="AML_Certificate.pdf", mime="application/pdf")
 
-    st.markdown("### 🏆 Leaderboard")
-    top10 = sorted(load_leaderboard(), key=lambda x: (-x['score'], x['duration']))[:10]
-    for i, r in enumerate(top10, 1):
-        st.markdown(f"{i}. {r['name']} | {r['score']}/{r['total']} | {r['duration']}s | {r['category']}")
+    st.subheader("🏆 Leaderboard (Top 10)")
+    for i, r in enumerate(get_top_players(), 1):
+        st.markdown(f"{i}. {r['name']} | {r['score']}/{r['total']} | {r['duration']}s")
 
-    st.markdown("### ✉️ Leave a comment for the creator")
-    comment = st.text_area("Write your comment (only visible to the creator)")
+    st.subheader("💬 Leave a comment for the game creator")
+    comment = st.text_area("Your comment (only visible to the creator):")
     if st.button("Submit Comment"):
-        if comment.strip():
-            append_comment({
-                "name": st.session_state.player_name,
-                "comment": comment.strip(),
-                "timestamp": datetime.now().isoformat()
-            })
-            st.success("Comment submitted!")
+        append_comment({
+            "name": st.session_state.player_name,
+            "comment": comment,
+            "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        })
+        st.success("Comment submitted.")
+        st.session_state.comment_submitted = True
 
-    st.markdown("### 🔁 Play Again?")
-    if st.button("Restart"):
+    if st.button("Play Again"):
         for k in list(st.session_state.keys()):
             del st.session_state[k]
-        st.experimental_rerun()
+        st.rerun()
 
-# --- ADMIN VIEW COMMENTS ---
-with st.sidebar:
-    st.markdown("🔐 Admin Section")
-    if not st.session_state.admin_logged_in:
-        pwd = st.text_input("Enter admin password", type="password")
-        if st.button("Login"):
-            if pwd == PASSWORD_ADMIN:
-                st.session_state.admin_logged_in = True
-                st.success("Logged in.")
-    else:
-        st.markdown("### 💬 Comments Received")
-        for c in load_comments():
-            st.markdown(f"🧑 {c['name']} at {c['timestamp']}")
-            st.info(c['comment'])
+# --- ADMIN SECTION ---
+if "admin_access" not in st.session_state:
+    st.session_state.admin_access = False
+
+with st.expander("🔒 Admin Access"):
+    pw = st.text_input("Enter admin password to view comments", type="password")
+    if st.button("Login"):
+        if pw == PASSWORD:
+            st.session_state.admin_access = True
+        else:
+            st.error("Incorrect password.")
+
+if st.session_state.admin_access:
+    st.subheader("🗂️ All Comments")
+    for c in load_json(COMMENTS_PATH):
+        st.markdown(f"**{c['name']}** ({c['time']})")
+        st.write(c["comment"])
+        st.markdown("---")
