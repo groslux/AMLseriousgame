@@ -114,7 +114,6 @@ grouped = group_by_category(questions_data)
 
 # --- INTRO PAGE ---
 if st.session_state.page == "intro":
-    st.image("logo.png", width=150)
     st.title("🕵️ AML Serious Game for Supervisors")
     st.markdown(f"<div style='text-align:center;font-size:18px;'>Players who have already played: <b>{get_player_count()}</b></div>", unsafe_allow_html=True)
 
