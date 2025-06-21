@@ -98,7 +98,8 @@ defaults = {
     "time_limit": None,
     "game_ended": False,
     "selected_answer": "",
-    "leaderboard_saved": False
+    "leaderboard_saved": False,
+    "comment_submitted": False,
 }
 for k, v in defaults.items():
     if k not in st.session_state: st.session_state[k] = v
@@ -107,7 +108,7 @@ questions_data = load_questions()
 grouped = group_by_category(questions_data)
 player_count = get_player_count()
 
-# --- PAGE 1: NAME ---
+# --- PAGE: NAME ---
 if st.session_state.step == "name":
     st.title("🕵️ AML Serious Game")
     st.markdown(f"<div style='text-align:center;font-size:18px;'>Players who have played: <b>{player_count}</b></div>", unsafe_allow_html=True)
@@ -115,9 +116,8 @@ if st.session_state.step == "name":
     if st.button("Continue") and name.strip():
         st.session_state.player_name = name.strip()
         st.session_state.step = "instructions"
-        st.experimental_rerun()
 
-# --- PAGE 2: INSTRUCTIONS ---
+# --- PAGE: INSTRUCTIONS ---
 elif st.session_state.step == "instructions":
     st.header("🚨 Welcome, AML Investigator!")
     st.markdown("""
@@ -139,9 +139,8 @@ This game is for training only. It may contain simplifications or mistakes. It d
 """)
     if st.button("Start Setup"):
         st.session_state.step = "setup"
-        st.experimental_rerun()
 
-# --- PAGE 3: SETUP MODE ---
+# --- PAGE: SETUP ---
 elif st.session_state.step == "setup":
     st.subheader("Choose your game mode")
     mode = st.selectbox("Mode", ["Classic Quiz", "Time Attack"])
@@ -165,17 +164,14 @@ elif st.session_state.step == "setup":
         st.session_state.current = 0
         st.session_state.answers = []
         st.session_state.game_ended = False
-        st.experimental_rerun()
+        st.session_state.submitted = False
 
-# --- PAGE 4: QUIZ LOOP ---
+# --- PAGE: QUIZ ---
 elif st.session_state.step == "quiz":
     if st.session_state.mode == "Time Attack":
         remaining = st.session_state.time_limit - int(time.time() - st.session_state.start_time)
         if remaining <= 0:
             st.session_state.step = "results"
-            st.experimental_rerun()
-        st.markdown(f"⏱ Time left: **{remaining} sec**")
-
     i = st.session_state.current
     questions = st.session_state.questions
     if i < len(questions):
@@ -188,24 +184,21 @@ elif st.session_state.step == "quiz":
         selected = st.radio("Choose:", st.session_state[f"options_{i}"], key=f"answer_{i}")
         if st.button("Submit Answer"):
             correct = q["correct_answer"].strip().lower()
-            st.session_state.answers.append(selected.strip().lower() == correct)
-            st.success("✅ Correct!" if selected.strip().lower() == correct else f"❌ Wrong! Correct: {q['correct_answer']}")
+            is_correct = selected.strip().lower() == correct
+            st.session_state.answers.append(is_correct)
+            st.success("✅ Correct!" if is_correct else f"❌ Wrong! Correct: {q['correct_answer']}")
             st.info(q.get("explanation", "No explanation."))
             st.caption(f"📚 Source: {q.get('source', 'Unknown')}")
             st.session_state.current += 1
-            time.sleep(1.5)
-            st.experimental_rerun()
     else:
         st.session_state.step = "results"
-        st.experimental_rerun()
 
-# --- PAGE 5: RESULTS ---
+# --- PAGE: RESULTS ---
 elif st.session_state.step == "results":
     score = sum(st.session_state.answers)
     total = len(st.session_state.questions)
     percent = round(score / total * 100)
     duration = int(time.time() - st.session_state.start_time)
-
     st.header("✅ Game Over!")
     st.markdown(f"**Player:** {st.session_state.player_name}")
     st.markdown(f"**Score:** {score}/{total} ({percent}%)")
@@ -235,7 +228,7 @@ elif st.session_state.step == "results":
     st.markdown("---")
     st.markdown("### 💬 Leave a Comment")
     comment = st.text_area("Your feedback (private):", key="comment_box")
-    if st.button("Submit Comment") and comment.strip():
+    if st.button("Submit Comment") and comment.strip() and not st.session_state.comment_submitted:
         comments = load_json(COMMENTS_PATH)
         comments.append({
             "player": st.session_state.player_name,
@@ -244,11 +237,11 @@ elif st.session_state.step == "results":
         })
         save_json(COMMENTS_PATH, comments)
         st.success("Comment saved. Thank you!")
+        st.session_state.comment_submitted = True
 
     if st.button("🔁 Play Again"):
         for k in list(st.session_state.keys()):
             del st.session_state[k]
-        st.experimental_rerun()
 
 # --- ADMIN COMMENTS ---
 if st.sidebar.text_input("Admin password", type="password") == ADMIN_PASSWORD:
