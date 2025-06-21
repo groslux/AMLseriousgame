@@ -150,7 +150,7 @@ if st.session_state.page == "name":
     if name.strip():
         st.session_state.player_name = name.strip()
         st.session_state.page = "instructions"
-
+        st.experimental_rerun()
 
 # --- PAGE: INSTRUCTIONS ---
 elif st.session_state.page == "instructions":
@@ -182,7 +182,7 @@ Answer the questions based on your AML knowledge!
         st.session_state.start_time = time.time()
         st.session_state.time_limit = time_limit if mode == "Time Attack" else None
         st.session_state.page = "quiz"
-   
+        st.experimental_rerun()
 
 # --- PAGE: QUIZ ---
 elif st.session_state.page == "quiz":
@@ -191,12 +191,12 @@ elif st.session_state.page == "quiz":
         st.markdown(f"⏱️ Time Left: {remaining} seconds")
         if remaining <= 0:
             st.session_state.page = "results"
-      
+            st.experimental_rerun()
 
     idx = st.session_state["current"]
     if idx >= len(st.session_state.questions):
         st.session_state.page = "results"
-
+        st.experimental_rerun()
 
     q = st.session_state.questions[idx]
     if f"options_{idx}" not in st.session_state:
@@ -222,7 +222,7 @@ elif st.session_state.page == "quiz":
         st.session_state.submitted = False
         st.session_state.current += 1
         if st.button("Next Question"):
-        
+            st.experimental_rerun()
 
 # --- PAGE: RESULTS ---
 elif st.session_state.page == "results":
@@ -279,4 +279,4 @@ elif st.session_state.page == "results":
     if st.button("Play Again"):
         for k in list(st.session_state.keys()):
             del st.session_state[k]
- 
+        st.experimental_rerun()
