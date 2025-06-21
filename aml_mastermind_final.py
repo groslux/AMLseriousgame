@@ -125,7 +125,7 @@ if st.session_state.step == "name":
     if name:
         st.session_state.player_name = name
         st.session_state.step = "instructions"
-        st.experimental_rerun()
+
     st.stop()
 
 # --- INSTRUCTIONS PAGE ---
@@ -150,7 +150,7 @@ Read the questions, analyze the answers and make the right call.
 """)
     if st.button("Start Game"):
         st.session_state.step = "select_mode"
-        st.experimental_rerun()
+       
     st.stop()
 
 # --- MODE & TOPIC SELECTION ---
@@ -173,7 +173,7 @@ if st.session_state.step == "select_mode":
         st.session_state.current = 0
         st.session_state.answers = []
         st.session_state.step = "quiz"
-        st.experimental_rerun()
+      
     st.stop()
 
 # --- QUIZ PAGE ---
@@ -182,7 +182,7 @@ if st.session_state.step == "quiz":
     total_questions = len(st.session_state.questions)
     if current >= total_questions or (st.session_state.mode == "Time Attack" and time.time() - st.session_state.start_time > st.session_state.time_limit):
         st.session_state.step = "results"
-        st.experimental_rerun()
+      
     question = st.session_state.questions[current]
     if f"shuffled_options_{current}" not in st.session_state:
         options = question["options"].copy()
@@ -213,7 +213,7 @@ if st.session_state.step == "quiz":
         if st.button("Next"):
             st.session_state.current += 1
             st.session_state.show_feedback = False
-            st.experimental_rerun()
+      
     st.stop()
 
 # --- RESULTS PAGE ---
