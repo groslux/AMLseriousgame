@@ -126,7 +126,6 @@ At the end:
         st.session_state.answers = []
         st.session_state.feedback = False
 
-# --- PAGE 3: QUIZ ---
 # --- PAGE: QUIZ ---
 elif st.session_state.page == "quiz":
     current = st.session_state.current
@@ -138,32 +137,33 @@ elif st.session_state.page == "quiz":
     else:
         q = questions[current]
 
-        # Display question text
+        # Initialize session keys safely
+        option_key = f"options_{current}"
+        selected_key = f"selected_{current}"
+        submitted_key = f"submitted_{current}"
+
+        if option_key not in st.session_state:
+            opts = q["options"].copy()
+            random.shuffle(opts)
+            st.session_state[option_key] = opts
+            st.session_state[selected_key] = None
+            st.session_state[submitted_key] = False
+
         st.subheader(f"❓ Question {current + 1} of {total}")
         st.markdown(f"**{q['question']}**")
 
-        # Shuffle options once
-        if f"options_{current}" not in st.session_state:
-            opts = q["options"].copy()
-            random.shuffle(opts)
-            st.session_state[f"options_{current}"] = opts
-            st.session_state[f"selected_{current}"] = None
-            st.session_state[f"submitted_{current}"] = False
-
-        # Show options
-        options = st.session_state[f"options_{current}"]
+        options = st.session_state[option_key]
         selected = st.radio("Choose your answer:", options, key=f"radio_{current}")
 
-        # Submit button
         if st.button("Submit"):
-            if not st.session_state[f"submitted_{current}"]:
-                # First click → show feedback
-                st.session_state[f"selected_{current}"] = selected
+            if not st.session_state[submitted_key]:
+                # First click – show feedback
+                st.session_state[selected_key] = selected
                 correct = q["correct_answer"].strip().lower()
                 picked = selected.strip().lower()
                 is_correct = picked == correct
                 st.session_state.answers.append(is_correct)
-                st.session_state[f"submitted_{current}"] = True
+                st.session_state[submitted_key] = True
 
                 if is_correct:
                     st.success("✅ Correct!")
@@ -173,9 +173,8 @@ elif st.session_state.page == "quiz":
                 st.caption(f"Source: {q.get('source', 'Unknown')}")
 
             else:
-                # Second click → move to next question
+                # Second click – next question
                 st.session_state.current += 1
-                st.session_state[f"options_{current+1}"] = None  # force reload of next options
                 st.session_state.page = "quiz"
 
 
