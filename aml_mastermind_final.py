@@ -37,7 +37,7 @@ def generate_certificate(name, score, total, percent, duration, category):
     buffer = BytesIO()
     c = canvas.Canvas(buffer, pagesize=A4)
     c.setFont("Helvetica-Bold", 20)
-    c.drawCentredString(300, 780, "🎓 AML Mastermind Certificate")
+    c.drawCentredString(300, 780, "AML Serious Game Certificate of Completion")
     c.setFont("Helvetica", 12)
     c.drawString(100, 740, f"Name: {name}")
     c.drawString(100, 720, f"Score: {score}/{total} ({percent}%)")
@@ -54,10 +54,10 @@ if "page" not in st.session_state:
 
 # --- NAME PAGE ---
 if st.session_state.page == "name":
-    st.title("🕵️ AML Mastermind")
+    st.title("🕵️ AML Serious Game for Regulators")
     leaderboard = load_json_file(LEADERBOARD_FILE)
-    st.info(f"🧑‍💼 Total players so far: **{len(leaderboard)}**")
-    name = st.text_input("Enter your name to begin:")
+    st.info(f"🧑‍💼 Total players over the past few days: **{len(leaderboard)}**")
+    name = st.text_input("Enter your name to begin and click twice on Continue:")
     if st.button("Continue") and name.strip():
         st.session_state.player_name = name.strip()
         st.session_state.page = "instructions"
@@ -66,13 +66,22 @@ if st.session_state.page == "name":
 elif st.session_state.page == "instructions":
     st.title("📋 Instructions")
     st.markdown("""
-Welcome to the AML Mastermind Quiz!
+
+Welcome to the AML Serious Game for Regulators !
 
 - Choose game mode and topic
-- Click Submit → see feedback
-- Click Next → move to next question
+- Click Submit once → see feedback
+- Click Submit again → see Next button
+- Click Next twice → move to next question
 
-🔒 This is for AML training only.
+You may choose the Classic game mode and select your topic (Crypto, Banking, Collective Investment Sector) and the number of questions to answer, or
+You may play against the clock (Time Attack mode)
+
+At the end you will get your results in a PDF certificate (which does not have any official value), and, if you're amongst the Top 10 last players, your anonymized name will be placed on the leaderboard.
+
+You can also leave a comment for the designer of the game (your comment can only be seen by the designer)
+
+🔒 Please note that this for fun training only, there is no confidential data in this game but there may be simplifications or unvoluntary errors. Use at your own discretion.
 """)
     st.session_state.mode = st.radio("Select Mode", ["Classic", "Time Attack"])
     all_qs = load_json_file(QUESTIONS_FILE)
