@@ -87,32 +87,35 @@ elif st.session_state.page == "quiz":
         opts = q["options"].copy()
         random.shuffle(opts)
         st.session_state[f"options_{current}"] = opts
+        st.session_state[f"selected_{current}"] = None
+        st.session_state[f"feedback_{current}"] = False
+        st.session_state[f"answered_{current}"] = False
 
-    st.markdown(f"**Q{current + 1}: {q['question']}**")
     options = st.session_state[f"options_{current}"]
     selected = st.radio("Choose your answer:", options, key=f"q_{current}")
 
-    if st.button("Submit"):
-        if not st.session_state.feedback_displayed:
-            correct = q["correct_answer"]
+    if not st.session_state[f"feedback_{current}"]:
+        if st.button("Submit"):
+            correct = q["correct_answer"].strip().lower()
             picked = selected.strip().lower()
-            is_correct = picked == correct.strip().lower()
+            is_correct = picked == correct
             st.session_state.answers.append(is_correct)
-            st.session_state.feedback_displayed = True
+            st.session_state[f"feedback_{current}"] = True
+            st.session_state[f"answered_{current}"] = True
 
             if is_correct:
                 st.success("✅ Correct!")
             else:
-                st.error(f"❌ Incorrect. Correct answer: {correct}")
+                st.error(f"❌ Incorrect. Correct answer: {q['correct_answer']}")
             st.info(q.get("explanation", "No explanation provided."))
             st.caption(f"Source: {q.get('source', 'Unknown')}")
 
-        else:
+    elif st.session_state[f"feedback_{current}"]:
+        if st.button("Next Question"):
             st.session_state.current += 1
-            st.session_state.feedback_displayed = False
-
             if st.session_state.current >= len(st.session_state.questions):
                 st.session_state.page = "results"
+
 
 # --- PAGE: RESULTS ---
 elif st.session_state.page == "results":
