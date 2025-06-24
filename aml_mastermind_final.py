@@ -82,7 +82,6 @@ def generate_certificate(player_name, score, total, percent, duration, incorrect
     c.save()
     buffer.seek(0)
     return buffer
-
 # --- STREAMLIT SETUP ---
 st.set_page_config("AML Mastermind", layout="centered")
 if "page" not in st.session_state:
@@ -139,7 +138,6 @@ At the end:
         st.session_state.current = 0
         st.session_state.start_time = time.time()
         st.session_state.feedback_displayed = False
-
 # --- PAGE 3: QUIZ ---
 elif st.session_state.page == "quiz":
     if st.session_state.mode == "Time Attack":
@@ -148,10 +146,12 @@ elif st.session_state.page == "quiz":
             st.session_state.page = "results"
     st.markdown(f"### Question {st.session_state.current + 1}")
     q = st.session_state.questions[st.session_state.current]
+    
     if f"options_{st.session_state.current}" not in st.session_state:
         shuffled = q["options"].copy()
         random.shuffle(shuffled)
         st.session_state[f"options_{st.session_state.current}"] = shuffled
+    
     options = st.session_state[f"options_{st.session_state.current}"]
     selected = st.radio("Choose your answer:", options, key=f"q_{st.session_state.current}")
 
@@ -175,7 +175,6 @@ elif st.session_state.page == "quiz":
         st.session_state.current += 1
         if st.session_state.current >= len(st.session_state.questions):
             st.session_state.page = "results"
-
 # --- PAGE 4: RESULTS ---
 elif st.session_state.page == "results":
     total = len(st.session_state.answers)
@@ -187,6 +186,7 @@ elif st.session_state.page == "results":
     st.markdown(f"**Score:** {score}/{total} ({percent}%)")
     st.markdown(f"**Duration:** {duration} seconds")
     st.markdown(f"**Mode:** {st.session_state.mode} | **Category:** {st.session_state.category}")
+    
     incorrect_qs = [st.session_state.questions[i] for i, a in enumerate(st.session_state.answers) if not a]
     cert = generate_certificate(st.session_state.player_name, score, total, percent, duration, incorrect_qs)
     st.download_button("📄 Download Your Certificate", cert, file_name="certificate.pdf", mime="application/pdf")
@@ -227,8 +227,11 @@ elif st.session_state.page == "results":
         comments = load_json_file(COMMENTS_FILE)
         if comments:
             for c in comments:
-                st.markdown(f"**{c.get('name', '???')}** ({c.get('time', '')}):")
-                st.write(c.get("comment", ""))
+                name = c.get('name', '???')
+                comment = c.get("comment", "")
+                time_str = c.get("time", "")
+                st.markdown(f"**{name}** ({time_str}):")
+                st.write(comment)
             st.download_button("📥 Download Comments", json.dumps(comments, indent=2), "comments.json", "application/json")
         else:
             st.info("No comments yet.")
