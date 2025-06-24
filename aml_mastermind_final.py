@@ -180,8 +180,8 @@ elif st.session_state.page == "results":
     st.download_button("📄 Download Certificate", cert, file_name="certificate.pdf")
 
     st.markdown("### 🏆 Leaderboard")
-   data = load_json_file(LEADERBOARD_FILE)
-   top = sorted(data, key=lambda x: -(x['score'] / x['duration'] if x['duration'] > 0 else 0))[:10]
+    data = load_json_file(LEADERBOARD_FILE)
+    top = sorted(data, key=lambda x: -(x['score'] / x['duration'] if x['duration'] > 0 else 0))[:10]
 
     # Leaderboard
     st.markdown("---\n## 🏆 Leaderboard (Efficiency = correct answers / time)")
