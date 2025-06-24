@@ -14,7 +14,7 @@ LEADERBOARD_FILE = ".streamlit/leaderboard.json"
 COMMENTS_FILE = ".streamlit/comments.json"
 ADMIN_PASSWORD = "iloveaml2025"
 
-# Load and save functions
+# JSON helper functions
 def load_json(path, default=[]):
     if not os.path.exists(path):
         return default
@@ -63,7 +63,7 @@ def generate_certificate(name, score, total, percent, duration, wrong_qs):
     buffer.seek(0)
     return buffer
 
-# Initialize session state
+# Initialize session
 if "page" not in st.session_state:
     st.session_state.page = "name"
 if "answers" not in st.session_state:
@@ -73,70 +73,71 @@ if "current_q" not in st.session_state:
 if "feedback_shown" not in st.session_state:
     st.session_state.feedback_shown = False
 
-# Page: Name input
+# Page: Name
 if st.session_state.page == "name":
     st.title("🕵️ AML Mastermind")
-    st.markdown("### Enter your name to start")
+    st.markdown("### Enter your name to begin")
     player_name = st.text_input("Your name")
     if st.button("Continue") and player_name.strip():
         st.session_state.player_name = player_name.strip()
         st.session_state.page = "instructions"
 
-# Page: Instructions
+# Page: Instructions + setup
 elif st.session_state.page == "instructions":
     st.title("📘 Instructions")
     st.markdown("""
-- You will answer multiple-choice questions on AML topics.
-- First click on `Submit` shows feedback.  
-- Second click on `Submit` moves to the next question.
-- At the end: 🎓 Certificate, 🏆 Leaderboard, and 🗣️ Comment box.
+- One click on `Submit` = shows correct/wrong  
+- Second click on `Submit` = goes to next question  
+- At the end: 🎓 certificate, 🏅 leaderboard, 🗣️ comment box
     """)
-    mode = st.selectbox("Choose mode", ["Classic", "Time Attack"])
     data = load_json(QUESTIONS_FILE)
     categories = sorted(set(q["category"] for q in data))
-    category = st.selectbox("Select category", categories)
+    category = st.selectbox("Select topic", categories)
+    num_questions = st.slider("Number of questions", 5, 20, 10)
     if st.button("Start Quiz"):
-        st.session_state.mode = mode
+        questions = [q for q in data if q["category"] == category]
+        random.shuffle(questions)
+        st.session_state.questions = questions[:num_questions]
         st.session_state.category = category
-        st.session_state.questions = [q for q in data if q["category"] == category]
-        random.shuffle(st.session_state.questions)
-        st.session_state.questions = st.session_state.questions[:10]
-        st.session_state.page = "quiz"
+        st.session_state.num_questions = num_questions
         st.session_state.start_time = time.time()
+        st.session_state.page = "quiz"
 
 # Page: Quiz
 elif st.session_state.page == "quiz":
-    total_qs = len(st.session_state.questions)
-    current = st.session_state.current_q
-    if current >= total_qs:
+    q_idx = st.session_state.current_q
+    total = len(st.session_state.questions)
+    if q_idx >= total:
         st.session_state.page = "results"
-        st.rerun()
+        st.experimental_rerun()
 
-    q = st.session_state.questions[current]
-    st.subheader(f"Question {current + 1} of {total_qs}")
+    q = st.session_state.questions[q_idx]
+    st.subheader(f"Question {q_idx + 1} of {total}")
     st.write(q["question"])
-    if f"options_{current}" not in st.session_state:
-        options = q["options"].copy()
-        random.shuffle(options)
-        st.session_state[f"options_{current}"] = options
-    selected = st.radio("Choose one:", st.session_state[f"options_{current}"], key=f"select_{current}")
+
+    key = f"options_{q_idx}"
+    if key not in st.session_state:
+        opts = q["options"].copy()
+        random.shuffle(opts)
+        st.session_state[key] = opts
+    selected = st.radio("Choose one:", st.session_state[key], key=f"select_{q_idx}")
 
     if st.button("Submit"):
         if not st.session_state.feedback_shown:
-            st.session_state.feedback_shown = True
             st.session_state.selected = selected
             is_correct = selected.strip().lower() == q["correct_answer"].strip().lower()
             st.session_state.answers.append(is_correct)
+            st.session_state.feedback_shown = True
             if is_correct:
                 st.success("✅ Correct!")
             else:
                 st.error(f"❌ Incorrect. Correct answer: {q['correct_answer']}")
-            st.info(q.get("explanation", ""))
-            st.caption(f"Source: {q.get('source', '')}")
+            st.info(q.get("explanation", "No explanation provided."))
+            st.caption(f"Source: {q.get('source', 'Unknown')}")
         else:
             st.session_state.current_q += 1
             st.session_state.feedback_shown = False
-            st.rerun()
+            st.experimental_rerun()
 
 # Page: Results
 elif st.session_state.page == "results":
@@ -144,28 +145,41 @@ elif st.session_state.page == "results":
     total = len(st.session_state.answers)
     percent = int((score / total) * 100)
     duration = int(time.time() - st.session_state.start_time)
-    wrong_qs = [q for i, q in enumerate(st.session_state.questions) if not st.session_state.answers[i]]
+    wrong_qs = [st.session_state.questions[i] for i, a in enumerate(st.session_state.answers) if not a]
 
     st.title("✅ Quiz Complete!")
-    st.markdown(f"**Name:** {st.session_state.player_name}")
+    st.markdown(f"**Player:** {st.session_state.player_name}")
     st.markdown(f"**Score:** {score}/{total} ({percent}%)")
-    st.markdown(f"**Time:** {duration} seconds")
+    st.markdown(f"**Duration:** {duration} seconds")
     cert = generate_certificate(st.session_state.player_name, score, total, percent, duration, wrong_qs)
     st.download_button("📄 Download Certificate", cert, file_name="certificate.pdf", mime="application/pdf")
 
-    append_to_json(LEADERBOARD_FILE, {
-        "name": st.session_state.player_name[:5] + "###",
+    # Save best score only
+    all_scores = load_json(LEADERBOARD_FILE)
+    anonymized_name = st.session_state.player_name[:5] + "###"
+    filtered = [s for s in all_scores if s["name"] != anonymized_name]
+    filtered.append({
+        "name": anonymized_name,
         "score": score,
         "duration": duration,
-        "timestamp": datetime.now().isoformat(),
-        "category": st.session_state.category
+        "category": st.session_state.category,
+        "timestamp": datetime.now().isoformat()
     })
+    save_json(LEADERBOARD_FILE, filtered)
 
     if st.checkbox("🏅 Show Leaderboard"):
-        data = load_json(LEADERBOARD_FILE)
-        top = sorted(data, key=lambda x: (-x["score"], x["duration"]))[:10]
+        lb = load_json(LEADERBOARD_FILE)
+        best_per_user = {}
+        for entry in lb:
+            name = entry.get("name", "Anon###")
+            current = best_per_user.get(name)
+            if not current or entry["score"] > current["score"] or (
+                entry["score"] == current["score"] and entry["duration"] < current["duration"]
+            ):
+                best_per_user[name] = entry
+        top = sorted(best_per_user.values(), key=lambda x: (-x["score"], x["duration"]))[:10]
         for i, entry in enumerate(top, 1):
-            st.markdown(f"{i}. **{entry['name']}** | {entry['score']} pts | {entry['duration']}s | {entry['category']}")
+            st.markdown(f"{i}. **{entry['name']}** | {entry['score']} pts | {entry['duration']}s | {entry.get('category', '')}")
 
     st.markdown("---")
     st.markdown("### 🗣️ Leave a comment (visible only to the creator)")
@@ -186,12 +200,12 @@ elif st.session_state.page == "results":
         st.success("Access granted")
         if comments:
             for c in comments:
-                st.markdown(f"**{c['name']}** ({c['time']}):")
-                st.write(c["comment"])
+                st.markdown(f"**{c.get('name', '???')}** ({c.get('time', '')}):")
+                st.write(c.get("comment", ""))
             st.download_button("📥 Download Comments", json.dumps(comments, indent=2), "comments.json")
         else:
             st.info("No comments yet.")
 
     if st.button("🔄 Play Again"):
         st.session_state.clear()
-        st.rerun()
+        st.experimental_rerun()
