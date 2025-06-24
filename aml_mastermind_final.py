@@ -71,12 +71,22 @@ Welcome to the AML Serious Game for Regulators!
 - Click Submit once → see feedback
 - Click Next → move to next question
 
+Note : as a rule, click twice to proceed.
+
 Classic mode = fixed number of questions  
 Time Attack = beat the clock
 
-A certificate is issued at the end. Top 10 players appear anonymously on the leaderboard.
+A certificate (with no value) is issued at the end. Top 10 players appear anonymously on the leaderboard.
 
-🔒 This is a training tool and not legal advice.
+You can also leave a comment to the game designer (the comments are private and can only be read by the game designer).
+
+Created with ChatGPT with content from public reports from FATF, IOSCO, IMF, WorldBank.
+
+First release : 25 June 2025 
+
+Copyright : GROS
+
+🔒 This is a "fun" training tool and not legal advice. Use at your own discretion.
 """)
     st.session_state.mode = st.radio("Select Mode", ["Classic", "Time Attack"])
     all_qs = load_json_file(QUESTIONS_FILE)
