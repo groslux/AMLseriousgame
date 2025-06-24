@@ -75,7 +75,10 @@ elif st.session_state.page == "quiz":
             is_correct = selected.strip().lower() == q["correct_answer"].strip().lower()
             st.session_state.answers.append(is_correct)
             st.session_state.feedback = True
-            st.success("✅ Correct!") if is_correct else st.error(f"❌ Correct answer: {q['correct_answer']}")
+        if is_correct:
+            st.success("✅ Correct!")
+    else:
+    st.error(f"❌ Correct answer: {q['correct_answer']}")
             st.info(q.get("explanation", ""))
     else:
         if st.button("Next"):
