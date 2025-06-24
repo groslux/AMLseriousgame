@@ -132,6 +132,11 @@ elif st.session_state.page == "quiz":
     questions = st.session_state.questions
     q = questions[current]
 
+    # Show the question text
+    st.subheader(f"❓ Question {current + 1} of {len(questions)}")
+    st.markdown(f"**{q['question']}**")
+
+    # Shuffle options once
     if f"options_{current}" not in st.session_state:
         opts = q["options"].copy()
         random.shuffle(opts)
@@ -140,6 +145,7 @@ elif st.session_state.page == "quiz":
     options = st.session_state[f"options_{current}"]
     selected = st.radio("Choose your answer:", options, key=f"q_{current}")
 
+    # First click: show feedback
     if not st.session_state.feedback:
         if st.button("Submit"):
             correct = q["correct_answer"].strip().lower()
@@ -154,11 +160,13 @@ elif st.session_state.page == "quiz":
             st.info(q.get("explanation", "No explanation provided."))
             st.caption(f"Source: {q.get('source', 'Unknown')}")
     else:
+        # Second click: go to next question
         if st.button("Submit"):
             st.session_state.current += 1
             st.session_state.feedback = False
             if st.session_state.current >= len(st.session_state.questions):
                 st.session_state.page = "results"
+
 
 # --- PAGE 4: RESULTS ---
 elif st.session_state.page == "results":
