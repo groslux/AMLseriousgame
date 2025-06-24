@@ -176,7 +176,7 @@ elif st.session_state.page == "results":
     data = load_json_file(LEADERBOARD_FILE)
     if data:
         # Sort by efficiency: highest correct answers per second
-        unique = {entry['timestamp']: entry for entry in data}.values()
+        unique = {entry['timestamp']: entry for entry in data if 'timestamp' in entry}.values()
         top = sorted(unique, key=lambda x: -(x['score'] / max(x['duration'], 1)))[:10]
         for i, entry in enumerate(top, 1):
             efficiency = round(entry["score"] / max(entry["duration"], 1), 2)
