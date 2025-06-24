@@ -202,7 +202,7 @@ for i, entry in enumerate(top, 1):
         st.markdown(f"{i}. **{entry.get('name', '?')}** | {entry.get('score', 0)} pts | {entry.get('duration', '?')}s | {entry.get('category', '?')}")
 
     st.markdown("### 💬 Leave a Comment")
-    comment = st.text_area("Private feedback:")
+    comment = st.text_area("Private feedback:", key="comment_box")
     if st.button("Submit Comment") and comment.strip():
         append_to_json_file(COMMENTS_FILE, {
             "name": st.session_state.player_name[:5] + "###",
