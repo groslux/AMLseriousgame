@@ -3,6 +3,7 @@ import json
 import os
 import random
 import time
+
 from datetime import datetime
 from io import BytesIO
 from reportlab.lib.pagesizes import A4
@@ -54,6 +55,8 @@ if "page" not in st.session_state:
 # --- NAME PAGE ---
 if st.session_state.page == "name":
     st.title("🕵️ AML Mastermind")
+    leaderboard = load_json_file(LEADERBOARD_FILE)
+    st.info(f"🧑‍💼 Total players so far: **{len(leaderboard)}**")
     name = st.text_input("Enter your name to begin:")
     if st.button("Continue") and name.strip():
         st.session_state.player_name = name.strip()
