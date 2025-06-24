@@ -3,7 +3,6 @@ import json
 import os
 import random
 import time
-
 from datetime import datetime
 from io import BytesIO
 from reportlab.lib.pagesizes import A4
@@ -66,22 +65,18 @@ if st.session_state.page == "name":
 elif st.session_state.page == "instructions":
     st.title("📋 Instructions")
     st.markdown("""
-
-Welcome to the AML Serious Game for Regulators !
+Welcome to the AML Serious Game for Regulators!
 
 - Choose game mode and topic
 - Click Submit once → see feedback
-- Click Submit again → see Next button
-- Click Next twice → move to next question
+- Click Next → move to next question
 
-You may choose the Classic game mode and select your topic (Crypto, Banking, Collective Investment Sector) and the number of questions to answer, or
-You may play against the clock (Time Attack mode)
+Classic mode = fixed number of questions  
+Time Attack = beat the clock
 
-At the end you will get your results in a PDF certificate (which does not have any official value), and, if you're amongst the Top 10 last players, your anonymized name will be placed on the leaderboard.
+A certificate is issued at the end. Top 10 players appear anonymously on the leaderboard.
 
-You can also leave a comment for the designer of the game (your comment can only be seen by the designer)
-
-🔒 Please note that this for fun training only, there is no confidential data in this game but there may be simplifications or unvoluntary errors. Use at your own discretion.
+🔒 This is a training tool and not legal advice.
 """)
     st.session_state.mode = st.radio("Select Mode", ["Classic", "Time Attack"])
     all_qs = load_json_file(QUESTIONS_FILE)
@@ -119,25 +114,23 @@ elif st.session_state.page == "quiz":
     questions = st.session_state.questions
     q = questions[current]
 
-    q = st.session_state.questions[st.session_state.current]
-    current = st.session_state.current
     if f"options_{current}" not in st.session_state:
         opts = q["options"].copy()
         random.shuffle(opts)
         st.session_state[f"options_{current}"] = opts
         st.session_state[f"selected_{current}"] = None
-        st.session_state.feedback_shown = False
+        st.session_state[f"feedback_{current}"] = False
 
     st.markdown(f"### Question {current + 1}: {q['question']}")
     selected = st.radio("Options:", st.session_state[f"options_{current}"], key=f"q_{current}")
 
-    if not st.session_state.feedback_shown:
+    if not st.session_state[f"feedback_{current}"]:
         if st.button("Submit"):
             correct = q["correct_answer"].strip().lower()
             picked = selected.strip().lower()
             is_correct = picked == correct
             st.session_state.answers.append(is_correct)
-            st.session_state.feedback_shown = True
+            st.session_state[f"feedback_{current}"] = True
             if is_correct:
                 st.success("✅ Correct!")
             else:
@@ -147,7 +140,6 @@ elif st.session_state.page == "quiz":
     else:
         if st.button("Next"):
             st.session_state.current += 1
-            st.session_state.feedback_shown = False
             if st.session_state.current >= len(st.session_state.questions):
                 st.session_state.page = "results"
 
@@ -179,38 +171,25 @@ elif st.session_state.page == "results":
     cert = generate_certificate(st.session_state.player_name, score, total, percent, duration, st.session_state.category)
     st.download_button("📄 Download Certificate", cert, file_name="certificate.pdf")
 
+    # Leaderboard
     st.markdown("### 🏆 Leaderboard")
     data = load_json_file(LEADERBOARD_FILE)
-    top = sorted(data, key=lambda x: -(x['score'] / x['duration'] if x['duration'] > 0 else 0))[:10]
-
-    # Leaderboard
-    # Leaderboard
-    st.markdown("---\n## 🏆 Leaderboard")
-    data = load_json_file(LEADERBOARD_FILE)
-
-if data:
-    # Sort by efficiency: highest correct answers per second
-    top = sorted(data, key=lambda x: -x['score'] / max(x['duration'], 1))[:10]
-    for i, entry in enumerate(top, 1):
-        st.markdown(f"{i}. **{entry.get('name', '???')}** | {entry.get('score', 0)} pts | {entry.get('duration', '?')}s | {entry.get('category', '?')}")
-else:
-    st.info("No leaderboard data yet.")
-
-    
-   
-for i, entry in enumerate(top, 1):
-    efficiency = round(entry["score"] / entry["duration"], 3) if entry["duration"] > 0 else 0
-    st.markdown(
-        f"{i}. **{entry.get('name', '???')}** | {entry.get('score', 0)} pts"
-        f" | {entry.get('duration', '?')}s | Efficiency: {efficiency}"
-        f" | {entry.get('category', '?')}"
-    )
-
-    for i, entry in enumerate(top, 1):
-        st.markdown(f"{i}. **{entry.get('name', '?')}** | {entry.get('score', 0)} pts | {entry.get('duration', '?')}s | {entry.get('category', '?')}")
+    if data:
+        # Sort by efficiency: highest correct answers per second
+        unique = {entry['timestamp']: entry for entry in data}.values()
+        top = sorted(unique, key=lambda x: -(x['score'] / max(x['duration'], 1)))[:10]
+        for i, entry in enumerate(top, 1):
+            efficiency = round(entry["score"] / max(entry["duration"], 1), 2)
+            st.markdown(
+                f"{i}. **{entry.get('name', '???')}** | {entry.get('score', 0)} pts"
+                f" | {entry.get('duration', '?')}s | Eff.: {efficiency}"
+                f" | {entry.get('category', '?')}"
+            )
+    else:
+        st.info("No leaderboard data yet.")
 
     st.markdown("### 💬 Leave a Comment")
-    comment = st.text_area("Private feedback:", key="comment_box")
+    comment = st.text_area("Private feedback:", key="comment_box_final")
     if st.button("Submit Comment") and comment.strip():
         append_to_json_file(COMMENTS_FILE, {
             "name": st.session_state.player_name[:5] + "###",
