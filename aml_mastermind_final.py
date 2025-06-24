@@ -172,7 +172,7 @@ elif st.session_state.page == "quiz":
             if st.button("Submit"):
                 # Go to next question (do not re-submit or evaluate anything)
                 st.session_state.current += 1
-                st.experimental_rerun()
+           
 
 
 
