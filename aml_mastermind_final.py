@@ -124,8 +124,7 @@ elif st.session_state.page == "quiz":
     i = st.session_state.current
     if i >= len(st.session_state.questions):
         st.session_state.page = "results"
-        st.experimental_rerun()
-
+  
     q = st.session_state.questions[i]
     st.subheader(f"Question {i + 1}")
     st.write(q["question"])
@@ -154,8 +153,7 @@ elif st.session_state.page == "quiz":
         if st.button("Next"):
             st.session_state.current += 1
             st.session_state.feedback = False
-            st.experimental_rerun()
-
+  
 # --- PAGE: RESULTS ---
 elif st.session_state.page == "results":
     total = len(st.session_state.answers)
