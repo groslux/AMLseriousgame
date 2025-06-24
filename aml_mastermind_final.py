@@ -192,7 +192,7 @@ elif st.session_state.page == "results":
     comment = st.text_area("Private feedback:", key="comment_box_final")
     if st.button("Submit Comment") and comment.strip():
         append_to_json_file(COMMENTS_FILE, {
-            "name": st.session_state.player_name[:5] + "###",
+            "name": st.session_state.get("player_name", "anon")[:5] + "###",
             "comment": comment.strip(),
             "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         })
