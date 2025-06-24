@@ -8,6 +8,16 @@ from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 import os
 
+# --- Ensure data persistence files exist ---
+def ensure_data_files():
+    os.makedirs(".streamlit", exist_ok=True)
+    for file_path in [LEADERBOARD_FILE, COMMENTS_FILE]:
+        if not os.path.exists(file_path):
+            with open(file_path, "w", encoding="utf-8") as f:
+                json.dump([], f, indent=2)
+
+ensure_data_files()
+
 # --- CONFIG ---
 QUESTIONS_FILE = "questions_cleaned.json"
 LEADERBOARD_FILE = ".streamlit/leaderboard.json"
