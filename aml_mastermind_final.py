@@ -99,6 +99,17 @@ Welcome to the AML Mastermind Quiz!
 
 # --- QUIZ PAGE ---
 elif st.session_state.page == "quiz":
+    if st.session_state.mode == "Time Attack":
+        remaining = st.session_state.time_limit - int(time.time() - st.session_state.start_time)
+        if remaining <= 0:
+            st.session_state.page = "results"
+        else:
+            st.markdown(f"⏱️ Time remaining: **{remaining} seconds**")
+
+    current = st.session_state.current
+    questions = st.session_state.questions
+    q = questions[current]
+
     q = st.session_state.questions[st.session_state.current]
     current = st.session_state.current
     if f"options_{current}" not in st.session_state:
