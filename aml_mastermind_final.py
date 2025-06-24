@@ -147,9 +147,9 @@ elif st.session_state.page == "quiz":
     st.markdown(f"### Question {st.session_state.current + 1}")
     q = st.session_state.questions[st.session_state.current]
         if "question" not in q:
-            st.error("❌ Error: Question text missing for this entry.")
-            st.write(q)
-            st.stop()
+        st.error("❌ Error: Question text missing for this entry.")
+        st.write(q)
+        st.stop()
 
     
     if f"options_{st.session_state.current}" not in st.session_state:
