@@ -181,7 +181,23 @@ elif st.session_state.page == "results":
 
     st.markdown("### 🏆 Leaderboard")
     data = load_json_file(LEADERBOARD_FILE)
-    top = sorted(data, key=lambda x: (-x["score"], x["duration"]))[:10]
+    # Leaderboard
+    st.markdown("---\n## 🏆 Leaderboard (Efficiency = correct answers / time)")
+    data = load_json_file(LEADERBOARD_FILE)
+
+    top = sorted(
+    data,
+    key=lambda x: -(x["score"] / x["duration"] if x["duration"] > 0 else 0)
+    )[:10]
+
+for i, entry in enumerate(top, 1):
+    efficiency = round(entry["score"] / entry["duration"], 3) if entry["duration"] > 0 else 0
+    st.markdown(
+        f"{i}. **{entry.get('name', '???')}** | {entry.get('score', 0)} pts"
+        f" | {entry.get('duration', '?')}s | Efficiency: {efficiency}"
+        f" | {entry.get('category', '?')}"
+    )
+
     for i, entry in enumerate(top, 1):
         st.markdown(f"{i}. **{entry.get('name', '?')}** | {entry.get('score', 0)} pts | {entry.get('duration', '?')}s | {entry.get('category', '?')}")
 
