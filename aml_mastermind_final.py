@@ -131,10 +131,10 @@ elif st.session_state.page == "quiz":
                     st.error(f"❌ Incorrect. Correct answer: {q['correct_answer']}")
                 st.info(q.get("explanation", ""))
                 st.caption(f"Source: {q.get('source', 'Unknown')}")
-           else:
+                else:
                 # Second click → next question
-                st.session_state.current = +1
-
+                    st.session_state.current = +1
+ 
 # --- PAGE: RESULTS ---
 elif st.session_state.page == "results":
     score = sum(st.session_state.answers)
