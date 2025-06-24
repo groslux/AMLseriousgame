@@ -127,46 +127,52 @@ At the end:
         st.session_state.feedback = False
 
 # --- PAGE 3: QUIZ ---
-
 elif st.session_state.page == "quiz":
     current = st.session_state.current
     questions = st.session_state.questions
-    q = questions[current]
 
-    # Show the question
-    st.subheader(f"❓ Question {current + 1} of {len(questions)}")
-    st.markdown(f"**{q['question']}**")
+    if current >= len(questions):
+        st.session_state.page = "results"
+    else:
+        q = questions[current]
 
-    # Shuffle options only once
-    if f"options_{current}" not in st.session_state:
-        opts = q["options"].copy()
-        random.shuffle(opts)
-        st.session_state[f"options_{current}"] = opts
-        st.session_state[f"selected_{current}"] = None
-        st.session_state[f"answered_{current}"] = False
+        # Load and show question
+        st.subheader(f"❓ Question {current + 1} of {len(questions)}")
+        st.markdown(f"**{q['question']}**")
 
-    options = st.session_state[f"options_{current}"]
-    selected = st.radio("Choose your answer:", options, key=f"q_{current}")
+        # Shuffle once per question
+        if f"options_{current}" not in st.session_state:
+            opts = q["options"].copy()
+            random.shuffle(opts)
+            st.session_state[f"options_{current}"] = opts
+            st.session_state[f"answered_{current}"] = False
+            st.session_state[f"selected_{current}"] = None
 
-    # --- First click: show feedback
-    if not st.session_state[f"answered_{current}"]:
-        if st.button("Submit"):
-            is_correct = selected.strip().lower() == q["correct_answer"].strip().lower()
-            st.session_state.answers.append(is_correct)
-            st.session_state[f"answered_{current}"] = True
+        # Answer selection
+        options = st.session_state[f"options_{current}"]
+        selected = st.radio("Choose your answer:", options, key=f"q_{current}")
 
-            if is_correct:
-                st.success("✅ Correct!")
-            else:
-                st.error(f"❌ Incorrect. Correct answer: {q['correct_answer']}")
-            st.info(q.get("explanation", "No explanation provided."))
-            st.caption(f"Source: {q.get('source', 'Unknown')}")
+        # Button handling
+        if not st.session_state[f"answered_{current}"]:
+            if st.button("Submit"):
+                correct = q["correct_answer"].strip().lower()
+                picked = selected.strip().lower()
+                is_correct = picked == correct
+                st.session_state.answers.append(is_correct)
+                st.session_state[f"answered_{current}"] = True
 
-    # --- Second click: go to next question without re-evaluating
-    elif st.button("Submit"):
-        st.session_state.current += 1
-        if st.session_state.current >= len(questions):
-            st.session_state.page = "results"
+                if is_correct:
+                    st.success("✅ Correct!")
+                else:
+                    st.error(f"❌ Incorrect. Correct answer: {q['correct_answer']}")
+                st.info(q.get("explanation", "No explanation provided."))
+                st.caption(f"Source: {q.get('source', 'Unknown')}")
+
+        else:
+            if st.button("Submit"):
+                # Go to next question (do not re-submit or evaluate anything)
+                st.session_state.current += 1
+                st.experimental_rerun()
 
 
 
