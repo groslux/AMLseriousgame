@@ -110,7 +110,7 @@ elif st.session_state.page == "quiz":
     opts = st.session_state[f"opts_{st.session_state.current}"]
     selected = st.radio("Options:", opts, key=f"radio_{st.session_state.current}")
 
-    if not st.session_state.feedback:
+    if not st.session_state.get("feedback", False):
         if st.button("Submit"):
             correct = q["correct_answer"].strip().lower()
             picked = selected.strip().lower()
