@@ -303,7 +303,7 @@
       "They can be used to obscure the real beneficial owner(s)",
       "They are always illegal"
     ],
-    "correct_answer": "They can obscure the real beneficial owner(s)",
+    "correct_answer": "They can be used to obscure the real beneficial owner(s)",
     "explanation": "Nominee arrangements may hide the identity of the actual beneficial owner, raising AML concerns.",
     "source": "FATF – Transparency and Beneficial Ownership (2014)"
   },
@@ -849,7 +849,7 @@
       "Perform Enhanced Due Diligence on the nominee shareholders to assess its AML/CFT framework",
       "Ignore CDD if nominee is licensed"
     ],
-    "correct_answer": "Perform Enhanced Due Diligence on the nominee shareholders to assess its AML/CFT framewor",
+    "correct_answer": "Perform Enhanced Due Diligence on the nominee shareholders to assess its AML/CFT framework",
     "explanation": "Nominee structures are often used to obscure beneficial ownership and require enhanced CDD.",
     "source": "FATF – Guidance on Transparency and Beneficial Ownership (2014)"
   },
